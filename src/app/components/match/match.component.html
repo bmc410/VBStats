@@ -1,0 +1,413 @@
+<div style="font-size: 20px;" class="ui-g">
+    <div class="col-3" cdkDropList #todo="cdkDropList" [cdkDropListData]="players"
+        [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]" (cdkDropListDropped)="drop($event)">
+        <div class="heading todo">
+            <h2>Available Players</h2>
+        </div>
+        <div *ngFor="let player of players" class="task" cdkDrag>{{ player.firstName }} - {{ player.jersey }}</div>
+    </div>
+    <div style="font-size: 20px;" class="bgimg panel panel-default col-9">
+        <div class="panel-body">
+            <nav class="navbar navbar-expand-md navbar-dark bg-light">
+                <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+                    <!-- <span>
+            <h1>GAME 1</h1>
+          </span>
+          <span style="color: Green; margin-left: 10px;">
+            <h2>Ballyhoo - 0</h2>
+          </span>
+          <span style="color: Red; margin-left: 10px;">
+            <h2>Fusion - 0</h2>
+          </span> -->
+                    <button (click)="showDialog()" type="button" class="btn btn-info">
+                        Create Match
+                    </button>
+                </div>
+                <div class="mx-auto order-0"></div>
+                <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <button (click)="rotate()" type="button" class="btn btn-success">
+                                Rotate
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="row">
+                <div class="col-4" cdkDropList id="pos4" #pos4="cdkDropList" (cdkDropListDropped)="drop($event,4)">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Position 4</div>
+                        <div style="text-align: center" class="panel-body panel-height">
+                            <span>
+                                {{ playerPositions[4].playerPos }}
+                            </span>
+                            <br />
+                            <div>
+                                <div style="margin-bottom: 5px; ; margin-top: 50px;" class="row">
+                                    <div class="col">
+                                        <button (click)="incrementStat(4, K)" type="button"
+                                            class="btn btn-success btn-block">
+                                            K
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            H
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            HE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            B
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            BT
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            BE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            A
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            D
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            BHE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4" cdkDropList id="pos3" #pos3="cdkDropList" (cdkDropListDropped)="drop($event,3)">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Position 3</div>
+                        <div style="text-align: center;" class="panel-body panel-height">
+                            {{ playerPositions[3].playerPos }}
+
+                            <div>
+                                <div style="margin-bottom: 5px; ; margin-top: 50px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            K
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            H
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            HE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            B
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            BT
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            BE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            A
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            D
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            BHE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4" cdkDropList id="pos2" #pos2="cdkDropList" (cdkDropListDropped)="drop($event,2)">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Position 2</div>
+                        <div style="text-align: center;" class="panel-body panel-height">
+                            {{ playerPositions[2].playerPos }}
+                            <div>
+                                <div style="margin-bottom: 5px; ; margin-top: 50px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            K
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            H
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            HE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            B
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            BT
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            BE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            A
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            D
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            BHE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4" cdkDropList id="pos5" #pos5="cdkDropList" (cdkDropListDropped)="drop($event,5)">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Position 5</div>
+                        <div style="text-align: center;" class="panel-body panel-height">
+                            {{ playerPositions[5].playerPos }}
+                           <div>
+                                <div style="margin-bottom: 5px; ; margin-top: 50px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            K
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            H
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            HE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            A
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            D
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            BHE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 5px;" class="row">
+                                <div class="col">
+                                    <button type="button" class="btn btn-danger btn-block">
+                                        SRE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            <div class="col-4" cdkDropList id="pos6" #pos6="cdkDropList" (cdkDropListDropped)="drop($event,6)">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Position 6</div>
+                        <div style="text-align: center;" class="panel-body panel-height">
+                            {{ playerPositions[6].playerPos }}
+                           
+                            <div>
+                                <div style="margin-bottom: 5px; ; margin-top: 50px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            K
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            H
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            HE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            A
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            D
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            BHE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            SRE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4" cdkDropList id="pos1" #pos1="cdkDropList" (cdkDropListDropped)="drop($event,1)">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">Position 1</div>
+                        <div style="text-align: center;" class="panel-body panel-height">
+                            {{ playerPositions[1].playerPos }}
+                           
+                            <div>
+                                <div style="margin-bottom: 5px; ; margin-top: 50px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            K
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            H
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            HE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-success btn-block">
+                                            A
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-secondary btn-block">
+                                            D
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            BHE
+                                        </button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 5px;" class="row">
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            SRE
+                                        </button>
+                                    </div>
+                                    <div class="col">
+                                        <button type="button" class="btn btn-danger btn-block">
+                                            SE
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Create Match" [(visible)]="display">
+    <div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Home Team</label>
+            <input class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Opponent</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" />
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Match Date</label><br />
+            <p-calendar [readonlyInput]="true" [touchUI]="true" [(ngModel)]="matchDate"></p-calendar>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</p-dialog>

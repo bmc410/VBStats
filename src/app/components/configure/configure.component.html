@@ -1,0 +1,103 @@
+<div class="container">
+  <p-tabView>
+    <p-tabPanel header="Matches">
+      <p-table
+        [value]="matches"
+        selectionMode="single"
+        [(selection)]="selectedMatch"
+        (onRowSelect)="onRowSelect($event)"
+        [paginator]="true"
+        [rows]="15"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Home</th>
+            <th>Opponent</th>
+            <th>Match Date</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-match>
+          <tr [pSelectableRow]="match">
+            <td>{{ match.home }}</td>
+            <td>{{ match.opponent }}</td>
+            <td>{{ match.matchdate | date }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+    <p-tabPanel header="Players">
+      Content 2
+    </p-tabPanel>
+  </p-tabView>
+</div>
+
+<p-dialog
+  header="Match Details"
+  [(visible)]="displayDialog"
+  [focusOnShow]="false"
+  [responsive]="true"
+  showEffect="fade"
+  [modal]="true"
+  [style]="{ width: '400px' }"
+>
+  <div class="ui-g ui-fluid" *ngIf="match">
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="home">Home</label>
+      </div>
+      <div class="ui-g-8">
+        <input
+          style="width: 100%;"
+          pInputText
+          id="home"
+          [(ngModel)]="match.home"
+          autofocus
+        />
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="opponent">Opponent</label>
+      </div>
+      <div class="ui-g-8">
+        <input
+          style="width: 100%;"
+          pInputText
+          id="opponent"
+          [(ngModel)]="match.opponent"
+        />
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="matchdate">Match Date</label>
+      </div>
+      <div class="ui-g-8">
+        <p-calendar
+          [touchUI]="true"
+          [readonlyInput]="true"
+          [(ngModel)]="testDate"
+        >
+        </p-calendar>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button
+        type="button"
+        pButton
+        icon="fa fa-close"
+        (click)="delete()"
+        label="Delete"
+      ></button>
+      <button
+        type="button"
+        pButton
+        icon="fa fa-check"
+        (click)="save()"
+        label="Save"
+      ></button>
+    </div>
+  </p-footer>
+</p-dialog>

@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "dist/draganddrop",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

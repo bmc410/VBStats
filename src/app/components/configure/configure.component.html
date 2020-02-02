@@ -23,10 +23,40 @@
             <td>{{ match.matchdate | date }}</td>
           </tr>
         </ng-template>
+        <ng-template pTemplate="summary" let-rowData>
+          <div style="text-align:left">
+              <button type="button" pButton icon="fa fa-plus" (click)="showMatchDialogToAdd()" label="Add"></button>
+          </div>
+      </ng-template>
       </p-table>
     </p-tabPanel>
     <p-tabPanel header="Players">
-      Content 2
+      <p-table
+      [value]="players"
+      selectionMode="single"
+      [(selection)]="selectedMatch"
+      (onRowSelect)="onRowSelect($event)"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>#</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-player>
+        <tr [pSelectableRow]="player">
+          <td>{{ player.jersey }}</td>
+          <td>{{ player.firstName }}</td>
+          <td>{{ player.lastName  }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="summary" let-rowData>
+        <div style="text-align:left">
+            <button type="button" pButton icon="fa fa-plus" (click)="showDialogToAdd()" label="Add"></button>
+        </div>
+    </ng-template>
+    </p-table>
     </p-tabPanel>
   </p-tabView>
 </div>
@@ -70,21 +100,49 @@
     </div>
     <div class="ui-g-12">
       <div class="ui-g-4">
+        <label for="opponent">Game</label>
+      </div>
+      <div class="ui-g-8">
+        <p-dropdown appendTo="body" [options]="games" [(ngModel)]="game"></p-dropdown>
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <div class="ui-g-4">
         <label for="matchdate">Match Date</label>
       </div>
       <div class="ui-g-8">
-        <p-calendar
+        <input [(ngModel)]="match.matchdate" style="width: 80%;" matInput [matDatepicker]="picker" placeholder="Choose a date">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker touchUi #picker></mat-datepicker>
+        <!-- <p-calendar
           [touchUI]="true"
           [readonlyInput]="true"
-          [(ngModel)]="testDate"
+          [(ngModel)]="match.matchdate"
         >
-        </p-calendar>
+        </p-calendar> -->
       </div>
     </div>
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button btn-sm
+        style="float: left; background-color: green; font-size:small;"
+        type="button"
+        pButton
+        icon="pi pi-caret-right"
+        (click)="start()"
+        label="Start"
+      ></button>
       <button
+        style="float: left; background-color:cornflowerblue; font-size:small;"
+        type="button"
+        pButton
+        icon="pi pi-list"
+        (click)="summary()"
+        label="Summary"
+      ></button>
+      <button
+      style=" font-size:small; background-color: crimson;"
         type="button"
         pButton
         icon="fa fa-close"
@@ -92,6 +150,7 @@
         label="Delete"
       ></button>
       <button
+      style=" font-size:small;"
         type="button"
         pButton
         icon="fa fa-check"

@@ -1,11 +1,12 @@
 import { Component, OnInit } from "@angular/core";
 import { Car } from "src/app/models/cars";
 import { CarService } from "../../services/carservice";
-import { CourtPosition, Player, Match } from "src/app/models/appModels";
+import { CourtPosition, Match, gameMatch, PlayerWithId } from "src/app/models/appModels";
 import { MatchService } from "src/app/services/matchservice";
 import { DialogModule } from "primeng/dialog";
 import { CalendarModule } from "primeng/calendar";
 import { MenuItem } from "primeng/api/menuitem";
+import { Router } from '@angular/router';
 
 @Component({
   selector: "app-configure",
@@ -15,20 +16,28 @@ import { MenuItem } from "primeng/api/menuitem";
 export class ConfigureComponent implements OnInit {
   availableCars: Car[];
   playerPositions: CourtPosition[];
-  draggedplayer: Player;
-  players: Player[] = [];
+  draggedplayer: PlayerWithId;
+  players: PlayerWithId[] = [];
   match: Match = {};
   matches: Match[] = [];
   display: boolean = false;
   matchDate: Date;
   items: MenuItem[];
-  testDate: Date = new Date();
+  games = [
+    {label:'1', value:1},
+    {label:'2', value:2},
+    {label:'3', value:3},
+    {label:'4', value:4},
+    {label:'5', value:5}
+  ];
+  game = 1;
 
   displayDialog: boolean = false;
   selectedMatch: Match;
   newMatch: boolean;
+  gameMatch: gameMatch;
 
-  constructor(private matchService: MatchService) {
+  constructor(private matchService: MatchService, private router: Router) {
     this.playerPositions = [];
   }
 
@@ -36,10 +45,37 @@ export class ConfigureComponent implements OnInit {
     this.display = true;
   }
 
+  showDialogToAdd() {
+    this.matchService.addPlayers();
+    this.getPlayers()
+    //this.displayDialog = true;
+  }
+
+  showMatchDialogToAdd() {
+    this.matchService.createMatch("Fusion", "Ballyhoo", new Date());
+    this.getMatches();
+  }
+
   onRowSelect(event) {
     this.newMatch = false;
     this.match = this.cloneMatch(event.data);
     this.displayDialog = true;
+  }
+
+  start() {
+    this.displayDialog = false;
+    let gm = new gameMatch();
+    gm.gameNumber = this.game;
+    gm.home = this.match.home;
+    gm.matchdate = this.match.matchdate;
+    gm.matchid = this.match.matchid;
+    gm.opponent = this.match.opponent;
+    this.router.navigate(['match', gm]);
+  }
+
+  summary() {
+    this.displayDialog = false;
+    this.router.navigate(['summary', this.match]);
   }
 
   cloneMatch(m: Match): Match {
@@ -50,112 +86,39 @@ export class ConfigureComponent implements OnInit {
     return match;
   }
 
-  async ngOnInit() {
-    this.items = [
-      { label: "Stats", icon: "fa fa-fw fa-bar-chart", routerLink: ["/match"] },
-      { label: "Calendar", icon: "fa fa-fw fa-calendar" },
-      { label: "Documentation", icon: "fa fa-fw fa-book" },
-      { label: "Support", icon: "fa fa-fw fa-support" },
-      { label: "Social", icon: "fa fa-fw fa-twitter" }
-    ];
-    //this.matchService.createMatch();
-    let allMatches = await this.matchService.getAllMatches();
-    allMatches.forEach(element => {
-      this.matches.push(element);
+  async getMatches() {
+    this.matchService.getAllMatches().then((matches: Match[]) => {
+      this.matches = matches;
     });
-
-    console.log(this.matches);
   }
 
-  dragStart(event, player: Player) {
-    this.draggedplayer = player;
+  async getPlayers() {
+    this.matchService.getAllPlayers().then((players: PlayerWithId[]) => {
+      this.players = players;
+    });
   }
 
-  rotate() {
-    var positionsFilled = true;
+  ngOnInit() {
+    //this.matchService.createMatch("Fusion", "Ballyhoo", new Date());
+    //this.matchService.addPlayers();
 
-    for (let pos of this.playerPositions) {
-      if (!pos.player) {
-        positionsFilled = false;
-        break;
-      }
-    }
+    this.getMatches();
+    this.getPlayers()
+  };
 
-    if (!positionsFilled) {
-      return;
-    }
-
-    let tempPlayer = this.playerPositions[1].player;
-    this.playerPositions[1].player = this.playerPositions[2].player;
-    this.playerPositions[2].player = this.playerPositions[3].player;
-    this.playerPositions[3].player = this.playerPositions[4].player;
-    this.playerPositions[4].player = this.playerPositions[5].player;
-    this.playerPositions[5].player = this.playerPositions[6].player;
-    this.playerPositions[6].player = tempPlayer;
+  delete() {
+    this.matchService.deleteMatch(this.match.matchid).then(() => {
+      this.getMatches();
+    });
+    this.displayDialog = false;
   }
 
-  incrementStat(pos: number, stat: string) {}
-
-  drop(event, container) {
-    //first check to see if the position contains a player
-    if (this.playerPositions[container].player) {
-      this.players.push(this.playerPositions[container].player);
-    }
-
-    if (this.draggedplayer) {
-      if (container === "4") {
-        this.playerPositions[4].posNo = 4;
-        this.playerPositions[4].player = this.draggedplayer;
-        this.playerPositions[4].playerPos =
-          this.draggedplayer.firstName + " - " + this.draggedplayer.jersey;
-      } else if (container === "3") {
-        this.playerPositions[3].posNo = 3;
-        this.playerPositions[3].player = this.draggedplayer;
-        this.playerPositions[3].playerPos =
-          this.draggedplayer.firstName + " - " + this.draggedplayer.jersey;
-      } else if (container === "2") {
-        this.playerPositions[2].posNo = 2;
-        this.playerPositions[2].player = this.draggedplayer;
-        this.playerPositions[2].playerPos =
-          this.draggedplayer.firstName + " - " + this.draggedplayer.jersey;
-      } else if (container === "5") {
-        this.playerPositions[5].posNo = 5;
-        this.playerPositions[5].player = this.draggedplayer;
-        this.playerPositions[5].playerPos =
-          this.draggedplayer.firstName + " - " + this.draggedplayer.jersey;
-      } else if (container === "6") {
-        this.playerPositions[6].posNo = 6;
-        this.playerPositions[6].player = this.draggedplayer;
-        this.playerPositions[6].playerPos =
-          this.draggedplayer.firstName + " - " + this.draggedplayer.jersey;
-      } else if (container === "1") {
-        this.playerPositions[1].posNo = 1;
-        this.playerPositions[1].player = this.draggedplayer;
-        this.playerPositions[1].playerPos =
-          this.draggedplayer.firstName + " - " + this.draggedplayer.jersey;
-      }
-
-      this.players = this.players.filter(
-        i => i.jersey != this.draggedplayer.jersey
-      );
-      this.draggedplayer = null;
-    }
+  save() {
+    this.matchService
+      .createMatch(this.match.home, this.match.opponent, this.match.matchdate)
+      .then(() => {
+        this.getMatches();
+      })
+    this.displayDialog = false;
   }
-
-  dragEnd(event) {
-    this.draggedplayer = null;
-  }
-
-  findIndex(player: Player) {
-    let index = -1;
-    for (let i = 0; i < this.availableCars.length; i++) {
-      if (player.playerid === this.availableCars[i].vin) {
-        index = i;
-        break;
-      }
-    }
-    return index;
-  }
-
-  createMatch() {}
 }

@@ -2,3 +2,8 @@
 @import "~bootstrap/dist/css/bootstrap.css";
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+@font-face {
+  font-family: digital-7;
+  src: url(./assets/fonts/digital-7.ttf) format("truetype");
+}

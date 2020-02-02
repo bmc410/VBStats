@@ -1,38 +1,38 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
-import { Player, Match, Stat } from "../models/appModels";
+import { Match, Stat, statModel, PlayerWithId, Player, statEntry } from "../models/appModels";
 import Dexie from "dexie";
+
+import { DexieService } from "./dexie.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class MatchService {
-  constructor(private http: HttpClient) {
-    this.createDatabase();
+  matchtable: Dexie.Table<Match, number>;
+  playertable: Dexie.Table<PlayerWithId, number>;
+  stattable: Dexie.Table<statEntry, number>;
+
+
+  constructor(private http: HttpClient, private dexieService: DexieService) {
+    this.matchtable = this.dexieService.table("match");
+    this.playertable = this.dexieService.table("player");
+    this.stattable = this.dexieService.table('stat');
+    //this.gametable = this.dexieService.table('match');
   }
-  private players: Player[] = [];
+  private players: PlayerWithId[] = [];
   private matches: Match[] = [];
   private stats: Stat[] = [];
   private db: any;
 
-  private createDatabase() {
-    this.db = new Dexie("GameMatchStat");
-    this.db.version(1).stores({
-      match: "++matchid,home,opponent,matchdate",
-      player: "++playerid,jersey,firstName,lastName",
-      stat: "++statid,matchid,gamenumber,stattype,pos,playerid,stattime,date"
-    });
-  }
-
-  addPlayers(): Player[] {
+  addPlayers(): PlayerWithId[] {
     this.players = [];
     this.createPlayer("3", "Ally", "Nadzam");
     this.createPlayer("6", "Sophie", "Rojas");
     this.createPlayer("8", "Abbie", "Shultz");
     this.createPlayer("9", "Lauren", " Gretting");
     this.createPlayer("11", "Maddie", "Geeting");
-    this.createPlayer("12", "Aubrie", "Thorne");
     this.createPlayer("14", "Roxy", "Ladar");
     this.createPlayer("16", "Gracie", "Singleton");
     this.createPlayer("22", "Megan", "Hoffer");
@@ -46,28 +46,61 @@ export class MatchService {
     return this.players;
   }
 
+  // createPlayer1(jersey: string, fname: string, lname: string) {
+  //   let player = new Player(jersey, fname, lname);
+  //   this.players.push(player);
+  // }
+
   createPlayer(jersey: string, fname: string, lname: string) {
-    let player = new Player(jersey, fname, lname);
-    this.players.push(player);
+    let player = {
+      jersey: jersey,
+      firstName: fname,
+      lastName: lname,
+      islibero: false
+    };
+    return this.playertable.add(player);
   }
 
-  createMatch() {
-    this.db
-      .transaction("rw", this.db.match, function() {
-        // Let's add some data to db:
-        let insert_object = {
-          home: "Fusion",
-          opponent: "Ballyhoo",
-          matchdate: new Date()
-        };
-        this.db.match.add(insert_object);
-      })
-      .catch(function(err) {
-        console.error(err.stack || err);
-      });
+  createMatch(home, opponent, matchDate) {
+    let match = {
+      home: home,
+      opponent: opponent,
+      matchdate: matchDate
+    };
+    return this.matchtable.add(match);
   }
 
   getAllMatches() {
-    return this.db.table("match").toArray();
+    return this.matchtable.toArray();
+  }
+
+  getAllPlayers() {
+    return this.playertable.toArray();
+  }
+
+  deleteMatch(id: number) {
+    return this.matchtable.delete(id);
+  }
+
+  async getStats(matchId: number) {
+    let stats: statEntry[] = [];
+    await this.stattable.each((stat: statEntry) => {
+      if (stat.matchid == matchId) {
+        stats.push(stat);
+      }
+    });
+    return stats;
+  }
+
+  incrementStat(stat: Stat) {
+        let insert_object = {
+          matchid: stat.matchid,
+          gamenumber: stat.gamenumber,
+          stattype: stat.stattype,
+          pos: stat.positions,
+          playerid: stat.player.playerid,
+          statdate: new Date()
+        };
+        this.stattable.add(insert_object);
   }
 }

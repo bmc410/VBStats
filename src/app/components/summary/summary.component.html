@@ -1,0 +1,57 @@
+<div class="container">
+  <p-tabView>
+    <p-tabPanel header="Game Stats">
+      <div style="background-color:navy;
+    color: white;
+    font-size: 20px;
+    padding-left: 15px;">
+        {{match.home}}(25) vs. {{match.opponent}}(23) ({{match.matchdate | date}})
+        <span style="float: right; display: block; width: 150px; padding-right: 15px;">
+          Game&nbsp;
+          <mat-select (selectionChange)='showGame($event)' [(value)]="selectedgame"
+            style="width: 35px; margin-left: 5px">
+            <mat-option *ngFor="let game of games" [value]="game">
+              {{game}}
+            </mat-option>
+          </mat-select></span>
+      </div>
+      <p-table [value]="statviews" selectionMode="none">
+        <ng-template pTemplate="header">
+          <tr>
+            <th col-1>#</th>
+            <th>Player</th>
+            <th>K</th>
+            <th>HE</th>
+            <th>B</th>
+            <th>BT</th>
+            <th>BE</th>
+            <th>A</th>
+            <th>D</th>
+            <th>BHE</th>
+            <th>SRE</th>
+            <th>SE</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-element>
+          <tr>
+            <td>{{ element.jersey }}</td>
+            <td>{{ element.firstName }}</td>
+            <td>{{ element.k }}</td>
+            <td>{{ element.he }}</td>
+            <td>{{ element.b }}</td>
+            <td>{{ element.bt }}</td>
+            <td>{{ element.be }}</td>
+            <td>{{ element.a }}</td>
+            <td>{{ element.d }}</td>
+            <td>{{ element.bhe }}</td>
+            <td>{{ element.sre }}</td>
+            <td>{{ element.se }}</td>
+          </tr>
+        </ng-template>
+
+      </p-table>
+    </p-tabPanel>
+    <p-tabPanel header="Rotation Analysis">
+      Coming Soon
+    </p-tabPanel>
+  </p-tabView>

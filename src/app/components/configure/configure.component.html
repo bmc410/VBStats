@@ -20,7 +20,7 @@
           <tr [pSelectableRow]="match">
             <td>{{ match.home }}</td>
             <td>{{ match.opponent }}</td>
-            <td>{{ match.matchdate | date }}</td>
+            <td>{{ match.displaydate | date }}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary" let-rowData>
@@ -34,8 +34,8 @@
       <p-table
       [value]="players"
       selectionMode="single"
-      [(selection)]="selectedMatch"
-      (onRowSelect)="onRowSelect($event)"
+      [(selection)]="selectedPlayer"
+      (onRowSelect)="onPlayerSelect($event)"
     >
       <ng-template pTemplate="header">
         <tr>
@@ -53,7 +53,7 @@
       </ng-template>
       <ng-template pTemplate="summary" let-rowData>
         <div style="text-align:left">
-            <button type="button" pButton icon="fa fa-plus" (click)="showDialogToAdd()" label="Add"></button>
+            <button type="button" pButton icon="fa fa-plus" (click)="showPlayerDialog()" label="Add"></button>
         </div>
     </ng-template>
     </p-table>
@@ -142,6 +142,78 @@
         label="Summary"
       ></button>
       <button
+      style=" font-size:small; background-color: crimson;"
+        type="button"
+        pButton
+        icon="fa fa-close"
+        (click)="delete()"
+        label="Delete"
+      ></button>
+      <button
+      style=" font-size:small;"
+        type="button"
+        pButton
+        icon="fa fa-check"
+        (click)="save()"
+        label="Save"
+      ></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+
+<p-dialog
+  header="Player Details"
+  [(visible)]="playerDialog"
+  [focusOnShow]="false"
+  [responsive]="true"
+  showEffect="fade"
+  [modal]="true"
+  [style]="{ width: '400px' }"
+>
+  <div class="ui-g ui-fluid" *ngIf="player">
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="home">First Name</label>
+      </div>
+      <div class="ui-g-8">
+        <input
+          style="width: 100%; padding: 5px;"
+          pInputText
+          id="fname"
+          [(ngModel)]="player.firstName"
+          autofocus
+        />
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="opponent">Last Name</label>
+      </div>
+      <div class="ui-g-8">
+        <input
+          style="width: 100%; padding: 5px;"
+          pInputText
+          id="lname"
+          [(ngModel)]="player.lastName" />
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="opponent">Jersey</label>
+      </div>
+      <div class="ui-g-8">
+        <input
+          style="width: 100%; padding: 5px;"
+          pInputText
+          id="lname"
+          [(ngModel)]="player.jersey" />
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+     <button
       style=" font-size:small; background-color: crimson;"
         type="button"
         pButton

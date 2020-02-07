@@ -1,29 +1,62 @@
 <div style="font-size: 16px;" class="ui-g">
+
+  <div
+
+  cdkDropList
+  #todoList="cdkDropList"
+  [cdkDropListData]="players"
+  [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]"
+  class="player-list col-2 "
+  (cdkDropListDropped)="drop($event,0)">
+  <div class="row">
+    <div style="text-align: left;" class="col-2">
+      L
+    </div>
+    <div style="font-weight: bolder;" class="col-sm">
+      Players
+    </div>
+  </div>
+  <hr />
+  <div class="example-box" *ngFor="let player of players" cdkDrag>
+    <div class="row">
+      <div style="text-align: left;" class="col-2">
+        <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true"></p-checkbox>
+      </div>
+      <div class="col-sm">
+        {{ player.firstName }}
+      </div>
+    </div >
+  </div>
+</div>
+
+<!--
   <div class="col-2" cdkDropList #todo="cdkDropList" [cdkDropListData]="players"
     [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]">
     <div class="row">
+      <div style="text-align: left;" class="col-2">
+        L
+      </div>
       <div style="font-weight: bolder;" class="col-sm">
         Players
       </div>
-      <div style="text-align: center;" class="col-sm">
-        Libero
-      </div>
     </div>
     <hr />
-
     <div style="text-align: left;" *ngFor="let player of players" class="example-list">
-      <div class="row">
-        <div cdkDrag class="col-sm">
-          {{ player.firstName }}
-        </div>
-        <div style="text-align: center;" class="col-sm">
+      <div cdkDrag class="row">
+         <div style="text-align: left;" class="col-2">
           <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true"></p-checkbox>
         </div>
+        <div  class="col-sm">
+          {{ player.firstName }}
+        </div>
       </div>
-
     </div>
   </div>
-  <div style="font-size: 16px;" class="bgimg panel panel-default col-9">
+
+ -->
+
+
+  <div style="font-size: 16px; margin-right: -5px;" class="bgimg panel panel-default col-10">
     <div class="panel-body">
       <div class="panel panel-default" style="padding: 5px;">
         <!-- <div > -->
@@ -32,7 +65,7 @@
               <div style="text-align: center; margin-bottom: 2px; margin-top: 2px; margin-left: 15px; font-size: large;" class="col-md-2">
                 <!-- <div  class="row"> -->
                   <div style="color: #337ab7;" class="col-sm">{{match.home}}</div>
-                  <div style="font-weight:bolder; font-family: Digital; font-size: xx-large; color: 337ab7;" class="col-sm">{{homescore}}</div>
+                  <div style="font-weight:bolder; color: #337ab7; font-family: Digital; font-size: xx-large; color: 337ab7;" class="col-sm">{{homescore}}</div>
                 <!-- </div> -->
               </div>
               <div style="text-align: center; margin-bottom: 2px; margin-top: 2px; font-size: large;" class="col-2">
@@ -43,9 +76,9 @@
               </div>
               <div style="text-align: center; margin-bottom: 2px; margin-top: 2px;  font-size:medium;" class="col-2">
                 <div class="col-sm">Subs</div>
-                <div style="font-weight: bolder;" class="col-sm">0</div>
+                <div style="font-weight: bolder;" class="col-sm">{{ subs }}</div>
               </div>
-              <div style="margin-right: 15px; margin-bottom: 10px;" class="col align-self-end">
+              <div style="margin-right: 15px; margin-bottom: 10px; height: 50px;" class="col align-self-end">
                 <!-- <div class="col-sm">  -->
                   <button class="btn btn-sm pull-right" style="margin-left: 10px;" label="Rotate" pButton (click)="rotate()" type="button"
                   icon="pi pi-reply"></button>
@@ -58,28 +91,29 @@
             </div>
         <!-- </div> -->
 
-        <div class="row">
-          <div class="col">
+        <div class="row flex-nowrap">
+          <div class="col col-sm-4">
             <div id="pos4" style="overflow: hidden;" class="panel panel-primary">
               <div class="panel-heading">{{ playerPositions[4].playerPos }}</div>
               <div cdkDropList #pos4="cdkDropList" (cdkDropListDropped)="drop($event,4)" style="text-align: center"
                 class="panel-body panel-height">
                 <app-f-kpad posNum="4" (statPost)="postStat($event)"></app-f-kpad>
+
               </div>
             </div>
           </div>
 
-          <div class="col" id="pos3">
+          <div class="col col-sm-4" id="pos3">
             <div class="panel panel-primary">
               <div class="panel-heading">{{ playerPositions[3].playerPos }}</div>
               <div cdkDropList #pos3="cdkDropList" (cdkDropListDropped)="drop($event,3)" style="text-align: center;"
                 class="panel-body panel-height">
-                <app-f-kpad posNum="3" (statPost)="postStat($event)"></app-f-kpad>
+                <app-f-kpad  posNum="3" (statPost)="postStat($event)"></app-f-kpad>
               </div>
             </div>
           </div>
 
-          <div class="col" id="pos2">
+          <div class="col col-sm-4" id="pos2">
             <div class="panel panel-primary">
               <div class="panel-heading">{{ playerPositions[2].playerPos }}</div>
               <div cdkDropList #pos2="cdkDropList" (cdkDropListDropped)="drop($event,2)" style="text-align: center;"
@@ -90,8 +124,8 @@
           </div>
         </div>
 
-        <div class="row">
-          <div class="col" id="pos5">
+        <div class="row flex-nowrap">
+          <div class="col col-sm-4" id="pos5">
             <div class="panel panel-primary">
               <div class="panel-heading">{{ playerPositions[5].playerPos }}</div>
               <div cdkDropList #pos5="cdkDropList" (cdkDropListDropped)="drop($event,5)" style="text-align: center;"
@@ -102,7 +136,7 @@
             </div>
           </div>
 
-          <div class="col" id="pos6">
+          <div class="col col-sm-4" id="pos6">
             <div class="panel panel-primary">
               <div class="panel-heading">{{ playerPositions[6].playerPos }}</div>
               <div cdkDropList #pos6="cdkDropList" (cdkDropListDropped)="drop($event,6)" style="text-align: center;"
@@ -112,12 +146,12 @@
             </div>
           </div>
 
-          <div class="col" id="pos1">
+          <div class="col col-sm-4" id="pos1">
             <div class="panel panel-primary">
               <div class="panel-heading"> {{ playerPositions[1].playerPos }}</div>
               <div cdkDropList #pos1="cdkDropList" (cdkDropListDropped)="drop($event,1)" style="text-align: center;"
                 class="panel-body panel-height">
-                <app-r-kpad posNum="1" (statPost)="postStat($event)"></app-r-kpad>
+                <app-s-kpad posNum="1" (statPost)="postStat($event)"></app-s-kpad>
               </div>
             </div>
           </div>

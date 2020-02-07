@@ -20,7 +20,7 @@ export class Player {
 }
 
 export class PlayerWithId extends Player {
-  playerid?: number;
+  playerid?: string;
 }
 
 
@@ -36,30 +36,34 @@ export class StatNib {
 
 export class Stat {
   statid?: number;
-  matchid?: number;
+  matchid?: string;
   gamenumber?: number;
   stattype?: string;
   pos?: number;
   player?: PlayerWithId;
-  stattime?: Date;
+  stattime?: number;
   positions?: CourtPosition[];
   homeScore?: number;
   opponentScore?: number;
 }
 
 export class Match {
-  matchid?: number;
+  matchid?: string;
   home?: string;
   opponent?: string;
-  matchdate?: Date;
+  matchdate?: number;
+  displaydate?: Date;
 }
 
 export class Game {
-  id?: number;
-  gameid?: number;
-  matchid?: number;
+  gamenumber?: number;
+  matchid?: number = 0;
   homescore?: number;
   opponentscore?: number;
+}
+
+export class GameWithId extends Game {
+  gameid?: number;
 }
 
 export class gameMatch extends Match {
@@ -89,12 +93,12 @@ export interface ArrayOfStats {
 
 export interface statEntry {
   statid?: number,
-  matchid?: number,
+  matchid?: string,
   gamenumber?: number,
   stattype?: string,
-  playerid?: number,
-  statdate?: Date,
-  pos?: CourtPosition[]
+  playerid?: string,
+  statdate?: number,
+  pos?: string
 }
 
 export interface statModel {
@@ -112,7 +116,7 @@ export interface statView {
   jersey: string;
   firstName: string;
   lastName: string;
-  playerid: number;
+  playerid: string;
   k: number;
   he: number;
   b: number;

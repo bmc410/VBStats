@@ -23,6 +23,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 })
 export class SummaryComponent implements OnInit {
   stats: statEntry[] = [];
+  allstats: statEntry[] = [];
   matchgameStats: statEntry[] = [];
   players: PlayerWithId[] = [];
   statviews: statView[] = [];
@@ -32,21 +33,63 @@ export class SummaryComponent implements OnInit {
   constructor(
     public route: ActivatedRoute,
     private matchService: MatchService
-  ) {}
+  )
+  {
+
+  }
 
   matches: any[] = [];
 
-  ngOnInit() {
+  async ngOnInit() {
     if (this.route.snapshot.params.toString().length)
       this.match = this.route.snapshot.params;
 
-    this.getPlayers();
-    this.matchService.getStats(this.match.matchid).then((stats: statEntry[]) => {
-      this.stats = stats;
-      this.selectedgame = this.selectedgame
-      this.setupStatView();
-      this.showData();
-    });
+      this.matchService.getstats().subscribe(data => {
+        this.allstats = data.map(e => {
+          return {
+            id: e.payload.doc.id,
+            ...e.payload.doc.data()
+          } as statEntry;
+        })
+        this.stats = this.allstats.filter(x => x.matchid == this.match.matchid)
+        this.stats = this.stats.filter(x => x.gamenumber == this.selectedgame)
+
+        this.matchService.getPlayers().subscribe(data => {
+          this.players = data.map(e => {
+            return {
+              id: e.payload.doc.id,
+              ...e.payload.doc.data()
+            } as PlayerWithId;
+          })
+          this.setupStatView();
+          this.showData();
+        });
+
+      });
+
+
+      // this.matchService.dbPlayers.subscribe((players) => {
+      //   this.players = players;
+      //   this.matchService.dbStats.subscribe((statsfromdb) => {
+      //   this.allstats = statsfromdb
+      //   this.stats = this.allstats.filter(x => x.matchid == this.match.matchid)
+      //   this.stats = this.stats.filter(x => x.gamenumber == this.selectedgame)
+      //   this.setupStatView();
+      //   this.showData();
+      //   //console.log(st)
+      //   })
+      // });
+
+
+
+
+
+    // let s = await this.matchService.getStats(this.match.matchid)((stats: statEntry[]) => {
+    //   this.stats = stats;
+    //   this.selectedgame = this.selectedgame
+    //   this.setupStatView();
+    //   this.showData();
+    // });
   }
 
   showGame(event) {
@@ -56,7 +99,7 @@ export class SummaryComponent implements OnInit {
   }
 
   async getPlayers() {
-    this.matchService.getAllPlayers().then((players: PlayerWithId[]) => {
+    this.matchService.dbPlayers.subscribe((players) => {
       this.players = players;
       this.setupStatView();
     });

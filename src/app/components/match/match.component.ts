@@ -7,7 +7,9 @@ import {
   GameScore,
   StatNib,
   gameMatch,
-  PlayerWithId
+  PlayerWithId,
+  Game,
+  GameWithId
 } from "src/app/models/appModels";
 import { MatchService } from "src/app/services/matchservice";
 import {
@@ -28,6 +30,7 @@ export class MatchComponent implements OnInit {
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
   players: PlayerWithId[] = [];
+  game: GameWithId;
   match: gameMatch;
   display = false;
   matchDate: Date;
@@ -46,6 +49,9 @@ export class MatchComponent implements OnInit {
   liberoDisabled = false;
   hs = 0;
   os = 0;
+  //currentGame: <Observable> GameWithId();
+  //let currentGame = this.matchService.getGameByNumber(this.gameNumber, this.match.matchid);
+
 
   constructor(
     private matchService: MatchService,
@@ -74,14 +80,21 @@ export class MatchComponent implements OnInit {
   }
 
   drop(event: CdkDragDrop<PlayerWithId[]>, container: any) {
+
+
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      return false;
+    }
+
     // first check to see if the position contains a player
     if (this.playerPositions[container].player) {
       this.players.push(this.playerPositions[container].player);
     }
 
-    // console.log(event.previousContainer.data[event.previousIndex]);
-    // console.log(event.container.id);
     this.draggedplayer = event.previousContainer.data[event.previousIndex];
+    event.previousContainer.data =
+      event.previousContainer.data.filter(x => x.playerid != this.draggedplayer.playerid)
 
     //if not libero then add a sub
     if (!this.draggedplayer.islibero && this.liberoDisabled) {
@@ -144,19 +157,37 @@ export class MatchComponent implements OnInit {
       this.playerPositions.push(c);
     }
 
-    if (this.route.snapshot.params.toString().length)
+    if (this.route.snapshot.params.matchid != undefined)
       this.match = this.route.snapshot.params;
+    else {
+      this.router.navigate(['configure']);
+      return
+    }
 
+    this.game = new GameWithId()
     this.gameScore = new GameScore();
     this.gameNumber = this.match.gameNumber;
-    this.players = [];
-    this.players = await this.matchService.getAllPlayers();
-    //console.log(this.players)
-    //this.match = new Match();
-    //this.match.matchid = 1;
-    //this.match.home = 'Fusion 17W';
-    //this.match.opponent = 'Ballyhoo';
-    //this.match.matchdate = new Date();
+
+    this.matchService.getPlayers().subscribe(data => {
+      this.players = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          ...e.payload.doc.data()
+        } as PlayerWithId;
+      })
+    });
+
+    this.matchService.getGameByNumber(this.gameNumber,this.match.matchid);
+
+    this.matchService.gameData$.subscribe(
+      gameData$ => {
+        if (gameData$) {
+        this.game = gameData$
+        this.homescore = gameData$.homescore
+        this.opponentscore = gameData$.opponentscore
+        }
+      }
+    )
   }
 
   rotate() {
@@ -189,10 +220,11 @@ export class MatchComponent implements OnInit {
     } else {
       this.subs += 1;
     }
+
   }
 
   postStat(s: StatNib) {
-    let p = this.playerPositions.find(e => e.posNo === s.pos).player;
+    let p = this.playerPositions[s.pos].player;
     this.incrementStat(s.pos, p, s.stattype);
     console.log(p);
   }
@@ -207,7 +239,7 @@ export class MatchComponent implements OnInit {
     s.pos = pos;
     s.positions = this.playerPositions;
     s.statid = this.statId + 1;
-    s.stattime = new Date();
+    //s.stattime = new Date();
     s.stattype = stat;
     this.matchService.incrementStat(s);
     if (this.homepointOptions.indexOf(stat) > -1) {
@@ -215,6 +247,9 @@ export class MatchComponent implements OnInit {
     } else if (this.opponentpointOptions.indexOf(stat) > -1) {
       this.opponentscore += 1;
     }
+    this.game.homescore = this.homescore;
+    this.game.opponentscore = this.opponentscore;
+    this.matchService.updateGame(this.game.gameid, this.game);
   }
 
   reOrder(event: CdkDragDrop<string[]>) {
@@ -242,7 +277,18 @@ export class MatchComponent implements OnInit {
 
   startMatch() {
     this.liberoDisabled = true;
-    this.createFakeStats();
+    //this.createFakeStats();
+  }
+
+  updateGame() {
+    let game = {
+      gamenumber: this.gameNumber,
+      matchid: this.match.matchid,
+      homescore: this.homescore,
+      opponentscore: this.opponentscore,
+      lastupdate: new Date()
+    };
+    //this.matchService.updateGame(this.g)
   }
 
   createStat(): Stat {
@@ -262,7 +308,7 @@ export class MatchComponent implements OnInit {
     s.homeScore = this.homescore;
     s.player = randomPlayer;
     s.pos = randomPos;
-    s.stattime = new Date();
+    //s.stattime = new Date();
     s.stattype = randStat;
     return s;
   }

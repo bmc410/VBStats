@@ -1,6 +1,7 @@
 {
   "extends": "tslint:recommended",
   "rules": {
+    "rxjs-no-compat" : true,
     "array-type": false,
     "arrow-parens": false,
     "deprecation": {

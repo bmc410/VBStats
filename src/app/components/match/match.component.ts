@@ -49,6 +49,7 @@ export class MatchComponent implements OnInit {
   liberoDisabled = false;
   hs = 0;
   os = 0;
+  mobile = false;
   //currentGame: <Observable> GameWithId();
   //let currentGame = this.matchService.getGameByNumber(this.gameNumber, this.match.matchid);
 
@@ -150,6 +151,12 @@ export class MatchComponent implements OnInit {
   }
 
   async ngOnInit() {
+
+    if (window.screen.width <= 768) { // 768px portrait
+      this.mobile = true;
+      console.log(this.mobile)
+    }
+
     for (let index = 0; index < 7; index++) {
       const c = new CourtPosition();
       c.playerPos = " Drop Player Here";

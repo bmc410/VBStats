@@ -1,2 +1,6 @@
 ::ng-deep .mat-select-value{
   color: white!important;  }
+
+.bgimg {
+    background-image: url("../../../assets/vball2.jpg");
+}

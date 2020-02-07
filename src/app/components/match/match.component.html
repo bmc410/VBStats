@@ -1,38 +1,9 @@
-<div style="font-size: 16px;" class="ui-g">
+<div style="font-size: 16px; margin-left: 15px; margin-top: 15px;" class="ui-g">
 
-  <div
-
-  cdkDropList
-  #todoList="cdkDropList"
-  [cdkDropListData]="players"
-  [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]"
-  class="player-list col-2 "
-  (cdkDropListDropped)="drop($event,0)">
-  <div class="row">
-    <div style="text-align: left;" class="col-2">
-      L
-    </div>
-    <div style="font-weight: bolder;" class="col-sm">
-      Players
-    </div>
-  </div>
-  <hr />
-  <div class="example-box" *ngFor="let player of players" cdkDrag>
-    <div class="row">
-      <div style="text-align: left;" class="col-2">
-        <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true"></p-checkbox>
-      </div>
-      <div class="col-sm">
-        {{ player.firstName }}
-      </div>
-    </div >
-  </div>
-</div>
-
-<!--
-  <div class="col-2" cdkDropList #todo="cdkDropList" [cdkDropListData]="players"
-    [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]">
-    <div class="row">
+  <div cdkDropList #todoList="cdkDropList" style="background-color: white;" [cdkDropListData]="players"
+    [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]" class="player-list col-2 "
+    (cdkDropListDropped)="drop($event,0)">
+    <div style="margin-top: 15px;" class="row">
       <div style="text-align: left;" class="col-2">
         L
       </div>
@@ -41,57 +12,60 @@
       </div>
     </div>
     <hr />
-    <div style="text-align: left;" *ngFor="let player of players" class="example-list">
-      <div cdkDrag class="row">
-         <div style="text-align: left;" class="col-2">
+    <div class="example-box" *ngFor="let player of players" cdkDrag>
+      <div class="row">
+        <div style="text-align: left;" class="col-2">
           <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true"></p-checkbox>
         </div>
-        <div  class="col-sm">
+        <div class="col-sm">
+          <img *cdkDragPreview style="width: 50px;" src='../../../assets/icons/girl-volleyball-player-hitting.png' >
           {{ player.firstName }}
         </div>
       </div>
     </div>
   </div>
 
- -->
-
-
-  <div style="font-size: 16px; margin-right: -5px;" class="bgimg panel panel-default col-10">
-    <div class="panel-body">
-      <div class="panel panel-default" style="padding: 5px;">
+  <div style="font-size: 16px; margin-right: -5px;" class="col-10">
+    <div >
+      <div class="panel panel-default" >
         <!-- <div > -->
-          <!-- <div class="container"> -->
-            <div style="border-radius: 15px; border-style: solid; border-color: #337ab7; margin-top: 5px; margin-bottom: 10px; margin-left: 15px; margin-right: 15px;" class="row  align-items-center">
-              <div style="text-align: center; margin-bottom: 2px; margin-top: 2px; margin-left: 15px; font-size: large;" class="col-md-2">
-                <!-- <div  class="row"> -->
-                  <div style="color: #337ab7;" class="col-sm">{{match.home}}</div>
-                  <div style="font-weight:bolder; color: #337ab7; font-family: Digital; font-size: xx-large; color: 337ab7;" class="col-sm">{{homescore}}</div>
-                <!-- </div> -->
-              </div>
-              <div style="text-align: center; margin-bottom: 2px; margin-top: 2px; font-size: large;" class="col-2">
-                <!-- <div class="row"> -->
-                  <div style="color: forestgreen;" class="col-sm">{{match.opponent}}</div>
-                  <div style="font-weight: bolder;  font-family: Digital; font-size: xx-large; color: forestgreen;" class="col-sm">{{opponentscore}}</div>
-                <!-- </div> -->
-              </div>
-              <div style="text-align: center; margin-bottom: 2px; margin-top: 2px;  font-size:medium;" class="col-2">
-                <div class="col-sm">Subs</div>
-                <div style="font-weight: bolder;" class="col-sm">{{ subs }}</div>
-              </div>
-              <div style="margin-right: 15px; margin-bottom: 10px; height: 50px;" class="col align-self-end">
-                <!-- <div class="col-sm">  -->
-                  <button class="btn btn-sm pull-right" style="margin-left: 10px;" label="Rotate" pButton (click)="rotate()" type="button"
-                  icon="pi pi-reply"></button>
-                <!-- </div> -->
-                <!-- <div class="col-sm"> -->
-                  <button style="margin-right: 5px;" pButton type="button" label="Start" (click)="startMatch()" icon="pi pi-caret-right"
-                  class="ui-button-success pull-right btn btn-sm"></button>
-                <!-- </div> -->
-              </div>
-            </div>
+        <!-- <div class="container"> -->
+        <div
+          style="border-radius: 15px; border-style: solid; border-color: #337ab7; margin-top: 5px; margin-bottom: 10px; margin-left: 15px; margin-right: 15px;"
+          class="row  align-items-center">
+          <div style="text-align: center; margin-bottom: 2px; margin-top: 2px; margin-left: 15px; font-size: large;"
+            class="col-md-2">
+            <!-- <div  class="row"> -->
+            <div style="color: #337ab7;" class="col-sm">{{match.home}}</div>
+            <div style="font-weight:bolder; color: #337ab7; font-family: Digital; font-size: xx-large; color: 337ab7;"
+              class="col-sm">{{homescore}}</div>
+            <!-- </div> -->
+          </div>
+          <div style="text-align: center; margin-bottom: 2px; margin-top: 2px; font-size: large;" class="col-2">
+            <!-- <div class="row"> -->
+            <div style="color: forestgreen;" class="col-sm">{{match.opponent}}</div>
+            <div style="font-weight: bolder;  font-family: Digital; font-size: xx-large; color: forestgreen;"
+              class="col-sm">{{opponentscore}}</div>
+            <!-- </div> -->
+          </div>
+          <div style="text-align: center; margin-bottom: 2px; margin-top: 2px;  font-size:medium;" class="col-2">
+            <div class="col-sm">Subs</div>
+            <div style="font-weight: bolder;" class="col-sm">{{ subs }}</div>
+          </div>
+          <div style="margin-right: 15px; margin-bottom: 10px; height: 50px;" class="col align-self-end">
+            <!-- <div class="col-sm">  -->
+            <button class="btn btn-sm pull-right" style="margin-left: 10px;" label="Rotate" pButton (click)="rotate()"
+              type="button" icon="pi pi-reply"></button>
+            <!-- </div> -->
+            <!-- <div class="col-sm"> -->
+            <button style="margin-right: 5px;" pButton type="button" label="Start" (click)="startMatch()"
+              icon="pi pi-caret-right" class="ui-button-success pull-right btn btn-sm"></button>
+            <!-- </div> -->
+          </div>
+        </div>
         <!-- </div> -->
 
-        <div class="row flex-nowrap">
+        <div style="margin-right: -5px; margin-left: -5px;" class="row flex-nowrap">
           <div class="col col-sm-4">
             <div id="pos4" style="overflow: hidden;" class="panel panel-primary">
               <div class="panel-heading">{{ playerPositions[4].playerPos }}</div>
@@ -108,7 +82,7 @@
               <div class="panel-heading">{{ playerPositions[3].playerPos }}</div>
               <div cdkDropList #pos3="cdkDropList" (cdkDropListDropped)="drop($event,3)" style="text-align: center;"
                 class="panel-body panel-height">
-                <app-f-kpad  posNum="3" (statPost)="postStat($event)"></app-f-kpad>
+                <app-f-kpad posNum="3" (statPost)="postStat($event)"></app-f-kpad>
               </div>
             </div>
           </div>
@@ -124,7 +98,7 @@
           </div>
         </div>
 
-        <div class="row flex-nowrap">
+        <div style="margin-right: -5px; margin-left: -5px;" class="row flex-nowrap">
           <div class="col col-sm-4" id="pos5">
             <div class="panel panel-primary">
               <div class="panel-heading">{{ playerPositions[5].playerPos }}</div>
@@ -165,6 +139,11 @@
   <p-dialog header="Create Match" [(visible)]="display">
     <div>
       <form [formGroup]="matchForm" (ngSubmit)="onSubmit()">
+
+        <div class="form-group">
+          <label for="inputEmail">Email</label>
+          <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+      </div>
 
         <div class="form-group">
           <label for="hometeam">Home Team</label>

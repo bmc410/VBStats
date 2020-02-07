@@ -30,7 +30,10 @@ import {
   MatDatepickerModule,
   MatNativeDateModule,
   MatFormFieldModule,
-  MatInputModule
+  MatInputModule,
+  MatIconModule,
+  MatButtonModule,
+  MatFormField
 } from '@angular/material';
 import {MatSelectModule} from '@angular/material/select';
 import { FKpadComponent } from './components/controls/f-kpad/f-kpad.component';
@@ -81,6 +84,9 @@ import 'firebase/firestore';
     MatSelectModule,
     DropdownModule,
     CheckboxModule,
+    MatIconModule,
+    MatButtonModule,
+    MatInputModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],

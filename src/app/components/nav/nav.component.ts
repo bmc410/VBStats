@@ -6,7 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-
+  home = "";
+  opponent = "";
+  homescore = 0;
+  opponentscore = 0;
   constructor() { }
 
   ngOnInit() {

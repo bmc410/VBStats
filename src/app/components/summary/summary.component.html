@@ -1,11 +1,11 @@
-<div class="container">
+<div style="margin-top: 15px;" class="container">
   <p-tabView>
     <p-tabPanel header="Game Stats">
       <div style="background-color:#337ab7;
     color: white;
     font-size: 20px;
     padding-left: 15px;">
-        {{match.home}}(25) vs. {{match.opponent}}(23) ({{match.displaydate | date}})
+        {{match.home }}(25) vs. {{match.opponent}}(23) - {{match.displaydate | date}}
         <span style="float: right; display: block; width: 150px; padding-right: 15px;">
           Game&nbsp;
           <mat-select (selectionChange)='showGame($event)' [(value)]="selectedgame"
@@ -52,6 +52,9 @@
       </p-table>
     </p-tabPanel>
     <p-tabPanel header="Rotation Analysis">
+      Coming Soon
+    </p-tabPanel>
+    <p-tabPanel header="Individual Stats">
       Coming Soon
     </p-tabPanel>
   </p-tabView>

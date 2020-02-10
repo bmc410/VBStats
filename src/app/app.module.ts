@@ -7,7 +7,6 @@ import { AppComponent } from './app.component';
 import { ConfigureComponent } from './components/configure/configure.component';
 import { MatchComponent } from './components/match/match.component';
 import { NavComponent } from './components/nav/nav.component';
-import { DndModule } from '../../node_modules/ngx-drag-drop';
 
 import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
@@ -26,15 +25,17 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import {ToolbarModule} from 'primeng/toolbar';
 import { RouterModule, Routes } from '@angular/router';
-import {
-  MatDatepickerModule,
-  MatNativeDateModule,
-  MatFormFieldModule,
-  MatInputModule,
-  MatIconModule,
-  MatButtonModule,
-  MatFormField
-} from '@angular/material';
+
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatFormField} from '@angular/material/form-field';
+
+
+
 import {MatSelectModule} from '@angular/material/select';
 import { FKpadComponent } from './components/controls/f-kpad/f-kpad.component';
 import { RKpadComponent } from './components/controls/r-kpad/r-kpad.component';
@@ -64,7 +65,6 @@ import 'firebase/firestore';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    DndModule,
     DragDropModule,
     PanelModule,
     TableModule,

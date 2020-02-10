@@ -1,4 +1,4 @@
-import { staticViewQueryIds } from '@angular/compiler';
+//import { staticViewQueryIds } from '@angular/compiler';
 
 export class CourtPosition {
   posNo: number;

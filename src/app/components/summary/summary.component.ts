@@ -48,7 +48,7 @@ export class SummaryComponent implements OnInit {
         this.allstats = data.map(e => {
           return {
             id: e.payload.doc.id,
-            ...e.payload.doc.data()
+            ...e.payload.doc.data() as {}
           } as statEntry;
         })
         this.stats = this.allstats.filter(x => x.matchid == this.match.matchid)
@@ -58,7 +58,7 @@ export class SummaryComponent implements OnInit {
           this.players = data.map(e => {
             return {
               id: e.payload.doc.id,
-              ...e.payload.doc.data()
+              ...e.payload.doc.data() as {}
             } as PlayerWithId;
           })
           this.setupStatView();

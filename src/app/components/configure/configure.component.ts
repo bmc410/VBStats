@@ -146,7 +146,7 @@ export class ConfigureComponent implements OnInit {
       this.matches = data.map(e => {
         return {
           id: e.payload.doc.id,
-          ...e.payload.doc.data()
+          ...e.payload.doc.data() as {}
         } as Match;
       })
       for (let index = 0; index < this.matches.length; index++) {
@@ -158,7 +158,7 @@ export class ConfigureComponent implements OnInit {
       this.players = data.map(e => {
         return {
           id: e.payload.doc.id,
-          ...e.payload.doc.data()
+          ...e.payload.doc.data() as {}
         } as PlayerWithId;
       })
     });

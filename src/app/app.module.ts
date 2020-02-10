@@ -87,6 +87,7 @@ import 'firebase/firestore';
     MatIconModule,
     MatButtonModule,
     MatInputModule,
+    FormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],

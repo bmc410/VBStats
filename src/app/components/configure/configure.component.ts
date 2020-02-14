@@ -14,6 +14,7 @@ import { CalendarModule } from "primeng/calendar";
 import { MenuItem } from "primeng/api/menuitem";
 import { Router } from "@angular/router";
 import { ConnectionService } from "ng-connection-service";
+import {FormControl} from '@angular/forms';
 
 @Component({
   selector: "app-configure",
@@ -50,6 +51,7 @@ export class ConfigureComponent implements OnInit {
   status = "ONLINE";
   isConnected = true;
   matchsubcription: any;
+  gameDate = new FormControl(new Date());
 
   constructor(
     private matchService: MatchService,
@@ -79,6 +81,7 @@ export class ConfigureComponent implements OnInit {
   onRowSelect(event) {
     this.newMatch = false;
     this.match = this.cloneMatch(event.data);
+    this.gameDate.setValue(this.matchService.datefromepoch(this.match.matchdate))
     this.displayDialog = true;
   }
   showDialogToAdd() {

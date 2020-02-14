@@ -67,12 +67,12 @@
     <div style="margin-top: 20px;" class="col">
       <mat-form-field style="width: 100%;">
         <mat-label style="font-weight: bold;">Choose a date</mat-label>
-        <input matInput [matDatepicker]="picker">
+        <input [formControl]="gameDate" matInput [matDatepicker]="picker">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </div>
-    <div class="col">
+    <div style="margin: 20px" class="col">
       <label for="inputEmail">Game</label>
       <div class="btn-toolbar" role="toolbar">
 

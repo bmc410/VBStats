@@ -8,7 +8,9 @@ import {
   statView,
   statModel,
   PlayerWithId,
-  statEntry
+  statEntry,
+  gameMatch,
+  GameWithId
 } from "src/app/models/appModels";
 import { MatchService } from "src/app/services/matchservice";
 import { DialogModule } from "primeng/dialog";
@@ -27,8 +29,11 @@ export class SummaryComponent implements OnInit {
   matchgameStats: statEntry[] = [];
   players: PlayerWithId[] = [];
   statviews: statView[] = [];
-  match: Match;
+  match: gameMatch;
+  gamesPlayed: GameWithId[] = []
+  selectedGame: GameWithId
   games: number[] = [1, 2, 3, 4, 5];
+  game=1
   selectedgame = 1;
   constructor(
     public route: ActivatedRoute,
@@ -41,8 +46,26 @@ export class SummaryComponent implements OnInit {
   matches: any[] = [];
 
   async ngOnInit() {
-    if (this.route.snapshot.params.toString().length)
+    if (this.route.snapshot.params.toString().length){
       this.match = this.route.snapshot.params;
+      this.selectedgame = this.match.gameNumber
+    }
+
+    this.matchService.getGames().subscribe(data => {
+      this.gamesPlayed = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          ...e.payload.doc.data() as {}
+        } as GameWithId;
+      })
+      this.selectedGame = this.gamesPlayed.find(
+        game => game.gamenumber === this.match.gameNumber &&
+          game.matchid === this.match.matchid);
+
+
+      console.log(this.selectedGame)
+    });
+
 
       this.matchService.getstats().subscribe(data => {
         this.allstats = data.map(e => {
@@ -94,8 +117,17 @@ export class SummaryComponent implements OnInit {
 
   showGame(event) {
     this.selectedgame = event.value;
+    this.selectedGame = this.gamesPlayed.find(
+      game => game.gamenumber === event.value.toString() &&
+        game.matchid === this.match.matchid);
     this.setupStatView();
-    this.showData();
+    if (this.selectedGame)
+      this.showData();
+    else {
+      this.selectedGame = new GameWithId()
+      this.selectedGame.homescore = 0
+      this.selectedGame.opponentscore = 0
+    }
   }
 
   async getPlayers() {
@@ -130,7 +162,7 @@ export class SummaryComponent implements OnInit {
 
   showData() {
 
-    this.stats.forEach(element => {
+    this.allstats.forEach(element => {
       if (
         element.matchid == this.match.matchid &&
         element.gamenumber == this.selectedgame

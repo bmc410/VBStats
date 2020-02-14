@@ -57,13 +57,13 @@ export class Match {
 
 export class Game {
   gamenumber?: number;
-  matchid?: number = 0;
+  matchid?: string;
   homescore?: number;
   opponentscore?: number;
 }
 
 export class GameWithId extends Game {
-  gameid?: number;
+  id?: string;
 }
 
 export class gameMatch extends Match {

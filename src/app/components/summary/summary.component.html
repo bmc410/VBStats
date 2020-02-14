@@ -1,19 +1,31 @@
 <div style="margin-top: 15px;" class="container">
   <p-tabView>
     <p-tabPanel header="Game Stats">
-      <div style="background-color:#337ab7;
-    color: white;
-    font-size: 20px;
-    padding-left: 15px;">
-        {{match.home }}(25) vs. {{match.opponent}}(23) - {{match.displaydate | date}}
-        <span style="float: right; display: block; width: 150px; padding-right: 15px;">
-          Game&nbsp;
-          <mat-select (selectionChange)='showGame($event)' [(value)]="selectedgame"
-            style="width: 35px; margin-left: 5px">
-            <mat-option *ngFor="let game of games" [value]="game">
-              {{game}}
-            </mat-option>
-          </mat-select></span>
+      <div class="container" style="background-color:#337ab7;
+      color: white;
+      font-size: 20px;
+     ">
+        <div style="margin-top: 10px; margin-bottom: 10px;" class="row align-items-center">
+          <div class="col-sm">
+            {{match.home }} ({{selectedGame?.homescore}})
+          </div>
+          <div class="col-sm">
+            {{match.opponent}} ({{selectedGame?.opponentscore}})
+          </div>
+          <div class="col-sm">
+            <span style="float: right; display: block; width: 150px; padding-right: 15px;">
+              Game&nbsp;
+              <mat-select (selectionChange)='showGame($event)' [(value)]="selectedgame"
+                style="width: 35px; margin-left: 5px">
+                <mat-option value="1">1</mat-option>
+                <mat-option value="2">2</mat-option>
+                <mat-option value="3">3</mat-option>
+                <mat-option value="4">4</mat-option>
+                <mat-option value="5">5</mat-option>
+              </mat-select></span>
+          </div>
+
+        </div>
       </div>
       <p-table [value]="statviews" selectionMode="none">
         <ng-template pTemplate="header">

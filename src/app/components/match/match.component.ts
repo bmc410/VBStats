@@ -30,6 +30,7 @@ export class MatchComponent implements OnInit {
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
   players: PlayerWithId[] = [];
+  games: GameWithId[] = [];
   game: GameWithId;
   match: gameMatch;
   display = false;
@@ -184,7 +185,27 @@ export class MatchComponent implements OnInit {
       })
     });
 
-    this.matchService.getGameByNumber(this.gameNumber,this.match.matchid);
+    this.matchService.getGames().subscribe(data => {
+      this.games = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          ...e.payload.doc.data() as {}
+        } as GameWithId;
+      })
+      this.game = this.games.find(
+        game => game.gamenumber === this.gameNumber &&
+          game.matchid === this.match.matchid);
+      if (!this.game) {
+        let g = new GameWithId()
+        g.gamenumber = this.gameNumber
+        g.matchid = this.match.matchid
+        g.opponentscore = 0
+        g.homescore = 0
+        this.matchService.createGame(g)
+      }
+
+      console.log(this.game)
+    });
 
     this.matchService.gameData$.subscribe(
       gameData$ => {
@@ -221,9 +242,9 @@ export class MatchComponent implements OnInit {
 
   increment(team: string) {
     if (team === "home") {
-      this.homescore += 1;
+      this.game.homescore = this.game.homescore + 1
     } else if (team === "opponent") {
-      this.opponentscore += 1;
+      this.game.opponentscore = this.game.opponentscore + 1
     } else {
       this.subs += 1;
     }
@@ -250,13 +271,16 @@ export class MatchComponent implements OnInit {
     s.stattype = stat;
     this.matchService.incrementStat(s);
     if (this.homepointOptions.indexOf(stat) > -1) {
-      this.homescore += 1;
+      this.increment("home")
+      this.matchService.upDateGame(this.game)
     } else if (this.opponentpointOptions.indexOf(stat) > -1) {
-      this.opponentscore += 1;
+      this.increment("opponent")
+      this.matchService.upDateGame(this.game)
     }
-    this.game.homescore = this.homescore;
-    this.game.opponentscore = this.opponentscore;
-    this.matchService.updateGame(this.game.gameid, this.game);
+
+    //this.game.homescore = this.homescore;
+    //this.game.opponentscore = this.opponentscore;
+    //this.matchService.updateGame(this.game.gameid, this.game);
   }
 
   reOrder(event: CdkDragDrop<string[]>) {

@@ -105,7 +105,13 @@ export class ConfigureComponent implements OnInit {
 
   summary() {
     this.displayDialog = false;
-    this.router.navigate(["summary", this.match]);
+    let gm = new gameMatch();
+    gm.gameNumber = this.game;
+    gm.home = this.match.home;
+    gm.matchdate = this.match.matchdate;
+    gm.matchid = this.match.matchid;
+    gm.opponent = this.match.opponent;
+    this.router.navigate(["summary", gm]);
   }
 
   cloneMatch(m: Match): Match {
@@ -122,6 +128,10 @@ export class ConfigureComponent implements OnInit {
       player[prop] = p[prop];
     }
     return player;
+  }
+
+  setGame(n) {
+    this.game = n
   }
 
   // async getMatches() {

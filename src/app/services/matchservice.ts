@@ -15,13 +15,13 @@ import Dexie from "dexie";
 import {
   AngularFirestore,
   AngularFirestoreDocument,
-  AngularFirestoreCollection,
+  AngularFirestoreCollection
 } from "@angular/fire/firestore";
 import { Guid } from "guid-typescript";
 
 import { DexieService } from "./dexie.service";
-import * as firebase from 'firebase';
-import 'firebase/firestore';
+import * as firebase from "firebase";
+import "firebase/firestore";
 
 @Injectable({
   providedIn: "root"
@@ -35,9 +35,11 @@ export class MatchService {
   dbPlayers: Observable<any>;
   dbMatches: Observable<any>;
   dbStats: Observable<any>;
+  dbGames: Observable<any>;
   playerCol: AngularFirestoreCollection<PlayerWithId>;
   matchCol: AngularFirestoreCollection<Match>;
   statCol: AngularFirestoreCollection<statEntry>;
+  gameCol: AngularFirestoreCollection<GameWithId>;
 
   constructor(
     private firestore: AngularFirestore,
@@ -49,9 +51,10 @@ export class MatchService {
     this.stattable = this.dexieService.table("stat");
     this.gametable = this.dexieService.table("game");
     this._gameData$ = new BehaviorSubject(null);
-    this.dbPlayers = firestore.collection('players').valueChanges();
-    this.dbMatches = firestore.collection('matches').valueChanges();
+    this.dbPlayers = firestore.collection("players").valueChanges();
+    this.dbMatches = firestore.collection("matches").valueChanges();
     this.dbStats = firestore.collection("stats").valueChanges();
+    this.dbGames = firestore.collection("games").valueChanges();
   }
 
   private itemDoc: AngularFirestoreDocument<PlayerWithId>;
@@ -59,6 +62,8 @@ export class MatchService {
   private players: PlayerWithId[] = [];
   private matches: Match[] = [];
   private stats: Stat[] = [];
+  private games: GameWithId[] = [];
+
   //private db: any;
   //private _gamewithId: GameWithId;
   //public game: BehaviorSubject<GameWithId> = new BehaviorSubject<GameWithId>({});
@@ -75,21 +80,41 @@ export class MatchService {
   }
 
   getMatches() {
-    return this.firestore.collection('matches').snapshotChanges();
+    return this.firestore.collection("matches").snapshotChanges();
     //return this.matchtable.toArray()
   }
 
   getPlayers() {
-    return this.firestore.collection('players').snapshotChanges();
+    return this.firestore.collection("players").snapshotChanges();
   }
 
   getstats() {
-    return this.firestore.collection('stats').snapshotChanges();
+    return this.firestore.collection("stats").snapshotChanges();
   }
 
-  statsByMatchAndGame() {
-
+  getGames() {
+    return this.firestore.collection("games").snapshotChanges();
   }
+
+  upDateGame(g: GameWithId) {
+    var game = this.firestore.collection("games").doc(g.id);
+
+    // Set the "capital" field of the city 'DC'
+    return game
+      .update({
+        homescore: g.homescore,
+        opponentscore: g.opponentscore
+      })
+      .then(function() {
+        console.log("Document successfully updated!");
+      })
+      .catch(function(error) {
+        // The document probably doesn't exist.
+        console.error("Error updating document: ", error);
+      });
+  }
+
+  statsByMatchAndGame() {}
 
   createPlayerInFirestore(player: any) {
     return this.firestore.collection("players").add(player);
@@ -99,6 +124,9 @@ export class MatchService {
   }
   createStatInFirestore(stat: any) {
     return this.firestore.collection("stats").add(stat);
+  }
+  createGameInFirestore(game: any) {
+    return this.firestore.collection("games").add(game);
   }
 
   addPlayers(): PlayerWithId[] {
@@ -134,9 +162,19 @@ export class MatchService {
       islibero: false,
       playerid: String(Guid.create())
     };
-    this.createPlayerInFirestore(player);
-    return this.playertable.add(player);
+    return this.createPlayerInFirestore(player);
   }
+
+  createGame(g: GameWithId) {
+    let game = {
+      gamenumber: g.gamenumber,
+      matchid: g.matchid,
+      homescore: g.homescore,
+      opponentscore: g.opponentscore
+    };
+    return this.createGameInFirestore(game);
+  }
+
 
   getPlayerById(id: number) {
     this.playertable
@@ -147,49 +185,42 @@ export class MatchService {
       });
   }
 
+
+
   updateGame(id, data) {
     this.gametable.update(id, data);
     this.updatedGameSelection(data);
   }
 
-  getGameByNumber(id: number, matchId: string) {
-    var d: GameWithId;
-    this.gametable
-      .where({
-        gamenumber: Number.parseInt(id.toString()),
-        matchid: Number.parseInt(matchId.toString())
-      })
-      .first(data => {
-        d = data;
-        if (!d) {
-          this.createGame(id, matchId, 0, 0);
-          this.gametable
-            .where({
-              gamenumber: Number.parseInt(id.toString()),
-              matchid: Number.parseInt(matchId.toString())
-            })
-            .first(data => {
-              this.updatedGameSelection(data);
-              //console.log(data);
-            });
-        } else {
-          this.updatedGameSelection(d);
-        }
-        //this.updatedGameSelection(d);
-        //return d;
-      });
-  }
+  // getGameByNumber(id: number, matchId: string) {
+  //   var d: GameWithId;
+  //   this.gametable
+  //     .where({
+  //       gamenumber: Number.parseInt(id.toString()),
+  //       matchid: Number.parseInt(matchId.toString())
+  //     })
+  //     .first(data => {
+  //       d = data;
+  //       if (!d) {
+  //         this.createGame(id, matchId, 0, 0);
+  //         this.gametable
+  //           .where({
+  //             gamenumber: Number.parseInt(id.toString()),
+  //             matchid: Number.parseInt(matchId.toString())
+  //           })
+  //           .first(data => {
+  //             this.updatedGameSelection(data);
+  //             //console.log(data);
+  //           });
+  //       } else {
+  //         this.updatedGameSelection(d);
+  //       }
+  //       //this.updatedGameSelection(d);
+  //       //return d;
+  //     });
+  // }
 
-  createGame(gameNumber, matchId, hScore, oScore) {
-    let game = {
-      gamenumber: +gameNumber,
-      matchid: +matchId,
-      homescore: +hScore,
-      opponentscore: +oScore,
-      lastupdate: new Date()
-    };
-    this.gametable.add(game);
-  }
+
 
   createMatch(home, opponent, matchDate) {
     let match = {
@@ -208,12 +239,12 @@ export class MatchService {
   }
 
   datefromepoch(epoch: any) {
-    let x: number = epoch
-    console.log(epoch)
+    let x: number = epoch;
+    console.log(epoch);
     var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
-    d.setUTCSeconds(epoch.seconds)
-    console.log(d)
-    return d
+    d.setUTCSeconds(epoch.seconds);
+    console.log(d);
+    return d;
   }
 
   datetoepoch(date: Date) {

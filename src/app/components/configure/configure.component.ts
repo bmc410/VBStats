@@ -6,7 +6,8 @@ import {
   Match,
   gameMatch,
   PlayerWithId,
-  Player
+  Player,
+  MatchWithId
 } from "src/app/models/appModels";
 import { MatchService } from "src/app/services/matchservice";
 import { DialogModule } from "primeng/dialog";
@@ -26,7 +27,7 @@ export class ConfigureComponent implements OnInit {
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
   players: PlayerWithId[] = [];
-  match: Match = {};
+  match: MatchWithId = {};
   player: Player = {};
   matches: Match[] = [];
   display: boolean = false;
@@ -41,8 +42,14 @@ export class ConfigureComponent implements OnInit {
   ];
   game = 1;
 
-  displayDialog: boolean = false;
-  playerDialog: boolean = false;
+  dialogHome: string
+  dilogOpponent: string
+  dialogGameDate: Date
+  dialogGame: number
+  dialogMatchId: string
+
+  matchDialogDisplay: boolean = false;
+  playerDialogDisplay: boolean = false;
   selectedMatch: Match;
   selectedPlayer: Player;
   newMatch: boolean;
@@ -66,53 +73,47 @@ export class ConfigureComponent implements OnInit {
   }
   showPlayerDialog() {
     this.newPlayer = false;
-    this.matchService.addPlayers();
+    this.player = new PlayerWithId("","","",false,)
+    this.playerDialogDisplay = true;
+    //this.matchService.addPlayers();
     //this.getPlayers()
   }
 
   onPlayerSelect(event) {
-    let t = this.matchService.getPlayerById(1);
-
     this.newPlayer = false;
     this.player = this.clonePlayer(event.data);
-    this.playerDialog = true;
+    this.playerDialogDisplay = true;
   }
 
-  onRowSelect(event) {
-    this.newMatch = false;
-    this.match = this.cloneMatch(event.data);
-    this.gameDate.setValue(this.matchService.datefromepoch(this.match.matchdate))
-    this.displayDialog = true;
-  }
+
+
   showDialogToAdd() {
-    this.matchService.addPlayers();
+
+    //this.matchService.addPlayers();
     //this.getPlayers()
     //this.displayDialog = true;
   }
 
-  showMatchDialogToAdd() {
-    this.matchService.createMatch("Fusion", "Ballyhoo", new Date());
-    //this.getMatches();
-  }
+
 
   start() {
-    this.displayDialog = false;
+    this.matchDialogDisplay = false;
     let gm = new gameMatch();
     gm.gameNumber = this.game;
     gm.home = this.match.home;
     gm.matchdate = this.match.matchdate;
-    gm.matchid = this.match.matchid;
+    gm.id = this.match.id;
     gm.opponent = this.match.opponent;
     this.router.navigate(["match", gm]);
   }
 
   summary() {
-    this.displayDialog = false;
+    this.matchDialogDisplay = false;
     let gm = new gameMatch();
     gm.gameNumber = this.game;
     gm.home = this.match.home;
     gm.matchdate = this.match.matchdate;
-    gm.matchid = this.match.matchid;
+    gm.id = this.match.id;
     gm.opponent = this.match.opponent;
     this.router.navigate(["summary", gm]);
   }
@@ -175,45 +176,55 @@ export class ConfigureComponent implements OnInit {
         } as PlayerWithId;
       })
     });
-
-    // this.matchsubcription = this.matchService.playertable.subscribe(players => {
-    //   this.players = players;
-    //   this.matchService.matchtable.subscribe(matches => {
-    //     for (let index = 0; index < matches.length; index++) {
-    //       matches[index].matchdate = this.matchService.datefromepoch(
-    //         matches[index].matchdate
-    //       );
-    //     }
-    //     this.matches = matches;
-
-    //   //   this.connectionService.monitor().subscribe(isConnected => {
-    //   //     this.isConnected = isConnected;
-    //   //     if (this.isConnected) {
-    //   //       this.status = "ONLINE";
-    //   //     } else {
-    //   //       this.status = "OFFLINE";
-    //   //     }
-    //   //     console.log(this.status);
-    //   //   });
-
-    //   });
-    // });
-
   }
 
-  delete() {
+  SavePlayer() {
+    let p = new PlayerWithId("","","",false)
+    p.jersey = this.player.jersey
+    p.firstName = this.player.firstName
+    p.lastName = this.player.lastName
+    p.islibero = this.player.islibero
+    this.matchService.savePlayer(p)
+    this.playerDialogDisplay = false;
+  }
+
+  DeletePlayer() {
+
+  }
+  AddMatch() {
+    this.dialogHome = ""
+    this.dilogOpponent = ""
+    this.gameDate.setValue(new Date)
+    this.dialogMatchId = ""
+    this.matchDialogDisplay = true;
+    //this.matchService.createMatch("Fusion", "Ballyhoo", new Date());
+    //this.getMatches();
+  }
+
+  DeleteMatch() {
     // this.matchService.deleteMatch(this.match.matchid).then(() => {
     //   this.getMatches();
     // });
-    this.displayDialog = false;
+    this.matchDialogDisplay = false;
   }
 
-  save() {
-    this.matchService
-      .createMatch(this.match.home, this.match.opponent, this.match.matchdate)
-      .then(() => {
-        //this.getMatches();
-      });
-    this.displayDialog = false;
+  onRowSelect(event) {
+    this.dialogHome = event.data.home
+    this.dilogOpponent = event.data.opponent
+    this.gameDate.setValue(this.matchService.datefromepoch(event.data.matchdate))
+    this.dialogMatchId = event.data.id
+    this.match = event.data
+    this.matchDialogDisplay = true;
+    this.newMatch = false;
+  }
+
+  SaveMatch() {
+    let match = new MatchWithId()
+    match.matchdate = this.gameDate.value
+    match.id = this.dialogMatchId
+    match.opponent = this.dilogOpponent
+    match.home = this.dialogHome
+    this.matchService.saveMatch(match)
+    this.matchDialogDisplay = false;
   }
 }

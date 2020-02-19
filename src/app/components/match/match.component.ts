@@ -44,13 +44,13 @@ export class MatchComponent implements OnInit {
   opponent = "";
   homescore = 0;
   opponentscore = 0;
-  subs = 0;
-  homepointOptions = ["k"];
+  homepointOptions = ["k", "sa", "b"];
   opponentpointOptions = ["he", "be", "bhe", "sre", "se"];
   liberoDisabled = false;
   hs = 0;
   os = 0;
   mobile = false;
+  startHidden = false;
   //currentGame: <Observable> GameWithId();
   //let currentGame = this.matchService.getGameByNumber(this.gameNumber, this.match.matchid);
 
@@ -77,7 +77,7 @@ export class MatchComponent implements OnInit {
     this.home = this.matchForm.value.home;
     this.opponent = this.matchForm.value.opponent;
     this.matchDate = this.matchForm.value.dateofmatch;
-    this.matchService.createMatch(this.home, this.opponent, this.matchDate);
+    //this.matchService.createMatch(this.home, this.opponent, this.matchDate);
     this.display = false;
   }
 
@@ -96,11 +96,15 @@ export class MatchComponent implements OnInit {
 
     this.draggedplayer = event.previousContainer.data[event.previousIndex];
     event.previousContainer.data =
-      event.previousContainer.data.filter(x => x.playerid != this.draggedplayer.playerid)
+      event.previousContainer.data.filter(x => x.id != this.draggedplayer.id)
 
     //if not libero then add a sub
-    if (!this.draggedplayer.islibero && this.liberoDisabled) {
-      this.subs += 1;
+    if (!this.draggedplayer.islibero &&
+        this.startHidden &&
+      (this.playerPositions[container].player  &&
+        !this.playerPositions[container].player.islibero))
+      {
+      this.game.subs += 1;
     }
 
     if (container === 4) {
@@ -151,6 +155,10 @@ export class MatchComponent implements OnInit {
     this.display = true;
   }
 
+  subClick() {
+
+  }
+
   async ngOnInit() {
 
     if (window.screen.width <= 768) { // 768px portrait
@@ -165,7 +173,7 @@ export class MatchComponent implements OnInit {
       this.playerPositions.push(c);
     }
 
-    if (this.route.snapshot.params.matchid != undefined)
+    if (this.route.snapshot.params.id != undefined)
       this.match = this.route.snapshot.params;
     else {
       this.router.navigate(['configure']);
@@ -175,6 +183,7 @@ export class MatchComponent implements OnInit {
     this.game = new GameWithId()
     this.gameScore = new GameScore();
     this.gameNumber = this.match.gameNumber;
+    this.game.subs = 0;
 
     this.matchService.getPlayers().subscribe(data => {
       this.players = data.map(e => {
@@ -194,13 +203,14 @@ export class MatchComponent implements OnInit {
       })
       this.game = this.games.find(
         game => game.gamenumber === this.gameNumber &&
-          game.matchid === this.match.matchid);
+          game.matchid === this.match.id);
       if (!this.game) {
         let g = new GameWithId()
         g.gamenumber = this.gameNumber
-        g.matchid = this.match.matchid
+        g.matchid = this.match.id
         g.opponentscore = 0
         g.homescore = 0
+        g.subs = 0
         this.matchService.createGame(g)
       }
 
@@ -240,15 +250,27 @@ export class MatchComponent implements OnInit {
     this.playerPositions[6] = tempPlayer;
   }
 
-  increment(team: string) {
+  updateGame(team: string, action: any) {
     if (team === "home") {
-      this.game.homescore = this.game.homescore + 1
+      if (action === "a")
+        this.game.homescore = this.game.homescore + 1
+      else
+        this.game.homescore = this.game.homescore - 1
     } else if (team === "opponent") {
-      this.game.opponentscore = this.game.opponentscore + 1
+      if (action === "a")
+        this.game.opponentscore = this.game.opponentscore + 1
+      else
+        this.game.opponentscore = this.game.opponentscore - 1
     } else {
-      this.subs += 1;
-    }
+      if (action === "a")
+        this.game.subs = this.game.subs + 1
+      else
+        this.game.subs = this.game.subs - 1
 
+      //this.game.subs = this.game.subs + 1
+      // this.subs += 1;
+    }
+    this.matchService.updateGame(this.game, this.playerPositions)
   }
 
   postStat(s: StatNib) {
@@ -261,7 +283,7 @@ export class MatchComponent implements OnInit {
     const s = new Stat();
     s.gamenumber = this.gameNumber;
     s.homeScore = this.homescore;
-    s.matchid = this.match.matchid;
+    s.matchid = this.match.id;
     s.opponentScore = this.opponentscore;
     s.player = player;
     s.pos = pos;
@@ -269,13 +291,13 @@ export class MatchComponent implements OnInit {
     s.statid = this.statId + 1;
     //s.stattime = new Date();
     s.stattype = stat;
-    this.matchService.incrementStat(s);
+    this.matchService.incrementStat(s, this.game);
     if (this.homepointOptions.indexOf(stat) > -1) {
-      this.increment("home")
-      this.matchService.upDateGame(this.game)
+      this.updateGame("home", "a")
+      //this.matchService.updateGame(this.game)
     } else if (this.opponentpointOptions.indexOf(stat) > -1) {
-      this.increment("opponent")
-      this.matchService.upDateGame(this.game)
+      this.updateGame("opponent", "s")
+      //this.matchService.updateGame(this.game)
     }
 
     //this.game.homescore = this.homescore;
@@ -294,7 +316,7 @@ export class MatchComponent implements OnInit {
   findIndex(player: PlayerWithId) {
     let index = -1;
     for (let i = 0; i < this.availableCars.length; i++) {
-      if (player.playerid === this.availableCars[i].vin) {
+      if (player.id === this.availableCars[i].vin) {
         index = i;
         break;
       }
@@ -308,19 +330,20 @@ export class MatchComponent implements OnInit {
 
   startMatch() {
     this.liberoDisabled = true;
+    this.startHidden = true;
     //this.createFakeStats();
   }
 
-  updateGame() {
-    let game = {
-      gamenumber: this.gameNumber,
-      matchid: this.match.matchid,
-      homescore: this.homescore,
-      opponentscore: this.opponentscore,
-      lastupdate: new Date()
-    };
-    //this.matchService.updateGame(this.g)
-  }
+  // updateGame() {
+  //   let game = {
+  //     gamenumber: this.gameNumber,
+  //     matchid: this.match.id,
+  //     homescore: this.homescore,
+  //     opponentscore: this.opponentscore,
+  //     lastupdate: new Date()
+  //   };
+  //   //this.matchService.updateGame(this.g)
+  // }
 
   createStat(): Stat {
     var randStat = this.fakestats[
@@ -334,7 +357,7 @@ export class MatchComponent implements OnInit {
     ];
     let s = new Stat();
     s.gamenumber = this.gameNumber;
-    s.matchid = this.match.matchid;
+    s.matchid = this.match.id;
     s.opponentScore = this.opponentscore;
     s.homeScore = this.homescore;
     s.player = randomPlayer;

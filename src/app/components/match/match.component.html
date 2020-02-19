@@ -11,60 +11,124 @@
         Players
       </div>
       <div style="font-weight: bolder;" class="col-7 d-flex justify-content-end">
-        <img style="width: 30px;" src='../../../assets/icons/pointer.png' >
+        <img style="width: 30px;" src='../../../assets/icons/pointer.png'>
       </div>
     </div>
     <hr />
-    <div  *ngFor="let player of players" cdkDrag>
+    <div *ngFor="let player of players" cdkDrag>
       <div style="padding-bottom: 10px; padding-top: 10px;" class="row d-flex flex-nowrap">
         <div style="text-align: left;" class="col-2">
           <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true"></p-checkbox>
         </div>
         <div class="col-3">
-          <img *cdkDragPreview style="width: 50px;" src='../../../assets/icons/girl-volleyball-player-hitting.png' >
+          <img *cdkDragPreview style="width: 50px;" src='../../../assets/icons/girl-volleyball-player-hitting.png'>
           {{ player.firstName }}
         </div>
         <div class="col-7 d-flex justify-content-end">
-          <img style="width: 20px;" src='../../../assets/icons/arrow.png' >
+          <img style="width: 20px;" src='../../../assets/icons/arrow.png'>
         </div>
       </div>
     </div>
   </div>
 
   <div style="font-size: 16px; margin-right: -5px;" class="col-10">
-    <div >
-      <div class="panel panel-default" >
+    <div>
+      <div class="panel panel-default">
         <!-- <div > -->
         <!-- <div class="container"> -->
         <div
           style="border-radius: 15px; border-style: solid; border-color: #337ab7; margin-top: 5px; margin-bottom: 10px; margin-left: 15px; margin-right: 15px;"
           class="row  align-items-center">
-          <div style="text-align: center; margin-bottom: 2px; margin-top: 2px; margin-left: 15px; font-size: large;"
-            class="col-md-2">
+
+          <div
+            style="text-align: center; margin-bottom: 2px; margin-top: 2px; margin-left: 15px; font-size: large;"
+            class="col-3">
             <!-- <div  class="row"> -->
-            <div style="color: #337ab7; margin-bottom: 10px;" class="col-sm">{{match.home}}</div>
-            <div style="font-weight:bolder; color: #337ab7; font-family: Digital; font-size: xx-large; color: 337ab7;"
-              class="col-sm">{{game.homescore}}</div>
+            <div style="color: #337ab7; margin-bottom: 5px;">{{match.home}}</div>
+
+            <div  class="input-group justify-content-center">
+              <div (click)="updateGame('home', 's')" class="input-group-prepend" id="button-addon3">
+                <span style="color: lightcoral;" class="glyphicon glyphicon-step-backward
+                "></span>
+                <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">D</button> -->
+              </div><span style="width: 50px;  font-weight:bolder; color: #337ab7; font-family: Digital; font-size: xx-large; color: 337ab7;"
+              >
+                {{game?.homescore}}</span>
+              <div (click)="updateGame('home', 'a')" class="input-group-append" id="button-addon3">
+                <span style="color: lightseagreen;" class="glyphicon glyphicon-step-forward
+                "></span>
+                <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">U</button> -->
+              </div>
+              <!-- <input type="text" class="form-control" placeholder="" aria-label="Example text with two button addons" aria-describedby="button-addon3"> -->
+            </div>
+
+
+
+
+            <!-- <div style="font-weight:bolder; color: #337ab7; font-family: Digital; font-size: xx-large; color: 337ab7;"
+              class="col-sm">{{game?.homescore}}</div> -->
             <!-- </div> -->
           </div>
-          <div style="text-align: center; margin-bottom: 2px; margin-top: 2px; font-size: large;" class="col-2">
+
+          <div
+            style="text-align: center; margin-bottom: 2px; margin-top: 2px; font-size: large;" class="col-3">
             <!-- <div class="row"> -->
-            <div style="color: forestgreen; margin-bottom: 10px;" class="col-sm">{{match.opponent}}</div>
-            <div style="font-weight: bolder;  font-family: Digital; font-size: xx-large; color: forestgreen;"
-              class="col-sm">{{game.opponentscore}}</div>
-            <!-- </div> -->
+            <div style="color: forestgreen; margin-bottom: 5px;">{{match.opponent}}</div>
+            <div  class="input-group justify-content-center">
+              <div (click)="updateGame('opponent', 's')" class="input-group-prepend" id="button-addon3">
+                <span style="color: lightcoral;" class="glyphicon glyphicon-step-backward
+                "></span>
+                <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">D</button> -->
+              </div><span style="width: 50px;  font-weight:bolder; color: forestgreen; font-family: Digital; font-size: xx-large; color: 337ab7;"
+              >
+                {{game?.opponentscore}}</span>
+              <div (click)="updateGame('opponent', 'a')" class="input-group-append" id="button-addon3">
+                <span style="color: lightseagreen;" class="glyphicon glyphicon-step-forward
+                "></span>
+                <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">U</button> -->
+              </div>
+              <!-- <input type="text" class="form-control" placeholder="" aria-label="Example text with two button addons" aria-describedby="button-addon3"> -->
+            </div>
+
+
+
+            <!-- <div style="font-weight: bolder;  font-family: Digital; font-size: xx-large; color: forestgreen;"
+              class="col-sm">{{game?.opponentscore}}</div>
+            </div> -->
           </div>
-          <div style="text-align: center; margin-bottom: 2px; margin-top: 2px;  font-size:medium;" class="col-2">
+
+          <div
+            style="text-align: center; margin-bottom: 2px; margin-top: 2px; vertical-align: center;  font-size:medium;"
+            class="col align-items-center">
             <div class="col-sm">Subs</div>
-            <div style="font-weight: bolder;" class="col-sm">{{ subs }}</div>
+            <div class="input-group justify-content-center">
+              <div (click)="updateGame('subs', 's')" class="input-group-prepend" id="button-addon3">
+                <span style="color: lightcoral;" class="glyphicon glyphicon-step-backward
+                "></span>
+                <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">D</button> -->
+              </div><span style="width: 50px;">
+                {{ this.game.subs }}</span>
+              <div (click)="updateGame('subs', 'a')" class="input-group-append" id="button-addon3">
+                <span style="color: lightseagreen;" class="glyphicon glyphicon-step-forward
+                "></span>
+                <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">U</button> -->
+              </div>
+              <!-- <input type="text" class="form-control" placeholder="" aria-label="Example text with two button addons" aria-describedby="button-addon3"> -->
+            </div>
+            <!-- <div style="font-weight: bolder;" class="col-sm"><input />{{ subs }}</div> -->
+          </div>
+
+          <div style="text-align: center; margin-bottom: 2px; margin-top: 2px;  font-size:medium;" class="col">
+            <div class="col-sm">Game#</div>
+            <div style="font-weight: bolder;" class="col-sm">{{ game?.gamenumber }}</div>
           </div>
           <div style="margin-right: 15px;" class="col align-self-end align-self-center">
             <!-- <div class="col-sm">  -->
-            <button class="btn btn-sm pull-right" style="margin-left: 10px;" label="Rotate" pButton (click)="rotate()"
-              type="button" icon="pi pi-reply"></button>
+            <button class="btn btn-sm pull-right" style="margin-left: 10px;" pButton (click)="rotate()" type="button"
+              icon="pi pi-reply"></button>
             <!-- </div> -->
             <!-- <div class="col-sm"> -->
-            <button style="margin-right: 5px;" pButton type="button" label="Start" (click)="startMatch()"
+            <button [hidden]="startHidden" style="margin-right: 5px;" pButton type="button" (click)="startMatch()"
               icon="pi pi-caret-right" class="ui-button-success pull-right btn btn-sm"></button>
             <!-- </div> -->
           </div>
@@ -74,7 +138,7 @@
         <div style="margin-right: -5px; margin-left: -5px;" class="row flex-nowrap">
           <div class="col col-sm-4">
             <div id="pos4" style="overflow: hidden;" class="panel panel-primary">
-              <div class="panel-heading">{{ playerPositions[4].playerPos }}</div>
+              <div class="panel-heading"><strong>{{ playerPositions[4].playerPos }}</strong></div>
               <div cdkDropList #pos4="cdkDropList" (cdkDropListDropped)="drop($event,4)" style="text-align: center"
                 class="panel-body panel-height">
                 <app-f-kpad posNum="4" (statPost)="postStat($event)"></app-f-kpad>
@@ -85,7 +149,7 @@
 
           <div class="col col-sm-4" id="pos3">
             <div class="panel panel-primary">
-              <div class="panel-heading">{{ playerPositions[3].playerPos }}</div>
+              <div class="panel-heading"><strong>{{ playerPositions[3].playerPos }}</strong></div>
               <div cdkDropList #pos3="cdkDropList" (cdkDropListDropped)="drop($event,3)" style="text-align: center;"
                 class="panel-body panel-height">
                 <app-f-kpad posNum="3" (statPost)="postStat($event)"></app-f-kpad>
@@ -95,7 +159,7 @@
 
           <div class="col col-sm-4" id="pos2">
             <div class="panel panel-primary">
-              <div class="panel-heading">{{ playerPositions[2].playerPos }}</div>
+              <div class="panel-heading"><strong>{{ playerPositions[2].playerPos }}</strong></div>
               <div cdkDropList #pos2="cdkDropList" (cdkDropListDropped)="drop($event,2)" style="text-align: center;"
                 class="panel-body panel-height">
                 <app-f-kpad posNum="2" (statPost)="postStat($event)"></app-f-kpad>
@@ -107,7 +171,7 @@
         <div style="margin-right: -5px; margin-left: -5px;" class="row flex-nowrap">
           <div class="col col-sm-4" id="pos5">
             <div class="panel panel-primary">
-              <div class="panel-heading">{{ playerPositions[5].playerPos }}</div>
+              <div class="panel-heading"><strong>{{ playerPositions[5].playerPos }}</strong></div>
               <div cdkDropList #pos5="cdkDropList" (cdkDropListDropped)="drop($event,5)" style="text-align: center;"
                 class="panel-body panel-height">
                 <app-r-kpad posNum="5" (statPost)="postStat($event)"></app-r-kpad>
@@ -118,7 +182,7 @@
 
           <div class="col col-sm-4" id="pos6">
             <div class="panel panel-primary">
-              <div class="panel-heading">{{ playerPositions[6].playerPos }}</div>
+              <div class="panel-heading"><strong>{{ playerPositions[6].playerPos }}</strong></div>
               <div cdkDropList #pos6="cdkDropList" (cdkDropListDropped)="drop($event,6)" style="text-align: center;"
                 class="panel-body panel-height">
                 <app-r-kpad posNum="6" (statPost)="postStat($event)"></app-r-kpad>
@@ -128,7 +192,7 @@
 
           <div class="col col-sm-4" id="pos1">
             <div class="panel panel-primary">
-              <div class="panel-heading"> {{ playerPositions[1].playerPos }}</div>
+              <div class="panel-heading"><strong>{{ playerPositions[1].playerPos }}</strong></div>
               <div cdkDropList #pos1="cdkDropList" (cdkDropListDropped)="drop($event,1)" style="text-align: center;"
                 class="panel-body panel-height">
                 <app-s-kpad posNum="1" (statPost)="postStat($event)"></app-s-kpad>
@@ -149,7 +213,7 @@
         <div class="form-group">
           <label for="inputEmail">Email</label>
           <input type="email" class="form-control" id="inputEmail" placeholder="Email">
-      </div>
+        </div>
 
         <div class="form-group">
           <label for="hometeam">Home Team</label>

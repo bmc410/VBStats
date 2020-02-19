@@ -12,6 +12,7 @@ export class Player {
   lastName?: string;
   islibero?: boolean = false;
 
+
   constructor(jersey: string, fname: string, lastname: string, libero: boolean) {
     this.jersey = jersey;
     this.firstName = fname;
@@ -20,7 +21,7 @@ export class Player {
 }
 
 export class PlayerWithId extends Player {
-  playerid?: string;
+  id?: string;
 }
 
 
@@ -48,11 +49,15 @@ export class Stat {
 }
 
 export class Match {
-  matchid?: string;
   home?: string;
   opponent?: string;
   matchdate?: number;
   displaydate?: Date;
+  //gameDate?: number;
+}
+
+export class MatchWithId extends Match {
+  id?: string;
 }
 
 export class Game {
@@ -60,13 +65,14 @@ export class Game {
   matchid?: string;
   homescore?: number;
   opponentscore?: number;
+  subs?: number;
 }
 
 export class GameWithId extends Game {
   id?: string;
 }
 
-export class gameMatch extends Match {
+export class gameMatch extends MatchWithId {
   gameNumber?: number;
 }
 
@@ -91,6 +97,12 @@ export interface ArrayOfStats {
   stattype: string;
 }
 
+export interface rotation {
+  pos?: number;
+  playerId?: string;
+}
+
+
 export interface statEntry {
   statid?: number,
   matchid?: string,
@@ -98,7 +110,7 @@ export interface statEntry {
   stattype?: string,
   playerid?: string,
   statdate?: number,
-  pos?: string
+  pos?: Map<any,any>
 }
 
 export interface statModel {
@@ -111,6 +123,30 @@ export interface statModel {
   statid: number;
 }
 
+export interface RotationPlayer {
+  id: string;
+  firstName: string;
+  islibero: boolean;
+  jersey: string;
+  lastName: string;
+  playerid: string;
+}
+
+export interface RotationObject {
+  playerPos: string;
+  posNo: number;
+  player: Player;
+}
+
+export class PlayerNib {
+  pos?: number;
+  playerid?: string;
+  constructor(pos: number, playerid: string,) {
+    this.pos = pos;
+    this.playerid = playerid;
+  }
+}
+
 
 export interface statView {
   jersey: string;
@@ -118,6 +154,7 @@ export interface statView {
   lastName: string;
   playerid: string;
   k: number;
+  h: number
   he: number;
   b: number;
   bt: number;

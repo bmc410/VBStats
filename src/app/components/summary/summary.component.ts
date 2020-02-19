@@ -10,7 +10,8 @@ import {
   PlayerWithId,
   statEntry,
   gameMatch,
-  GameWithId
+  GameWithId,
+  rotation
 } from "src/app/models/appModels";
 import { MatchService } from "src/app/services/matchservice";
 import { DialogModule } from "primeng/dialog";
@@ -24,6 +25,8 @@ import { Router, ActivatedRoute } from "@angular/router";
   styleUrls: ["./summary.component.css"]
 })
 export class SummaryComponent implements OnInit {
+  pct: number = 0
+  rotations: rotation[] = []
   stats: statEntry[] = [];
   allstats: statEntry[] = [];
   matchgameStats: statEntry[] = [];
@@ -60,66 +63,45 @@ export class SummaryComponent implements OnInit {
       })
       this.selectedGame = this.gamesPlayed.find(
         game => game.gamenumber === this.match.gameNumber &&
-          game.matchid === this.match.matchid);
+          game.matchid === this.match.id);
+
+          this.matchService.getstats(this.selectedGame).subscribe(data => {
+            this.allstats = data.map(e => {
+              return {
+                id: e.payload.doc.id,
+                ...e.payload.doc.data() as {}
+              } as statEntry;
+            })
+            this.stats = this.allstats.filter(x => x.matchid == this.match.id)
+            this.stats = this.stats.filter(x => x.gamenumber == this.selectedgame)
+
+            this.matchService.getPlayers().subscribe(data => {
+              this.players = data.map(e => {
+                return {
+                  id: e.payload.doc.id,
+                  ...e.payload.doc.data() as {}
+                } as PlayerWithId;
+              })
+              this.setupStatView();
+              this.showData();
+              this.showRotationalData();
+            });
+
+          });
 
 
       console.log(this.selectedGame)
     });
 
 
-      this.matchService.getstats().subscribe(data => {
-        this.allstats = data.map(e => {
-          return {
-            id: e.payload.doc.id,
-            ...e.payload.doc.data() as {}
-          } as statEntry;
-        })
-        this.stats = this.allstats.filter(x => x.matchid == this.match.matchid)
-        this.stats = this.stats.filter(x => x.gamenumber == this.selectedgame)
 
-        this.matchService.getPlayers().subscribe(data => {
-          this.players = data.map(e => {
-            return {
-              id: e.payload.doc.id,
-              ...e.payload.doc.data() as {}
-            } as PlayerWithId;
-          })
-          this.setupStatView();
-          this.showData();
-        });
-
-      });
-
-
-      // this.matchService.dbPlayers.subscribe((players) => {
-      //   this.players = players;
-      //   this.matchService.dbStats.subscribe((statsfromdb) => {
-      //   this.allstats = statsfromdb
-      //   this.stats = this.allstats.filter(x => x.matchid == this.match.matchid)
-      //   this.stats = this.stats.filter(x => x.gamenumber == this.selectedgame)
-      //   this.setupStatView();
-      //   this.showData();
-      //   //console.log(st)
-      //   })
-      // });
-
-
-
-
-
-    // let s = await this.matchService.getStats(this.match.matchid)((stats: statEntry[]) => {
-    //   this.stats = stats;
-    //   this.selectedgame = this.selectedgame
-    //   this.setupStatView();
-    //   this.showData();
-    // });
   }
 
   showGame(event) {
     this.selectedgame = event.value;
     this.selectedGame = this.gamesPlayed.find(
       game => game.gamenumber === event.value.toString() &&
-        game.matchid === this.match.matchid);
+        game.matchid === this.match.id);
     this.setupStatView();
     if (this.selectedGame)
       this.showData();
@@ -145,8 +127,9 @@ export class SummaryComponent implements OnInit {
       sv.firstName = element.firstName;
       sv.lastName = element.lastName;
       sv.jersey = element.jersey;
-      sv.playerid = element.playerid;
+      sv.playerid = element.id;
       sv.k = 0;
+      sv.h = 0;
       sv.a = 0;
       sv.b = 0;
       sv.be = 0;
@@ -160,11 +143,59 @@ export class SummaryComponent implements OnInit {
     });
   }
 
+  showRotationalData() {
+    this.matchgameStats = []
+    this.allstats.forEach(element => {
+      if (
+        element.matchid == this.match.id &&
+        element.gamenumber == this.selectedgame
+      ) {
+        this.matchgameStats.push(element);
+      }
+    });
+
+    //first get the rotations
+    var iRotation = 1
+    this.rotations = [];
+    let rotationStrings = ""
+    this.matchgameStats.forEach( element => {
+      let rotationString = ""
+      //var obj = JSON.parse(element.pos)
+      //rotationString = iRotation.toString() + ":"
+      //for (let index = 1; index < obj.length; index++) {
+        //if (iRotation == 1) {
+          //const element = <CourtPosition>obj[index];
+          //rotationString = rotationString + element.posNo + "," + element.player.id + "|"
+          //var rotation: rotation = {}
+          //rotation.playerId = element.player.id;
+          //rotation.pos = element.posNo
+          //this.rotations.push(rotation);
+        //}
+        //else {
+        //  for (let index = 1; index = obj.length; index++) {
+        //    const element = obj[index];
+
+        //  }
+       // }
+
+        //console.log(this.rotations);
+        //this.rotations.push()
+      //}
+      //rotationStrings = rotationStrings + "\r\n" + rotationString
+      iRotation += 1;
+
+
+    })
+    console.log(rotationStrings)
+
+
+  }
+
   showData() {
 
     this.allstats.forEach(element => {
       if (
-        element.matchid == this.match.matchid &&
+        element.matchid == this.match.id &&
         element.gamenumber == this.selectedgame
       ) {
         this.matchgameStats.push(element);
@@ -179,6 +210,9 @@ export class SummaryComponent implements OnInit {
         case 'k':
           this.statviews[index].k += 1;
           break;
+        case 'h':
+            this.statviews[index].h += 1;
+            break;
         case 'he':
           this.statviews[index].he += 1;
           break;
@@ -209,6 +243,8 @@ export class SummaryComponent implements OnInit {
         default:
           break;
       }
+      this.pct = (this.statviews[index].k - this.statviews[index].he) /
+      (this.statviews[index].k + (this.statviews[index].h))
 
     });
 

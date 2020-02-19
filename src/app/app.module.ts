@@ -42,7 +42,7 @@ import {DropdownModule} from 'primeng/dropdown';
 import {CheckboxModule} from 'primeng/checkbox';
 import { DexieService } from './services/dexie.service';
 import { SKpadComponent } from './components/controls/s-kpad/s-kpad.component';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
@@ -87,6 +87,7 @@ import 'firebase/firestore';
     MatInputModule,
     FormsModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule.enablePersistence(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [CarService, MatchService, DexieService,AngularFirestore],

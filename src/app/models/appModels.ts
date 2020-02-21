@@ -35,6 +35,14 @@ export class StatNib {
   }
 }
 
+export class PointPlay {
+  homeScore?: number;
+  opponentScore?: number;
+  action?: string;
+  player?: PlayerWithId;
+  rotation: CourtPosition[]
+}
+
 export class Stat {
   statid?: number;
   matchid?: string;

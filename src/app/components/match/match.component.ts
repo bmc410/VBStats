@@ -302,25 +302,30 @@ export class MatchComponent implements OnInit {
     this.playerPositions[6] = tempPlayer;
   }
 
-  updateGame(team: string, action: any) {
+  updateGame(team: string, action: any, stat: string, player: PlayerWithId) {
+
+    this.matchService.addPlayByPlay(this.game,this.playerPositions,stat,
+      player)
+
     if (team === "home") {
-      if (action === "a")
+      if (action === "a"){
         this.game.homescore = this.game.homescore + 1
-      else
+      }
+      else {
         this.game.homescore = this.game.homescore - 1
-    } else if (team === "opponent") {
+      }
+    }
+    else if (team === "opponent") {
       if (action === "a")
         this.game.opponentscore = this.game.opponentscore + 1
       else
         this.game.opponentscore = this.game.opponentscore - 1
-    } else {
-      if (action === "a")
-        this.game.subs = this.game.subs + 1
-      else
-        this.game.subs = this.game.subs - 1
-
-      //this.game.subs = this.game.subs + 1
-      // this.subs += 1;
+      }
+      else {
+        if (action === "a")
+          this.game.subs = this.game.subs + 1
+        else
+          this.game.subs = this.game.subs - 1
     }
     this.matchService.updateGame(this.game, this.playerPositions)
   }
@@ -345,10 +350,10 @@ export class MatchComponent implements OnInit {
     s.stattype = stat;
     this.matchService.incrementStat(s, this.game);
     if (this.homepointOptions.indexOf(stat) > -1) {
-      this.updateGame("home", "a")
+      this.updateGame("home", "a", stat, player)
       //this.matchService.updateGame(this.game)
     } else if (this.opponentpointOptions.indexOf(stat) > -1) {
-      this.updateGame("opponent", "a")
+      this.updateGame("opponent", "a", stat, player)
       //this.matchService.updateGame(this.game)
     }
 

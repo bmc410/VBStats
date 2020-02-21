@@ -29,6 +29,7 @@ export class SummaryComponent implements OnInit {
   rotations: rotation[] = [];
   stats: statEntry[] = [];
   allstats: statEntry[] = [];
+  playbyplay: any[] = [];
   matchgameStats: statEntry[] = [];
   players: PlayerWithId[] = [];
   statviews: statView[] = [];
@@ -87,6 +88,18 @@ export class SummaryComponent implements OnInit {
           this.setupStatView();
           this.showData();
           this.showRotationalData();
+
+
+
+          this.matchService.getPlayByPlay(this.selectedGame).subscribe(data => {
+            this.playbyplay = data.map(e => {
+              return {
+                id: e.payload.doc.id,
+                ...(e.payload.doc.data() as {})
+              } as any;
+            });
+            console.log(this.playbyplay)
+          })
 
           var statIndex = 0;
           for (let index = 0; index < this.stats.length; index++) {

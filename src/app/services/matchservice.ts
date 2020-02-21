@@ -12,7 +12,8 @@ import {
   GameWithId,
   MatchWithId,
   PlayerNib,
-  CourtPosition
+  CourtPosition,
+  PointPlay
 } from "../models/appModels";
 import Dexie from "dexie";
 import {
@@ -97,6 +98,10 @@ export class MatchService {
     //return this.firestore.collection("stats").snapshotChanges();
   }
 
+  getPlayByPlay(g: GameWithId) {
+    return this.firestore.collection("games").doc(g.id).collection("playbyplay", ref => ref.orderBy("pbpDate")).snapshotChanges();
+  }
+
   getGames() {
     return this.firestore.collection("games").snapshotChanges();
   }
@@ -138,6 +143,60 @@ export class MatchService {
 
   }
 
+  addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId, action: string = "" ) {
+    var action = ""
+
+    switch (stat) {
+      case "k":
+        action = "Kill by "
+        break;
+      case "he":
+          action = "Attack error by "
+          break;
+      case "be":
+          action = "Block error by "
+          break;
+      case "bhe":
+          action = "Ball handling error by "
+          break;
+      case "sre":
+          action = "Serve receive error by "
+          break;
+      case "se":
+          action = "Service error by "
+          break;
+      case "te":
+          action = "Team error by "
+          break;
+      default:
+        action = action
+        break;
+    }
+
+    let pbpObj = {
+      id: g.id,
+      pbpDate: this.datetoepoch(new Date()),
+      player: p,
+      stattype: stat,
+      homescore: g.homescore,
+      opponentscore: g.opponentscore,
+      action: action,
+      rotation: {
+        1: cp[1].player.firstName,
+        2: cp[2].player.firstName,
+        3: cp[3].player.firstName,
+        4: cp[4].player.firstName,
+        5: cp[5].player.firstName,
+        6: cp[6].player.firstName
+      },
+    }
+
+    return this.createPBPInFirestore(pbpObj);
+
+  }
+
+
+
   updateGame(g: GameWithId, cp: CourtPosition[]) {
     var game = this.firestore.collection("games").doc(g.id);
 
@@ -175,11 +234,12 @@ export class MatchService {
   }
   createStatInFirestore(stat: any, g: GameWithId) {
     return this.firestore.collection("games").doc(g.id).collection("stats").add(stat);
-
-    // return this.firestore.collection("stats").add(stat);
   }
   createGameInFirestore(game: any) {
     return this.firestore.collection("games").add(game);
+  }
+  createPBPInFirestore(pbp:any) {
+    return this.firestore.collection("games").doc(pbp.id).collection("playbyplay").add(pbp);
   }
 
   addPlayers(): PlayerWithId[] {
@@ -195,17 +255,10 @@ export class MatchService {
     this.createPlayer("26", "Kayla", "Unger");
     this.createPlayer("27", "Sydney", "Devine");
 
-    // this.players.forEach(player => {
-    //   this.db.player.add(player).then(async () => {});
-    // });
 
     return this.players;
   }
 
-  // createPlayer1(jersey: string, fname: string, lname: string) {
-  //   let player = new Player(jersey, fname, lname);
-  //   this.players.push(player);
-  // }
 
   createPlayer(jersey: string, fname: string, lname: string) {
     let player = {
@@ -239,39 +292,6 @@ export class MatchService {
     //     return data;
     //   });
   }
-
-
-
-
-
-  // getGameByNumber(id: number, matchId: string) {
-  //   var d: GameWithId;
-  //   this.gametable
-  //     .where({
-  //       gamenumber: Number.parseInt(id.toString()),
-  //       matchid: Number.parseInt(matchId.toString())
-  //     })
-  //     .first(data => {
-  //       d = data;
-  //       if (!d) {
-  //         this.createGame(id, matchId, 0, 0);
-  //         this.gametable
-  //           .where({
-  //             gamenumber: Number.parseInt(id.toString()),
-  //             matchid: Number.parseInt(matchId.toString())
-  //           })
-  //           .first(data => {
-  //             this.updatedGameSelection(data);
-  //             //console.log(data);
-  //           });
-  //       } else {
-  //         this.updatedGameSelection(d);
-  //       }
-  //       //this.updatedGameSelection(d);
-  //       //return d;
-  //     });
-  // }
-
 
   savePlayer(p: PlayerWithId) {
     if (!p.id) {

@@ -1,6 +1,6 @@
 <div style="margin-top: 15px;" class="container">
   <p-tabView>
-    <p-tabPanel header="Game Stats">
+    <p-tabPanel header="Individual Stats">
       <div class="container" style="background-color:#337ab7;
       color: white;
       font-size: 20px;
@@ -51,8 +51,8 @@
             <td>{{ element.firstName }}</td>
             <td>{{ element.k }}</td>
             <td>{{ element.he }}</td>
-            <td>{{ element.k + element.h }}</td>
-            <td>{{ ((element.k - element.he) / (element.k + element.h)) | number:'1.3-3' || "0" }}</td>
+            <td>{{ element.k + element.h + element.he }}</td>
+            <td>{{ ((element.k - element.he) / (element.k + element.h + element.he)) | number:'1.3-3' || "0" }}</td>
             <td>{{ element.b }}</td>
             <td>{{ element.bt }}</td>
             <td>{{ element.be }}</td>
@@ -72,7 +72,15 @@
       Coming Soon
     </p-tabPanel>
 
-    <p-tabPanel header="Individual Stats">
+    <p-tabPanel header="Leaders">
+      Coming Soon
+    </p-tabPanel>
+
+    <p-tabPanel header="Season Statistics">
+      Coming Soon
+    </p-tabPanel>
+
+    <p-tabPanel header="Overall Team Statistics">
       Coming Soon
     </p-tabPanel>
   </p-tabView>

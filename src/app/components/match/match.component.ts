@@ -9,7 +9,8 @@ import {
   gameMatch,
   PlayerWithId,
   Game,
-  GameWithId
+  GameWithId,
+  statEntry
 } from "src/app/models/appModels";
 import { MatchService } from "src/app/services/matchservice";
 import {
@@ -30,12 +31,14 @@ export class MatchComponent implements OnInit {
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
   players: PlayerWithId[] = [];
+  allPlayers: PlayerWithId[] = [];
   games: GameWithId[] = [];
   game: GameWithId;
   match: gameMatch;
   display = false;
   matchDate: Date;
   matchStats: Stat[] = [];
+  stats: statEntry[] = [];
   stat: Stat;
   gameNumber = 1;
   gameScore: GameScore;
@@ -185,14 +188,7 @@ export class MatchComponent implements OnInit {
     this.gameNumber = this.match.gameNumber;
     this.game.subs = 0;
 
-    this.matchService.getPlayers().subscribe(data => {
-      this.players = data.map(e => {
-        return {
-          id: e.payload.doc.id,
-          ...e.payload.doc.data() as {}
-        } as PlayerWithId;
-      })
-    });
+
 
     this.matchService.getGames().subscribe(data => {
       this.games = data.map(e => {
@@ -201,6 +197,7 @@ export class MatchComponent implements OnInit {
           ...e.payload.doc.data() as {}
         } as GameWithId;
       })
+
       this.game = this.games.find(
         game => game.gamenumber === this.gameNumber &&
           game.matchid === this.match.id);
@@ -213,19 +210,74 @@ export class MatchComponent implements OnInit {
         g.subs = 0
         this.matchService.createGame(g)
       }
+      else {
 
-      console.log(this.game)
+        this.matchService.getPlayers().subscribe(data => {
+          this.players = data.map(e => {
+            return {
+              id: e.payload.doc.id,
+              ...e.payload.doc.data() as {}
+            } as PlayerWithId;
+
+          })
+
+          this.allPlayers = this.players
+          this.matchService.getstats(this.game).subscribe(data => {
+            this.stats = data.map(e => {
+              return {
+                id: e.payload.doc.id,
+                ...e.payload.doc.data() as {}
+              } as statEntry;
+            })
+
+
+              if (this.stats && this.stats.length > 0) {
+              var r = this.stats[this.stats.length-1]
+              var pos = r.rotation
+              for (let i = 1; i < 7; i++) {
+                var p1 = this.allPlayers.filter(p => p.firstName === pos[i])[0]
+                this.playerPositions[i].posNo = i;
+                this.playerPositions[i].player = p1;
+                this.playerPositions[i].playerPos =
+                  p1?.firstName + " - " + p1?.jersey;
+                this.players = this.players.filter(x => x.id != p1.id)
+              }
+
+          }
+
+
+        });
+
+
+
+
+
+
+
+
+
+
+
+        });
+
+
+
+
+      }
+
+
+      //console.log(this.game)
     });
 
-    this.matchService.gameData$.subscribe(
-      gameData$ => {
-        if (gameData$) {
-        this.game = gameData$
-        this.homescore = gameData$.homescore
-        this.opponentscore = gameData$.opponentscore
-        }
-      }
-    )
+    // this.matchService.gameData$.subscribe(
+    //   gameData$ => {
+    //     if (gameData$) {
+    //     this.game = gameData$
+    //     this.homescore = gameData$.homescore
+    //     this.opponentscore = gameData$.opponentscore
+    //     }
+    //   }
+    // )
   }
 
   rotate() {
@@ -296,7 +348,7 @@ export class MatchComponent implements OnInit {
       this.updateGame("home", "a")
       //this.matchService.updateGame(this.game)
     } else if (this.opponentpointOptions.indexOf(stat) > -1) {
-      this.updateGame("opponent", "s")
+      this.updateGame("opponent", "a")
       //this.matchService.updateGame(this.game)
     }
 

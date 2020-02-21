@@ -25,95 +25,135 @@ import { Router, ActivatedRoute } from "@angular/router";
   styleUrls: ["./summary.component.css"]
 })
 export class SummaryComponent implements OnInit {
-  pct: number = 0
-  rotations: rotation[] = []
+  pct: number = 0;
+  rotations: rotation[] = [];
   stats: statEntry[] = [];
   allstats: statEntry[] = [];
   matchgameStats: statEntry[] = [];
   players: PlayerWithId[] = [];
   statviews: statView[] = [];
   match: gameMatch;
-  gamesPlayed: GameWithId[] = []
-  selectedGame: GameWithId
+  gamesPlayed: GameWithId[] = [];
+  selectedGame: GameWithId;
   games: number[] = [1, 2, 3, 4, 5];
-  game=1
+  game = 1;
+
+  playerRotation: any[] = [];
+
   selectedgame = 1;
   constructor(
     public route: ActivatedRoute,
     private matchService: MatchService
-  )
-  {
-
-  }
+  ) {}
 
   matches: any[] = [];
 
   async ngOnInit() {
-    if (this.route.snapshot.params.toString().length){
+    if (this.route.snapshot.params.toString().length) {
       this.match = this.route.snapshot.params;
-      this.selectedgame = this.match.gameNumber
+      this.selectedgame = this.match.gameNumber;
     }
 
     this.matchService.getGames().subscribe(data => {
       this.gamesPlayed = data.map(e => {
         return {
           id: e.payload.doc.id,
-          ...e.payload.doc.data() as {}
+          ...(e.payload.doc.data() as {})
         } as GameWithId;
-      })
+      });
       this.selectedGame = this.gamesPlayed.find(
-        game => game.gamenumber === this.match.gameNumber &&
-          game.matchid === this.match.id);
+        game =>
+          game.gamenumber === this.match.gameNumber &&
+          game.matchid === this.match.id
+      );
 
-          this.matchService.getstats(this.selectedGame).subscribe(data => {
-            this.allstats = data.map(e => {
-              return {
-                id: e.payload.doc.id,
-                ...e.payload.doc.data() as {}
-              } as statEntry;
-            })
-            this.stats = this.allstats.filter(x => x.matchid == this.match.id)
-            this.stats = this.stats.filter(x => x.gamenumber == this.selectedgame)
+      this.matchService.getstats(this.selectedGame).subscribe(data => {
+        this.allstats = data.map(e => {
+          return {
+            id: e.payload.doc.id,
+            ...(e.payload.doc.data() as {})
+          } as any;
+        });
+        this.stats = this.allstats.filter(x => x.matchid == this.match.id);
+        this.stats = this.stats.filter(x => x.gamenumber == this.selectedgame);
 
-            this.matchService.getPlayers().subscribe(data => {
-              this.players = data.map(e => {
-                return {
-                  id: e.payload.doc.id,
-                  ...e.payload.doc.data() as {}
-                } as PlayerWithId;
-              })
-              this.setupStatView();
-              this.showData();
-              this.showRotationalData();
-            });
-
+        this.matchService.getPlayers().subscribe(data => {
+          this.players = data.map(e => {
+            return {
+              id: e.payload.doc.id,
+              ...(e.payload.doc.data() as {})
+            } as PlayerWithId;
           });
+          this.setupStatView();
+          this.showData();
+          this.showRotationalData();
 
-
-      console.log(this.selectedGame)
+          var statIndex = 0;
+          for (let index = 0; index < this.stats.length; index++) {
+            var pArray = [];
+            for (let rotationIndex = 1; rotationIndex < 7; rotationIndex++) {
+              pArray.push(this.stats[index].rotation[rotationIndex]);
+            }
+            if (statIndex == 0) {
+              this.playerRotation.push(pArray);
+            } else {
+              var found = false;
+              this.playerRotation.forEach(element => {
+                if (element[0] === pArray[0] && element[1] === pArray[1]
+                  && element[2] === pArray[2] && element[3] === pArray[3]
+                  && element[4] === pArray[4] && element[5] === pArray[5]
+                  && element[6] === pArray[6]) {
+                    found = true
+                  }
+              });
+              if(!found) {
+                this.playerRotation.push(pArray);
+              }
+            }
+            statIndex += 1;
+          }
+          console.log(this.playerRotation);
+        });
+      });
     });
+  }
 
+  compare(arr1, arr2) {
+    if (!arr1 || !arr2) return;
+    let result;
+    arr1.forEach((e1, i) =>
+      arr2.forEach(e2 => {
+        if (e1.length > 1 && e2.length) {
+          result = this.compare(e1, e2);
+        } else if (e1 !== e2) {
+          result = false;
+        } else {
+          result = true;
+        }
+      })
+    );
 
-
+    return result;
   }
 
   showGame(event) {
     this.selectedgame = event.value;
     this.selectedGame = this.gamesPlayed.find(
-      game => game.gamenumber === event.value.toString() &&
-        game.matchid === this.match.id);
+      game =>
+        game.gamenumber === event.value.toString() &&
+        game.matchid === this.match.id
+    );
     this.setupStatView();
-    if (this.selectedGame)
-      this.showData();
+    if (this.selectedGame) this.showData();
     else {
-      this.selectedGame = new GameWithId()
-      this.selectedGame.homescore = 0
-      this.selectedGame.opponentscore = 0
+      this.selectedGame = new GameWithId();
+      this.selectedGame.homescore = 0;
+      this.selectedGame.opponentscore = 0;
     }
   }
 
   async getPlayers() {
-    this.matchService.dbPlayers.subscribe((players) => {
+    this.matchService.dbPlayers.subscribe(players => {
       this.players = players;
       this.setupStatView();
     });
@@ -144,7 +184,7 @@ export class SummaryComponent implements OnInit {
   }
 
   showRotationalData() {
-    this.matchgameStats = []
+    this.matchgameStats = [];
     this.allstats.forEach(element => {
       if (
         element.matchid == this.match.id &&
@@ -155,44 +195,39 @@ export class SummaryComponent implements OnInit {
     });
 
     //first get the rotations
-    var iRotation = 1
+    var iRotation = 1;
     this.rotations = [];
-    let rotationStrings = ""
-    this.matchgameStats.forEach( element => {
-      let rotationString = ""
+    let rotationStrings = "";
+    this.matchgameStats.forEach(element => {
+      let rotationString = "";
       //var obj = JSON.parse(element.pos)
       //rotationString = iRotation.toString() + ":"
       //for (let index = 1; index < obj.length; index++) {
-        //if (iRotation == 1) {
-          //const element = <CourtPosition>obj[index];
-          //rotationString = rotationString + element.posNo + "," + element.player.id + "|"
-          //var rotation: rotation = {}
-          //rotation.playerId = element.player.id;
-          //rotation.pos = element.posNo
-          //this.rotations.push(rotation);
-        //}
-        //else {
-        //  for (let index = 1; index = obj.length; index++) {
-        //    const element = obj[index];
+      //if (iRotation == 1) {
+      //const element = <CourtPosition>obj[index];
+      //rotationString = rotationString + element.posNo + "," + element.player.id + "|"
+      //var rotation: rotation = {}
+      //rotation.playerId = element.player.id;
+      //rotation.pos = element.posNo
+      //this.rotations.push(rotation);
+      //}
+      //else {
+      //  for (let index = 1; index = obj.length; index++) {
+      //    const element = obj[index];
 
-        //  }
-       // }
+      //  }
+      // }
 
-        //console.log(this.rotations);
-        //this.rotations.push()
+      //console.log(this.rotations);
+      //this.rotations.push()
       //}
       //rotationStrings = rotationStrings + "\r\n" + rotationString
       iRotation += 1;
-
-
-    })
-    console.log(rotationStrings)
-
-
+    });
+    console.log(rotationStrings);
   }
 
   showData() {
-
     this.allstats.forEach(element => {
       if (
         element.matchid == this.match.id &&
@@ -207,54 +242,45 @@ export class SummaryComponent implements OnInit {
         sv => sv.playerid === element.playerid
       );
       switch (element.stattype) {
-        case 'k':
+        case "k":
           this.statviews[index].k += 1;
           break;
-        case 'h':
-            this.statviews[index].h += 1;
-            break;
-        case 'he':
+        case "h":
+          this.statviews[index].h += 1;
+          break;
+        case "he":
           this.statviews[index].he += 1;
           break;
-        case 'b':
+        case "b":
           this.statviews[index].b += 1;
           break;
-        case 'bt':
+        case "bt":
           this.statviews[index].bt += 1;
           break;
-        case 'be':
+        case "be":
           this.statviews[index].be += 1;
           break;
-        case 'a':
+        case "a":
           this.statviews[index].a += 1;
           break;
-        case 'd':
+        case "d":
           this.statviews[index].d += 1;
           break;
-        case 'bhe':
+        case "bhe":
           this.statviews[index].bhe += 1;
           break;
-        case 'sre':
+        case "sre":
           this.statviews[index].sre += 1;
           break;
-        case 'se':
+        case "se":
           this.statviews[index].se += 1;
           break;
         default:
           break;
       }
-      this.pct = (this.statviews[index].k - this.statviews[index].he) /
-      (this.statviews[index].k + (this.statviews[index].h))
-
+      this.pct =
+        (this.statviews[index].k - this.statviews[index].he) /
+        (this.statviews[index].k + this.statviews[index].h);
     });
-
-
-
-
-
-
-
-
   }
 }
-

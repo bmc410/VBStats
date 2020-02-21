@@ -105,13 +105,20 @@ export interface rotation {
 
 export interface statEntry {
   statid?: number,
+  homescore?: number,
   matchid?: string,
   gamenumber?: number,
   stattype?: string,
   playerid?: string,
   statdate?: number,
-  pos?: Map<any,any>
+  pos?: Map<any,any>,
+  id?: string,
+  opponentscore?: number,
+  rotation: {1: string, 2: string, 3: string, 4: string, 5: string, 6: string},
+  subs: 0
 }
+
+
 
 export interface statModel {
   matchid: number;

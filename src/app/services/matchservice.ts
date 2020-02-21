@@ -93,7 +93,7 @@ export class MatchService {
   }
 
   getstats(g: GameWithId) {
-    return this.firestore.collection("games").doc(g.id).collection("stats").snapshotChanges();
+    return this.firestore.collection("games").doc(g.id).collection("stats", ref => ref.orderBy("statdate")).snapshotChanges();
     //return this.firestore.collection("stats").snapshotChanges();
   }
 

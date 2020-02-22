@@ -33,6 +33,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormField} from '@angular/material/form-field';
+import {MatSidenavModule} from '@angular/material/sidenav';
 
 import {MatSelectModule} from '@angular/material/select';
 import { FKpadComponent } from './components/controls/f-kpad/f-kpad.component';
@@ -46,6 +47,13 @@ import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreModule } fr
 import { AngularFireModule } from '@angular/fire';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
+import { HeaderComponent } from './components/navigation/header/header.component';
+import { SidenavListComponent } from './components/navigation/sidenav-list/sidenav-list.component';
+import { LayoutComponent } from './components/layout/layout.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatListModule} from '@angular/material/list';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -58,7 +66,10 @@ import 'firebase/firestore';
     FKpadComponent,
     RKpadComponent,
     SummaryComponent,
-    SKpadComponent
+    SKpadComponent,
+    LayoutComponent,
+    HeaderComponent,
+    SidenavListComponent
   ],
   imports: [
     BrowserModule,
@@ -80,12 +91,17 @@ import 'firebase/firestore';
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
+    MatTabsModule,
+    MatListModule,
+    MatMenuModule,
     DropdownModule,
     CheckboxModule,
     MatIconModule,
     MatButtonModule,
     MatInputModule,
     FormsModule,
+    MatSidenavModule,
+    MatToolbarModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule.enablePersistence(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

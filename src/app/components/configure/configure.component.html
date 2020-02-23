@@ -64,7 +64,7 @@
       <input [(ngModel)]="dilogOpponent" type="text" class="form-control" id="inputOpponent" placeholder="Opponent">
     </div>
     <div class="w-100"></div>
-    <div style="margin-top: 20px;" class="col">
+    <div style="margin-top: 2vw;" class="col">
       <mat-form-field style="width: 100%;">
         <mat-label style="font-weight: bold;">Choose a date</mat-label>
         <input [formControl]="gameDate" matInput [matDatepicker]="picker">
@@ -87,17 +87,17 @@
     </div>
   </div>
   <div style="margin-top: 10px;" class="row">
-    <div class="col">
+    <div class="col mb-2">
       <button (click)="start()" type="button" class="btn  btn-success btn-block">Start</button>
     </div>
-    <div class="col">
+    <div class="col mb-2">
       <button style="padding-right: 0px; padding-left: 0px;" (click)="summary()" type="button"
         class="btn btn-warning btn-block">Summary</button>
     </div>
-    <div class="col">
+    <div class="col mb-2">
       <button (click)="DeleteMatch()" type="button" class="btn btn-danger btn-block">Delete</button>
     </div>
-    <div class="col">
+    <div class="col mb-2">
       <button (click)="SaveMatch()" type="button" class="btn btn-info btn-block">Save</button>
     </div>
   </div>

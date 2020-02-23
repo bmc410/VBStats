@@ -107,7 +107,8 @@ export class MatchComponent implements OnInit {
       (this.playerPositions[container].player  &&
         !this.playerPositions[container].player.islibero))
       {
-      this.game.subs += 1;
+      //this.game.subs += 1;
+      this.updateGame('subs', 'a', '', null)
     }
 
     if (container === 4) {
@@ -304,8 +305,6 @@ export class MatchComponent implements OnInit {
 
   updateGame(team: string, action: any, stat: string, player: PlayerWithId) {
 
-    this.matchService.addPlayByPlay(this.game,this.playerPositions,stat,
-      player)
 
     if (team === "home") {
       if (action === "a"){
@@ -316,18 +315,26 @@ export class MatchComponent implements OnInit {
       }
     }
     else if (team === "opponent") {
-      if (action === "a")
+      if (action === "a") {
         this.game.opponentscore = this.game.opponentscore + 1
-      else
-        this.game.opponentscore = this.game.opponentscore - 1
       }
       else {
+        this.game.opponentscore = this.game.opponentscore - 1
+      }
+    }
+    else {
+        stat = "sub"
         if (action === "a")
           this.game.subs = this.game.subs + 1
         else
           this.game.subs = this.game.subs - 1
     }
+
+
     this.matchService.updateGame(this.game, this.playerPositions)
+    this.matchService.addPlayByPlay(this.game,this.playerPositions,stat,
+      player)
+
   }
 
   postStat(s: StatNib) {
@@ -388,6 +395,8 @@ export class MatchComponent implements OnInit {
   startMatch() {
     this.liberoDisabled = true;
     this.startHidden = true;
+    this.matchService.addPlayByPlay(this.game,this.playerPositions,"start",
+      null)
     //this.createFakeStats();
   }
 

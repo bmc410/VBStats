@@ -26,14 +26,14 @@ import { environment } from '../environments/environment';
 import {ToolbarModule} from 'primeng/toolbar';
 import { RouterModule, Routes } from '@angular/router';
 
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material/core';
+// import {MatDatepickerModule} from '@angular/material/datepicker';
+// import {MatNativeDateModule} from '@angular/material/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatIconModule} from '@angular/material/icon';
-import {MatButtonModule} from '@angular/material/button';
-import {MatFormField} from '@angular/material/form-field';
-import {MatSidenavModule} from '@angular/material/sidenav';
+// import {MatInputModule} from '@angular/material/input';
+// import {MatIconModule} from '@angular/material/icon';
+// import {MatButtonModule} from '@angular/material/button';
+// import {MatFormField} from '@angular/material/form-field';
+// import {MatSidenavModule} from '@angular/material/sidenav';
 
 import {MatSelectModule} from '@angular/material/select';
 import { FKpadComponent } from './components/controls/f-kpad/f-kpad.component';
@@ -50,10 +50,12 @@ import 'firebase/firestore';
 import { HeaderComponent } from './components/navigation/header/header.component';
 import { SidenavListComponent } from './components/navigation/sidenav-list/sidenav-list.component';
 import { LayoutComponent } from './components/layout/layout.component';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatListModule} from '@angular/material/list';
-import {MatMenuModule} from '@angular/material/menu';
+// import { MatToolbarModule } from '@angular/material/toolbar';
+// import {MatTabsModule} from '@angular/material/tabs';
+// import {MatListModule} from '@angular/material/list';
+// import {MatMenuModule} from '@angular/material/menu';
+// import {MatRadioGroup, MatRadioModule} from '@angular/material/radio';
+import { MaterialModule } from './components/material/material.module';
 
 @NgModule({
   declarations: [
@@ -88,20 +90,22 @@ import {MatMenuModule} from '@angular/material/menu';
     ToolbarModule,
     PanelModule,
     RouterModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatSelectModule,
-    MatTabsModule,
-    MatListModule,
-    MatMenuModule,
+    //MatDatepickerModule,
+    //MatNativeDateModule,
+    //MatSelectModule,
+    //MatTabsModule,
+    //MatListModule,
+    //MatMenuModule,
     DropdownModule,
     CheckboxModule,
-    MatIconModule,
-    MatButtonModule,
-    MatInputModule,
+    //MatIconModule,
+    //MatButtonModule,
+    //MatInputModule,
     FormsModule,
-    MatSidenavModule,
-    MatToolbarModule,
+    //MatSidenavModule,
+    //MatToolbarModule,
+    //MatRadioModule,
+    MaterialModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule.enablePersistence(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

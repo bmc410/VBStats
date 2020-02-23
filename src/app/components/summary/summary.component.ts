@@ -18,6 +18,18 @@ import { DialogModule } from "primeng/dialog";
 import { CalendarModule } from "primeng/calendar";
 import { MenuItem } from "primeng/api/menuitem";
 import { Router, ActivatedRoute } from "@angular/router";
+import { MatTableDataSource } from '@angular/material/table';
+interface Food {
+  value: string;
+  viewValue: string;
+}
+export interface PeriodicElement {
+  name?: string;
+  position?: number;
+  weight?: number;
+  symbol?: string;
+}
+
 
 @Component({
   selector: "app-summary",
@@ -38,6 +50,19 @@ export class SummaryComponent implements OnInit {
   selectedGame: GameWithId;
   games: number[] = [1, 2, 3, 4, 5];
   game = 1;
+  foods: Food[] = [
+    {value: 'Individual Stats', viewValue: 'Individual Stats'},
+    {value: 'pizza-1', viewValue: 'Play-By-Play'},
+    {value: 'tacos-2', viewValue: 'Rotation Analysis'}
+  ];
+  ELEMENT_DATA: PeriodicElement[] = [
+    {name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
+    {name: 'Helium', weight: 4.0026, symbol: 'He'},
+    {name: 'Lithium', weight: 6.941, symbol: 'Li'},
+  ];
+  displayedColumns: string[] = ['home', 'opponent'];
+  dataSource = this.ELEMENT_DATA;
+
 
   playerRotation: any[] = [];
 

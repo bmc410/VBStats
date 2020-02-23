@@ -1,7 +1,7 @@
 <div style="font-size: 16px; margin-left: 15px; margin-top: 15px;" class="ui-g">
 
   <div cdkDropList #todoList="cdkDropList" style="background-color: white;" [cdkDropListData]="players"
-    [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]" class="player-list col-2 "
+    [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]" class="player-list col "
     (cdkDropListDropped)="drop($event,0)">
     <div style="margin-top: 15px;" class="row d-flex flex-nowrap">
       <div style="text-align: left;" class="col-2">
@@ -33,6 +33,7 @@
 
   <div style="font-size: 16px; margin-right: -5px;" class="col-10">
     <div>
+
       <div class="panel panel-default">
         <!-- <div > -->
         <!-- <div class="container"> -->
@@ -118,10 +119,12 @@
             <!-- <div style="font-weight: bolder;" class="col-sm"><input />{{ subs }}</div> -->
           </div>
 
-          <div style="text-align: center; margin-bottom: 2px; margin-top: 2px;  font-size:medium;" class="col">
+          <div style="text-align: center; margin-bottom: 2px; margin-top: 2px;  font-size:medium;"
+            class="col d-none d-lg-block">
             <div class="col-sm">Game#</div>
             <div style="font-weight: bolder;" class="col-sm">{{ game?.gamenumber }}</div>
           </div>
+
           <div style="margin-right: 15px;" class="col align-self-end align-self-center">
             <!-- <div class="col-sm">  -->
             <button class="btn btn-sm pull-right" style="margin-left: 10px;" pButton (click)="rotate()" type="button"
@@ -132,6 +135,7 @@
               icon="pi pi-caret-right" class="ui-button-success pull-right btn btn-sm"></button>
             <!-- </div> -->
           </div>
+
         </div>
         <!-- </div> -->
 
@@ -139,7 +143,7 @@
           <div class="col col-sm-4">
             <div id="pos4" style="overflow: hidden;" class="panel panel-primary">
               <div class="panel-heading"><strong>{{ playerPositions[4].playerPos }}</strong></div>
-              <div cdkDropList #pos4="cdkDropList" (cdkDropListDropped)="drop($event,4)" style="text-align: center"
+              <div cdkDropList #pos4="cdkDropList" (cdkDropListDropped)="drop($event,4)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
                 <app-f-kpad posNum="4" (statPost)="postStat($event)"></app-f-kpad>
 
@@ -150,7 +154,7 @@
           <div class="col col-sm-4" id="pos3">
             <div class="panel panel-primary">
               <div class="panel-heading"><strong>{{ playerPositions[3].playerPos }}</strong></div>
-              <div cdkDropList #pos3="cdkDropList" (cdkDropListDropped)="drop($event,3)" style="text-align: center;"
+              <div cdkDropList #pos3="cdkDropList" (cdkDropListDropped)="drop($event,3)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
                 <app-f-kpad posNum="3" (statPost)="postStat($event)"></app-f-kpad>
               </div>
@@ -160,7 +164,7 @@
           <div class="col col-sm-4" id="pos2">
             <div class="panel panel-primary">
               <div class="panel-heading"><strong>{{ playerPositions[2].playerPos }}</strong></div>
-              <div cdkDropList #pos2="cdkDropList" (cdkDropListDropped)="drop($event,2)" style="text-align: center;"
+              <div cdkDropList #pos2="cdkDropList" (cdkDropListDropped)="drop($event,2)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
                 <app-f-kpad posNum="2" (statPost)="postStat($event)"></app-f-kpad>
               </div>
@@ -172,7 +176,7 @@
           <div class="col col-sm-4" id="pos5">
             <div class="panel panel-primary">
               <div class="panel-heading"><strong>{{ playerPositions[5].playerPos }}</strong></div>
-              <div cdkDropList #pos5="cdkDropList" (cdkDropListDropped)="drop($event,5)" style="text-align: center;"
+              <div cdkDropList #pos5="cdkDropList" (cdkDropListDropped)="drop($event,5)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
                 <app-r-kpad posNum="5" (statPost)="postStat($event)"></app-r-kpad>
 
@@ -183,7 +187,7 @@
           <div class="col col-sm-4" id="pos6">
             <div class="panel panel-primary">
               <div class="panel-heading"><strong>{{ playerPositions[6].playerPos }}</strong></div>
-              <div cdkDropList #pos6="cdkDropList" (cdkDropListDropped)="drop($event,6)" style="text-align: center;"
+              <div cdkDropList #pos6="cdkDropList" (cdkDropListDropped)="drop($event,6)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
                 <app-r-kpad posNum="6" (statPost)="postStat($event)"></app-r-kpad>
               </div>
@@ -193,7 +197,7 @@
           <div class="col col-sm-4" id="pos1">
             <div class="panel panel-primary">
               <div class="panel-heading"><strong>{{ playerPositions[1].playerPos }}</strong></div>
-              <div cdkDropList #pos1="cdkDropList" (cdkDropListDropped)="drop($event,1)" style="text-align: center;"
+              <div cdkDropList #pos1="cdkDropList" (cdkDropListDropped)="drop($event,1)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
                 <app-s-kpad posNum="1" (statPost)="postStat($event)"></app-s-kpad>
               </div>

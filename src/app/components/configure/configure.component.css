@@ -12,3 +12,7 @@ body {
 ::ng-deep .cdk-overlay-container mat-datepicker-content{
   z-index:2000;
 }
+
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 5px;
+}

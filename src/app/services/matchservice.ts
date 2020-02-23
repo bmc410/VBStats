@@ -99,7 +99,7 @@ export class MatchService {
   }
 
   getPlayByPlay(g: GameWithId) {
-    return this.firestore.collection("games").doc(g.id).collection("playbyplay", ref => ref.orderBy("pbpDate")).snapshotChanges();
+    return this.firestore.collection("games").doc(g.id).collection("playbyplay", ref => ref.orderBy("pbpDate", "desc")).snapshotChanges();
   }
 
   getGames() {
@@ -143,6 +143,10 @@ export class MatchService {
 
   }
 
+  courtPositionToArray(cp: CourtPosition[]) {
+
+  }
+
   addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId, action: string = "" ) {
     var action = ""
 
@@ -168,6 +172,18 @@ export class MatchService {
       case "te":
           action = "Team error by "
           break;
+      case "start":
+          action = "Start [" + cp[1].player.firstName + ", "
+          + cp[2].player.firstName + ", " + cp[3].player.firstName + ", "
+          + cp[4].player.firstName + ", " + cp[5].player.firstName + ", "
+          + cp[6].player.firstName + "]"
+          break;
+      case "sub":
+          action = "Sub [" + cp[1].player.firstName + ", "
+            + cp[2].player.firstName + ", " + cp[3].player.firstName + ", "
+            + cp[4].player.firstName + ", " + cp[5].player.firstName + ", "
+            + cp[6].player.firstName + "]"
+            break;
       default:
         action = action
         break;

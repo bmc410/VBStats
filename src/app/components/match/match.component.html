@@ -32,8 +32,6 @@
   </div>
 
   <div style="font-size: 2vw; margin-right: -5px;" class="col-10">
-    <div>
-
       <div class="panel panel-default">
         <!-- <div > -->
         <!-- <div class="container"> -->
@@ -48,14 +46,14 @@
             <div style="color: #337ab7; margin-bottom: 5px;">{{match.home}}</div>
 
             <div  class="input-group justify-content-center">
-              <div (click)="updateGame('home', 's', '', null)" class="input-group-prepend" id="button-addon3">
+              <div (click)="updateGame('home', 's', 'te', null)" class="input-group-prepend" id="button-addon3">
                 <span style="color: lightcoral;" class="glyphicon glyphicon-step-backward
                 "></span>
                 <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">D</button> -->
               </div><span style="width: 50px;  font-weight:bolder; color: #337ab7; font-family: Digital; font-size: xx-large; color: 337ab7;"
               >
                 {{game?.homescore}}</span>
-              <div (click)="updateGame('home', 'a', '', null)" class="input-group-append" id="button-addon3">
+              <div (click)="updateGame('home', 'a', 'tp', null)" class="input-group-append" id="button-addon3">
                 <span style="color: lightseagreen;" class="glyphicon glyphicon-step-forward
                 "></span>
                 <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">U</button> -->
@@ -76,14 +74,14 @@
             <!-- <div class="row"> -->
             <div style="color: forestgreen; margin-bottom: 5px;">{{match.opponent}}</div>
             <div  class="input-group justify-content-center">
-              <div (click)="updateGame('opponent', 's', '', null)" class="input-group-prepend" id="button-addon3">
+              <div (click)="updateGame('opponent', 's', 'tp', null)" class="input-group-prepend" id="button-addon3">
                 <span style="color: lightcoral;" class="glyphicon glyphicon-step-backward
                 "></span>
                 <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">D</button> -->
               </div><span style="width: 50px;  font-weight:bolder; color: forestgreen; font-family: Digital; font-size: xx-large; color: 337ab7;"
               >
                 {{game?.opponentscore}}</span>
-              <div (click)="updateGame('opponent', 'a', '', null)" class="input-group-append" id="button-addon3">
+              <div (click)="updateGame('opponent', 'a', 'te', null)" class="input-group-append" id="button-addon3">
                 <span style="color: lightseagreen;" class="glyphicon glyphicon-step-forward
                 "></span>
                 <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">U</button> -->
@@ -206,8 +204,6 @@
         </div>
 
       </div>
-
-    </div>
   </div>
 
   <p-dialog header="Create Match" [(visible)]="display">

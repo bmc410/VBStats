@@ -24,6 +24,32 @@
         </ng-template>
       </p-table>
     </p-tabPanel>
+
+    <p-tabPanel header="Teams">
+      <p-table [value]="players" selectionMode="single" [(selection)]="selectedPlayer"
+        (onRowSelect)="onPlayerSelect($event)">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>#</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-player>
+          <tr [pSelectableRow]="player">
+            <td>{{ player.jersey }}</td>
+            <td>{{ player.firstName }}</td>
+            <td>{{ player.lastName  }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="summary" let-rowData>
+          <div style="text-align:left">
+            <button type="button" pButton icon="fa fa-plus" (click)="showPlayerDialog()" label="Add"></button>
+          </div>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+
     <p-tabPanel header="Players">
       <p-table [value]="players" selectionMode="single" [(selection)]="selectedPlayer"
         (onRowSelect)="onPlayerSelect($event)">

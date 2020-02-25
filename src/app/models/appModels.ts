@@ -76,6 +76,18 @@ export class Game {
   subs?: number;
 }
 
+
+export class Team {
+  teamName?: string;
+}
+
+
+export class TeamWithId extends Team {
+  id?: string;
+}
+
+
+
 export class GameWithId extends Game {
   id?: string;
 }

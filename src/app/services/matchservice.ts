@@ -170,7 +170,10 @@ export class MatchService {
           action = "Service error by "
           break;
       case "te":
-          action = "Team error by "
+          action = "Team error"
+          break;
+      case "tp":
+            action = "Team point"
           break;
       case "start":
           action = "Start [" + cp[1].player.firstName + ", "

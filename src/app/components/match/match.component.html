@@ -4,10 +4,10 @@
     [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]" class="player-list col "
     (cdkDropListDropped)="drop($event,0)">
     <div style="margin-top: 15px;" class="row d-flex flex-nowrap">
-      <div style="text-align: left;" class="col-2">
+      <div style="text-align: left; font-size: 1vw;" class="col-2">
         L
       </div>
-      <div style="font-size: 2vw;">
+      <div style="font-size: 1.5vw;">
         Players
       </div>
       <div style="font-weight: bolder;" class="col d-flex justify-content-end">
@@ -20,12 +20,12 @@
         <div style="text-align: left;" class="col-2">
           <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true"></p-checkbox>
         </div>
-        <div class="col-3">
+        <div style="font-size: 1.5vw;" class="col-3 btn-responsive">
           <img *cdkDragPreview style="width: 50px;" src='../../../assets/icons/girl-volleyball-player-hitting.png'>
           {{ player.firstName }}
         </div>
         <div class="col-7 d-flex justify-content-end">
-          <img style="width: 20px;" src='../../../assets/icons/arrow.png'>
+          <img class="img-fluid" style="width: 20px;" src='../../../assets/icons/arrow.png'>
         </div>
       </div>
     </div>
@@ -40,7 +40,7 @@
           class="row  align-items-center">
 
           <div
-            style="text-align: center; margin-bottom: 2px; margin-top: 2px; margin-left: 15px; font-size: large;"
+            style="text-align: center; margin-bottom: 5px; margin-top: 5px; margin-left: 15px; font-size: 1.5vw;"
             class="col-3">
             <!-- <div  class="row"> -->
             <div style="color: #337ab7; margin-bottom: 5px;">{{match.home}}</div>
@@ -50,7 +50,7 @@
                 <span style="color: lightcoral;" class="glyphicon glyphicon-step-backward
                 "></span>
                 <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">D</button> -->
-              </div><span style="width: 50px;  font-weight:bolder; color: #337ab7; font-family: Digital; font-size: xx-large; color: 337ab7;"
+              </div><span style="width: 50px;  font-weight:bolder; color: #337ab7; font-family: Digital; font-size: 2.5vw; color: 337ab7;"
               >
                 {{game?.homescore}}</span>
               <div (click)="updateGame('home', 'a', 'tp', null)" class="input-group-append" id="button-addon3">
@@ -70,7 +70,7 @@
           </div>
 
           <div
-            style="text-align: center; margin-bottom: 2px; margin-top: 2px; font-size: large;" class="col-3">
+            style="text-align: center; margin-bottom: 5px; margin-top: 5px; font-size: 1.5vw;" class="col-3">
             <!-- <div class="row"> -->
             <div style="color: forestgreen; margin-bottom: 5px;">{{match.opponent}}</div>
             <div  class="input-group justify-content-center">
@@ -78,7 +78,7 @@
                 <span style="color: lightcoral;" class="glyphicon glyphicon-step-backward
                 "></span>
                 <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">D</button> -->
-              </div><span style="width: 50px;  font-weight:bolder; color: forestgreen; font-family: Digital; font-size: xx-large; color: 337ab7;"
+              </div><span style="width: 50px;  font-weight:bolder; color: forestgreen; font-family: Digital; font-size: 2.5vw; color: 337ab7;"
               >
                 {{game?.opponentscore}}</span>
               <div (click)="updateGame('opponent', 'a', 'te', null)" class="input-group-append" id="button-addon3">
@@ -97,7 +97,7 @@
           </div>
 
           <div
-            style="text-align: center; margin-bottom: 2px; margin-top: 2px; vertical-align: center;  font-size:medium;"
+            style="text-align: center; margin-bottom: 2px; margin-top: 2px; vertical-align: center;  font-size:1.5vw;"
             class="col align-items-center">
             <div class="col-sm">Subs</div>
             <div class="input-group justify-content-center">
@@ -105,7 +105,7 @@
                 <span style="color: lightcoral;" class="glyphicon glyphicon-step-backward
                 "></span>
                 <!-- <button style="width: 5px;" class="btn btn-outline-secondary" type="button">D</button> -->
-              </div><span style="width: 50px;">
+              </div><span style="width: 50px; font-size: 1.5vw;">
                 {{ this.game.subs }}</span>
               <div (click)="updateGame('subs', 'a', '', null)" class="input-group-append" id="button-addon3">
                 <span style="color: lightseagreen;" class="glyphicon glyphicon-step-forward
@@ -125,13 +125,15 @@
 
           <div style="margin-right: 15px;" class="col align-self-end align-self-center">
             <!-- <div class="col-sm">  -->
-            <button class="btn btn-sm pull-right" style="margin-left: 10px;" pButton (click)="rotate()" type="button"
-              icon="pi pi-reply"></button>
+              <button style="margin-left: 5px; background-color: #007ad9; color: white;" (click)="rotate()" type="button" class="float-right btn btn-responsive">
+                <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+              </button>
             <!-- </div> -->
             <!-- <div class="col-sm"> -->
-            <button [hidden]="startHidden" style="margin-right: 5px;" pButton type="button" (click)="startMatch()"
-              icon="pi pi-caret-right" class="ui-button-success pull-right btn btn-sm"></button>
-            <!-- </div> -->
+              <button [hidden]="startHidden" style="margin-left: 5px; background-color: #34a835; color: white;"  type="button" (click)="startMatch()" class="float-right btn btn-responsive">
+                <span class="glyphicon glyphicon-play
+                " aria-hidden="true"></span>
+              </button>            <!-- </div> -->
           </div>
 
         </div>

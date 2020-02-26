@@ -77,8 +77,8 @@
   </p-tabView>
 </div>
 
-<p-dialog header="Match Details" [(visible)]="matchDialogDisplay" [focusOnShow]="false" [responsive]="true" showEffect="fade"
-  [modal]="true" [style]="{ width: '70%' }">
+<p-dialog header="Match Details" [(visible)]="matchDialogDisplay" [focusOnShow]="false" [responsive]="true"
+  showEffect="fade" [modal]="true" [style]="{ width: '70%' }">
 
   <div class="row align-items-center">
     <div class="col">
@@ -99,16 +99,27 @@
       </mat-form-field>
     </div>
     <div class="col">
-      <label for="inputEmail">Game</label>
-      <div class="btn-toolbar" role="toolbar">
+      <label for="inputEmail">Game</label><br/>
+      <!-- <div class="btn-group" role="group" aria-label="...">
+        <button style="margin-right: 1vw;" type="button" class="btn btn-default btn-responsive">1</button>
+        <button style="margin-right: 1vw;" type="button" class="btn btn-default btn-responsive">2</button>
+        <button style="margin-right: 1vw;" type="button" class="btn btn-default btn-responsive">3</button>
+        <button style="margin-right: 1vw;" type="button" class="btn btn-default btn-responsive">4</button>
+        <button type="button" class="btn btn-default btn-responsive">5</button>
 
-        <mat-radio-group labelPosition="before" aria-label="Game">
-          <mat-radio-button (click)="setGame(1)" value="1"></mat-radio-button>
+      </div> -->
+      <div class="d-flex no-wrap">
+          <button (click)="setGame(1)" style="margin-right: .7vw;" color="" mat-mini-fab>1</button>
+          <button (click)="setGame(2)" style="margin-right: .7vw;" color="" mat-mini-fab>2</button>
+          <button (click)="setGame(3)" style="margin-right: .7vw;" color="" mat-mini-fab>3</button>
+          <button (click)="setGame(4)" style="margin-right: .7vw;" color="" mat-mini-fab>4</button>
+          <button (click)="setGame(5)" color="" mat-mini-fab>5</button>
+
+          <!-- <mat-radio-button (click)="setGame(1)" value="1"></mat-radio-button>
           <mat-radio-button (click)="setGame(2)" value="2"></mat-radio-button>
           <mat-radio-button (click)="setGame(3)" value="3"></mat-radio-button>
           <mat-radio-button (click)="setGame(4)" value="4"></mat-radio-button>
-          <mat-radio-button (click)="setGame(5)" value="5"></mat-radio-button>
-        </mat-radio-group>
+          <mat-radio-button (click)="setGame(5)" value="5"></mat-radio-button> -->
       </div>
     </div>
   </div>
@@ -132,8 +143,8 @@
 </p-dialog>
 
 
-<p-dialog header="Player Details" [(visible)]="playerDialogDisplay" [focusOnShow]="false" [responsive]="true" showEffect="fade"
-  [modal]="true" [style]="{ width: '400px' }">
+<p-dialog header="Player Details" [(visible)]="playerDialogDisplay" [focusOnShow]="false" [responsive]="true"
+  showEffect="fade" [modal]="true" [style]="{ width: '400px' }">
   <div class="ui-g ui-fluid" *ngIf="player">
     <div class="ui-g-12">
       <div class="ui-g-4">
@@ -164,7 +175,8 @@
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button style=" font-size:small; background-color: crimson;" type="button" pButton icon="fa fa-close"
         (click)="DeletePlayer()" label="Delete"></button>
-      <button style=" font-size:small;" type="button" pButton icon="fa fa-check" (click)="SavePlayer()" label="Save"></button>
+      <button style=" font-size:small;" type="button" pButton icon="fa fa-check" (click)="SavePlayer()"
+        label="Save"></button>
     </div>
   </p-footer>
 </p-dialog>

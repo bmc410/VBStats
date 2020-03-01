@@ -93,6 +93,9 @@ export class SummaryComponent implements OnInit {
           game.matchid === this.match.id
       );
 
+      if (!this.selectedGame)
+        return
+
       this.matchService.getstats(this.selectedGame).subscribe(data => {
         this.allstats = data.map(e => {
           return {

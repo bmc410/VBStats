@@ -10,7 +10,8 @@ import {
   PlayerWithId,
   Game,
   GameWithId,
-  statEntry
+  statEntry,
+  TeamWithId
 } from "src/app/models/appModels";
 import { MatchService } from "src/app/services/matchservice";
 import {
@@ -35,6 +36,8 @@ export class MatchComponent implements OnInit {
   games: GameWithId[] = [];
   game: GameWithId;
   match: gameMatch;
+  teams: TeamWithId[] = [];
+  team: TeamWithId;
   display = false;
   matchDate: Date;
   matchStats: Stat[] = [];
@@ -189,8 +192,6 @@ export class MatchComponent implements OnInit {
     this.gameNumber = this.match.gameNumber;
     this.game.subs = 0;
 
-
-
     this.matchService.getGames().subscribe(data => {
       this.games = data.map(e => {
         return {
@@ -214,7 +215,7 @@ export class MatchComponent implements OnInit {
       else {
 
         this.matchService.getPlayers().subscribe(data => {
-          this.players = data.map(e => {
+          this.allPlayers = data.map(e => {
             return {
               id: e.payload.doc.id,
               ...e.payload.doc.data() as {}
@@ -222,7 +223,14 @@ export class MatchComponent implements OnInit {
 
           })
 
-          this.allPlayers = this.players
+          this.players = this.allPlayers
+          for (let index = 1; index < this.playerPositions.length; index++) {
+            const element = this.playerPositions[index];
+            if (element.player)
+              this.players = this.players.filter(x => x.id != element.player.id)
+          }
+
+
           this.matchService.getstats(this.game).subscribe(data => {
             this.stats = data.map(e => {
               return {
@@ -231,54 +239,24 @@ export class MatchComponent implements OnInit {
               } as statEntry;
             })
 
-
-              if (this.stats && this.stats.length > 0) {
-              var r = this.stats[this.stats.length-1]
-              var pos = r.rotation
-              for (let i = 1; i < 7; i++) {
-                var p1 = this.allPlayers.filter(p => p.firstName === pos[i])[0]
-                this.playerPositions[i].posNo = i;
-                this.playerPositions[i].player = p1;
-                this.playerPositions[i].playerPos =
-                  p1?.firstName + " - " + p1?.jersey;
-                this.players = this.players.filter(x => x.id != p1.id)
-              }
-
-          }
-
-
+            // if (this.stats && this.stats.length > 0) {
+            //   this.startMatch();
+            //   var r = this.stats[this.stats.length-1]
+            //   var pos = r.rotation
+            //   for (let i = 1; i < 7; i++) {
+            //     var p1 = this.allPlayers.filter(p => p.firstName === pos[i])[0]
+            //     this.playerPositions[i].posNo = i;
+            //     this.playerPositions[i].player = p1;
+            //     this.playerPositions[i].playerPos =
+            //       p1?.firstName + " - " + p1?.jersey;
+            //     this.players = this.players.filter(x => x.id != p1.id)
+            //   }
+            // }
+          });
         });
-
-
-
-
-
-
-
-
-
-
-
-        });
-
-
-
-
       }
-
-
-      //console.log(this.game)
     });
 
-    // this.matchService.gameData$.subscribe(
-    //   gameData$ => {
-    //     if (gameData$) {
-    //     this.game = gameData$
-    //     this.homescore = gameData$.homescore
-    //     this.opponentscore = gameData$.opponentscore
-    //     }
-    //   }
-    // )
   }
 
   rotate() {
@@ -394,8 +372,11 @@ export class MatchComponent implements OnInit {
   startMatch() {
     this.liberoDisabled = true;
     this.startHidden = true;
-    this.matchService.addPlayByPlay(this.game,this.playerPositions,"start",
+    if (this.stats.length == 0) {
+       this.matchService.addPlayByPlay(this.game,this.playerPositions,"start",
       null)
+    }
+
     //this.createFakeStats();
   }
 

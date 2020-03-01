@@ -41,6 +41,7 @@ import { RKpadComponent } from './components/controls/r-kpad/r-kpad.component';
 import { SummaryComponent } from './components/summary/summary.component';
 import {DropdownModule} from 'primeng/dropdown';
 import {CheckboxModule} from 'primeng/checkbox';
+import {ListboxModule} from 'primeng/listbox'
 import { DexieService } from './services/dexie.service';
 import { SKpadComponent } from './components/controls/s-kpad/s-kpad.component';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreModule } from '@angular/fire/firestore';
@@ -90,6 +91,7 @@ import { MaterialModule } from './components/material/material.module';
     ToolbarModule,
     PanelModule,
     RouterModule,
+    ListboxModule,
     //MatDatepickerModule,
     //MatNativeDateModule,
     //MatSelectModule,

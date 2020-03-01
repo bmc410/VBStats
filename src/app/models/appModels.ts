@@ -11,12 +11,16 @@ export class Player {
   firstName?: string;
   lastName?: string;
   islibero?: boolean = false;
+  playerid?: string;
+  fullName?: string;
 
 
-  constructor(jersey: string, fname: string, lastname: string, libero: boolean) {
+  constructor(jersey: string, fname: string, lastname: string, libero: boolean,
+    playerId?: string) {
     this.jersey = jersey;
     this.firstName = fname;
     this.lastName = lastname;
+    this.playerid = playerId;
   }
 }
 
@@ -76,9 +80,18 @@ export class Game {
   subs?: number;
 }
 
+export class TeamPlayer{
+  playerId: string
+}
+
+
+export class TeamPlayerWithID extends TeamPlayer{
+  id: string
+}
+
 
 export class Team {
-  teamName?: string;
+  TeamName?: string;
 }
 
 

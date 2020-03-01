@@ -13,7 +13,9 @@ import {
   MatchWithId,
   PlayerNib,
   CourtPosition,
-  PointPlay
+  PointPlay,
+  TeamWithId,
+  TeamPlayer
 } from "../models/appModels";
 import Dexie from "dexie";
 import {
@@ -40,10 +42,13 @@ export class MatchService {
   dbMatches: Observable<any>;
   dbStats: Observable<any>;
   dbGames: Observable<any>;
+  dbTeams: Observable<any>;
   playerCol: AngularFirestoreCollection<PlayerWithId>;
   matchCol: AngularFirestoreCollection<MatchWithId>;
   statCol: AngularFirestoreCollection<statEntry>;
   gameCol: AngularFirestoreCollection<GameWithId>;
+  teamCol: AngularFirestoreCollection<TeamWithId>;
+
   //mappedPos = new Array();
 
   constructor(
@@ -60,6 +65,7 @@ export class MatchService {
     this.dbMatches = firestore.collection("matches").valueChanges();
     this.dbStats = firestore.collection("stats").valueChanges();
     this.dbGames = firestore.collection("games").valueChanges();
+    this.dbTeams = firestore.collection("teams").valueChanges();
   }
 
   private itemDoc: AngularFirestoreDocument<PlayerWithId>;
@@ -68,6 +74,7 @@ export class MatchService {
   private matches: MatchWithId[] = [];
   private stats: Stat[] = [];
   private games: GameWithId[] = [];
+  private teams: TeamWithId[] = [];
 
   //private db: any;
   //private _gamewithId: GameWithId;
@@ -102,8 +109,16 @@ export class MatchService {
     return this.firestore.collection("games").doc(g.id).collection("playbyplay", ref => ref.orderBy("pbpDate", "desc")).snapshotChanges();
   }
 
+  getPlayersByTeamId(t: TeamWithId) {
+    return this.firestore.collection("teams").doc(t.id).collection("players").snapshotChanges();
+  }
+
   getGames() {
     return this.firestore.collection("games").snapshotChanges();
+  }
+
+  getTeams() {
+    return this.firestore.collection("teams").snapshotChanges();
   }
 
   updatePlayer(p: PlayerWithId) {
@@ -214,6 +229,22 @@ export class MatchService {
 
   }
 
+  upDateTeam(t: TeamWithId) {
+    var team = this.firestore.collection("teams").doc(t.id);
+
+    return team
+    .update({
+      teamName: t.TeamName
+    })
+    .then(function() {
+      console.log("Document successfully updated!");
+    })
+    .catch(function(error) {
+      // The document probably doesn't exist.
+      console.error("Error updating document: ", error);
+    });
+
+  }
 
 
   updateGame(g: GameWithId, cp: CourtPosition[]) {
@@ -260,6 +291,16 @@ export class MatchService {
   createPBPInFirestore(pbp:any) {
     return this.firestore.collection("games").doc(pbp.id).collection("playbyplay").add(pbp);
   }
+  createTeamInFirestore(team:any) {
+    return this.firestore.collection("teams").doc(team.id).collection("team").add(team);
+  }
+  AddPlayerToFirestoreTeam(team:any, tp: TeamPlayer) {
+    return this.firestore.collection("teams").doc(team.id).collection("players").add(tp);
+  }
+  RemovePlayerFromFirestoreTeam(team:any, tpId: string) {
+    return this.firestore.collection("teams").doc(team.id).collection("players").doc(tpId).delete();
+  }
+
 
   addPlayers(): PlayerWithId[] {
     this.players = [];
@@ -301,6 +342,14 @@ export class MatchService {
     return this.createGameInFirestore(game);
   }
 
+  createTeam(t: TeamWithId) {
+    let team = {
+      teamName: t.TeamName
+    };
+    return this.createTeamInFirestore(team);
+  }
+
+
 
   getPlayerById(id: number) {
     // let p = this.dbPlayers.
@@ -310,6 +359,21 @@ export class MatchService {
     //   .first(data => {
     //     return data;
     //   });
+  }
+
+  saveTeam(t: TeamWithId) {
+    if (!t.id) {
+      let team = {
+        TeamName: t.TeamName
+      };
+      this.createTeamInFirestore(t);
+    } else {
+      let team = {
+        TeamName: t.TeamName,
+        id: t.id
+      };
+      this.upDateTeam(team)
+    }
   }
 
   savePlayer(p: PlayerWithId) {

@@ -14,7 +14,7 @@
           <tr [pSelectableRow]="match">
             <td>{{ match.home }}</td>
             <td>{{ match.opponent }}</td>
-            <td>{{ match.displaydate | date }}</td>
+            <td>{{ match.displaydate | date:'short' }}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary" let-rowData>
@@ -26,20 +26,15 @@
     </p-tabPanel>
 
     <p-tabPanel header="Teams">
-      <p-table [value]="players" selectionMode="single" [(selection)]="selectedPlayer"
-        (onRowSelect)="onPlayerSelect($event)">
+      <p-table [value]="teams" selectionMode="single" [(selection)]="selectedTeam" (onRowSelect)="onTeamSelect($event)">
         <ng-template pTemplate="header">
           <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Team Name</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-player>
-          <tr [pSelectableRow]="player">
-            <td>{{ player.jersey }}</td>
-            <td>{{ player.firstName }}</td>
-            <td>{{ player.lastName  }}</td>
+        <ng-template pTemplate="body" let-team>
+          <tr [pSelectableRow]="team">
+            <td>{{ team.TeamName }}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary" let-rowData>
@@ -99,7 +94,7 @@
       </mat-form-field>
     </div>
     <div class="col">
-      <label for="inputEmail">Game</label><br/>
+      <label for="inputEmail">Game</label><br />
       <!-- <div class="btn-group" role="group" aria-label="...">
         <button style="margin-right: 1vw;" type="button" class="btn btn-default btn-responsive">1</button>
         <button style="margin-right: 1vw;" type="button" class="btn btn-default btn-responsive">2</button>
@@ -109,13 +104,13 @@
 
       </div> -->
       <div class="d-flex no-wrap">
-          <button (click)="setGame(1)" style="margin-right: .7vw;" color="" mat-mini-fab>1</button>
-          <button (click)="setGame(2)" style="margin-right: .7vw;" color="" mat-mini-fab>2</button>
-          <button (click)="setGame(3)" style="margin-right: .7vw;" color="" mat-mini-fab>3</button>
-          <button (click)="setGame(4)" style="margin-right: .7vw;" color="" mat-mini-fab>4</button>
-          <button (click)="setGame(5)" color="" mat-mini-fab>5</button>
+        <button (click)="setGame(1)" style="margin-right: .7vw;" color="" mat-mini-fab>1</button>
+        <button (click)="setGame(2)" style="margin-right: .7vw;" color="" mat-mini-fab>2</button>
+        <button (click)="setGame(3)" style="margin-right: .7vw;" color="" mat-mini-fab>3</button>
+        <button (click)="setGame(4)" style="margin-right: .7vw;" color="" mat-mini-fab>4</button>
+        <button (click)="setGame(5)" color="" mat-mini-fab>5</button>
 
-          <!-- <mat-radio-button (click)="setGame(1)" value="1"></mat-radio-button>
+        <!-- <mat-radio-button (click)="setGame(1)" value="1"></mat-radio-button>
           <mat-radio-button (click)="setGame(2)" value="2"></mat-radio-button>
           <mat-radio-button (click)="setGame(3)" value="3"></mat-radio-button>
           <mat-radio-button (click)="setGame(4)" value="4"></mat-radio-button>
@@ -177,6 +172,75 @@
         (click)="DeletePlayer()" label="Delete"></button>
       <button style=" font-size:small;" type="button" pButton icon="fa fa-check" (click)="SavePlayer()"
         label="Save"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+<p-dialog [baseZIndex]=9999 [autoZIndex]="false" header="Team Details" [(visible)]="teamDialogDisplay" [focusOnShow]="false"
+  showEffect="fade" [modal]="true" [style]="{ width: '60vw' }" styleClass="teamdialog">
+  <div class="container">
+    <div class="row align-items-center mb-3">
+      <div class="col align-middle">
+        <label for="teamname">Team Name</label>
+      </div>
+      <div class="col">
+        <input pInputText id="teamname" [(ngModel)]="selectedTeamName" autofocus />
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col">
+        <p-table [scrollable]="true" scrollHeight="10vw" [value]="teamPlayers" selectionMode="single"
+          [(selection)]="selectedTeamPlayer" >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>#</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-teamPlayer>
+            <tr [pSelectableRow]="teamPlayer">
+              <td>{{ teamPlayer.jersey }}</td>
+              <td>{{ teamPlayer.firstName }}</td>
+              <td>{{ teamPlayer.lastName  }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="summary" let-rowData>
+            <div class="row flex no-wrap">
+              <div class="col" style="text-align:left">
+                <button (click)="AddPlayerToTeam()" class="btn btn-sm btn-responsive btn-success" type="button">Add Player</button>
+              </div>
+              <div class="col" style="text-align:right">
+                <button (click)="RemovePlayer()" class="btn btn-sm btn-responsive btn-danger" type="button">Remove Player</button>
+              </div>
+            </div>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button style=" font-size:small;" type="button" pButton icon="fa fa-check" (click)="SaveTeam()"
+        label="Save"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
+<p-dialog header="Player List" [(visible)]="playersDialogListDisplay" [focusOnShow]="false" [responsive]="true"
+  showEffect="fade" [modal]="true" styleClass="teamdialog">
+  <div class="ui-g ui-fluid" *ngIf="player">
+    <div class="ui-g-12">
+      <p-listbox multiple="multiple" checkbox="checkbox" [style] = "{'height':'10vw'}" [options]="players" [(ngModel)]="selectedPlayers" optionLabel="fullName" >
+
+      </p-listbox>
+    </div>
+  </div>
+  <p-footer>
+    <div class="">
+      <button (click)="AddPlayer()" class="btn btn-sm btn-responsive btn-success" type="button">Add</button>
+
+
     </div>
   </p-footer>
 </p-dialog>

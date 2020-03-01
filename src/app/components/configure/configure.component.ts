@@ -7,12 +7,16 @@ import {
   gameMatch,
   PlayerWithId,
   Player,
-  MatchWithId
+  MatchWithId,
+  TeamWithId,
+  Team,
+  TeamPlayerWithID
 } from "src/app/models/appModels";
 import { MatchService } from "src/app/services/matchservice";
 import { DialogModule } from "primeng/dialog";
 import { CalendarModule } from "primeng/calendar";
 import { MenuItem } from "primeng/api/menuitem";
+import { ListboxModule } from 'primeng/listbox'
 import { Router } from "@angular/router";
 import { ConnectionService } from "ng-connection-service";
 import {FormControl} from '@angular/forms';
@@ -27,12 +31,17 @@ export class ConfigureComponent implements OnInit {
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
   players: PlayerWithId[] = [];
+  teamPlayers: PlayerWithId[] = [];
+  teamPlayerIDs: TeamPlayerWithID[] = []
   match: MatchWithId = {};
   player: Player = {};
   matches: Match[] = [];
   display: boolean = false;
   matchDate: Date;
   items: MenuItem[];
+  teams: TeamWithId[] = [];
+  team: TeamWithId;
+  selectedTeamName = ""
   games = [
     { label: "1", value: 1 },
     { label: "2", value: 2 },
@@ -50,10 +59,16 @@ export class ConfigureComponent implements OnInit {
 
   matchDialogDisplay: boolean = false;
   playerDialogDisplay: boolean = false;
+  teamDialogDisplay: boolean = false;
+  playersDialogListDisplay: boolean = false;
   selectedMatch: Match;
   selectedPlayer: Player;
+  selectedPlayers: Player[];
+  selectedTeamPlayer: Player;
+  selectedTeam: TeamWithId;
   newMatch: boolean;
   newPlayer: boolean;
+  newTeam: boolean;
   gameMatch: gameMatch;
   status = "ONLINE";
   isConnected = true;
@@ -85,13 +100,72 @@ export class ConfigureComponent implements OnInit {
     this.playerDialogDisplay = true;
   }
 
+  getTeamPlayers() {
+    this.teamPlayers = []
+    this.teamPlayerIDs = []
+    this.matchService.getPlayersByTeamId(this.team).subscribe(data => {
+      this.teamPlayerIDs = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          ...e.payload.doc.data() as {}
+        } as TeamPlayerWithID;
+      })
+      this.teamPlayers = []
+      for (let index = 0; index < this.teamPlayerIDs.length; index++) {
+        const pId = this.teamPlayerIDs[index].playerId;
+        const tp = this.players.filter(x => x.playerid === pId)[0]
+        if (tp) {
+          this.teamPlayers.push(tp)
+        }
+      }
+      this.teamPlayers.sort((a, b) => {
+        return +a.jersey - +b.jersey;
+      });
 
+      //this.teamPlayers.sort((a, b) => (a.jersey - b.jersey) ? 1 : -1)
+      console.log(this.teamPlayers)
+    });
+  }s
+
+  onTeamSelect(event) {
+    this.newTeam = false;
+    this.team = this.cloneTeam(event.data);
+    this.selectedTeamName = this.team.TeamName;
+    this.getTeamPlayers()
+    this.teamDialogDisplay = true;
+  }
 
   showDialogToAdd() {
 
     //this.matchService.addPlayers();
     //this.getPlayers()
     //this.displayDialog = true;
+  }
+
+  AddPlayerToTeam() {
+       this.playersDialogListDisplay = true
+  }
+
+  AddPlayer() {
+    console.log(this.selectedPlayers)
+    for (let index = 0; index < this.selectedPlayers.length; index++) {
+      const player = this.selectedPlayers[index];
+      let tp = {
+        playerId: player.playerid
+      }
+      this.matchService.AddPlayerToFirestoreTeam(this.selectedTeam, tp)
+      //this.getTeamPlayers()
+      this.playersDialogListDisplay = false
+    }
+  }
+
+  RemovePlayer() {
+    console.log(this.selectedPlayers)
+    const teamplayer = this.teamPlayerIDs.filter(x => x.playerId === this.selectedTeamPlayer.playerid)[0]
+    this.matchService.RemovePlayerFromFirestoreTeam(this.selectedTeam, teamplayer.id)
+    //this.getTeamPlayers()
+    this.playersDialogListDisplay = false
+
   }
 
 
@@ -126,6 +200,14 @@ export class ConfigureComponent implements OnInit {
     return match;
   }
 
+  cloneTeam(t: Team): Team {
+    let team = {};
+    for (let prop in t) {
+      team[prop] = t[prop];
+    }
+    return team;
+  }
+
   clonePlayer(p: Player): Player {
     let player = {};
     for (let prop in p) {
@@ -138,23 +220,21 @@ export class ConfigureComponent implements OnInit {
     this.game = n
   }
 
-  // async getMatches() {
-  //   this.matches = await  this.matchService.getMatches()
-  // }
-
-  // async getPlayers() {
-  //   this.players = await  this.matchService.getPlayers()
-  // }
 
   ngOnDestroy() {
-    //this.matchsubcription.unsubscribe();
-    //this.matchService.dbMatches.unsubscribe();
-    //this.connectionService.monitor().unsubscribe();
   }
 
   ngOnInit() {
-    //this.matchService.createMatch("Fusion", "Ballyhoo", new Date());
-    //this.matchService.addPlayers();
+
+    this.matchService.getTeams().subscribe(data => {
+      this.teams = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          ...e.payload.doc.data() as {}
+        } as TeamWithId;
+      })
+      console.log(this.teams)
+    });
 
     this.matchService.getMatches().subscribe(data => {
       this.matches = data.map(e => {
@@ -175,6 +255,10 @@ export class ConfigureComponent implements OnInit {
           ...e.payload.doc.data() as {}
         } as PlayerWithId;
       })
+      for (let index = 0; index < this.players.length; index++) {
+        const element = this.players[index];
+        this.players[index].fullName = this.players[index].firstName + " " + this.players[index].lastName
+      }
     });
   }
 
@@ -187,6 +271,14 @@ export class ConfigureComponent implements OnInit {
     this.matchService.savePlayer(p)
     this.playerDialogDisplay = false;
   }
+
+  SaveTeam() {
+    let t = new TeamWithId()
+    t.TeamName = this.team.TeamName
+    this.matchService.saveTeam(t);
+    this.playerDialogDisplay = false;
+  }
+
 
   DeletePlayer() {
 

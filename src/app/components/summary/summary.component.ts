@@ -45,23 +45,14 @@ export class SummaryComponent implements OnInit {
   matchgameStats: statEntry[] = [];
   players: PlayerWithId[] = [];
   statviews: statView[] = [];
+  teamtotal: statView;
+  teamtotals: statView[] = []
   match: gameMatch;
   gamesPlayed: GameWithId[] = [];
   selectedGame: GameWithId;
   games: number[] = [1, 2, 3, 4, 5];
   game = 1;
-  foods: Food[] = [
-    {value: 'Individual Stats', viewValue: 'Individual Stats'},
-    {value: 'pizza-1', viewValue: 'Play-By-Play'},
-    {value: 'tacos-2', viewValue: 'Rotation Analysis'}
-  ];
-  ELEMENT_DATA: PeriodicElement[] = [
-    {name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-    {name: 'Helium', weight: 4.0026, symbol: 'He'},
-    {name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  ];
   displayedColumns: string[] = ['home', 'opponent'];
-  dataSource = this.ELEMENT_DATA;
 
 
   playerRotation: any[] = [];
@@ -114,7 +105,8 @@ export class SummaryComponent implements OnInit {
             } as PlayerWithId;
           });
           this.setupStatView();
-          this.showData();
+          this.showData()
+          this.teamtotals.push(this.teamtotal)
           this.showRotationalData();
 
 
@@ -201,7 +193,26 @@ export class SummaryComponent implements OnInit {
   }
 
   setupStatView() {
+    this.teamtotal = {
+      jersey: "",
+      firstName: "",
+      lastName: "",
+      playerid: "",
+      k: 0,
+      h: 0,
+      he: 0,
+      b: 0,
+      bt: 0,
+      be: 0,
+      a: 0,
+      d: 0,
+      bhe: 0,
+      sre: 0,
+      se: 0,
+      sa: 0
+    }
     this.statviews = [];
+    this.teamtotals = [];
     this.matchgameStats = [];
     this.players.forEach(element => {
       let sv = <statView>{};
@@ -220,6 +231,7 @@ export class SummaryComponent implements OnInit {
       sv.he = 0;
       sv.se = 0;
       sv.sre = 0;
+      sv.sa = 0;
       this.statviews.push(sv);
     });
   }
@@ -285,37 +297,52 @@ export class SummaryComponent implements OnInit {
       switch (element.stattype) {
         case "k":
           this.statviews[index].k += 1;
+          this.teamtotal.k += 1;
           break;
         case "h":
           this.statviews[index].h += 1;
+          this.teamtotal.h += 1;
           break;
         case "he":
           this.statviews[index].he += 1;
+          this.teamtotal.he += 1;
           break;
         case "b":
           this.statviews[index].b += 1;
+          this.teamtotal.b += 1;
           break;
         case "bt":
           this.statviews[index].bt += 1;
+          this.teamtotal.bt += 1;
           break;
         case "be":
           this.statviews[index].be += 1;
+          this.teamtotal.be += 1;
           break;
         case "a":
           this.statviews[index].a += 1;
+          this.teamtotal.a += 1;
           break;
         case "d":
           this.statviews[index].d += 1;
+          this.teamtotal.d += 1;
           break;
         case "bhe":
           this.statviews[index].bhe += 1;
+          this.teamtotal.bhe += 1;
           break;
         case "sre":
           this.statviews[index].sre += 1;
+          this.teamtotal.sre += 1;
           break;
         case "se":
           this.statviews[index].se += 1;
+          this.teamtotal.se += 1;
           break;
+        case "sa":
+            this.statviews[index].sa += 1;
+            this.teamtotal.sa += 1;
+            break;
         default:
           break;
       }

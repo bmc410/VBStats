@@ -189,19 +189,20 @@ export class PlayerNib {
 
 
 export interface statView {
-  jersey: string;
-  firstName: string;
-  lastName: string;
-  playerid: string;
-  k: number;
-  h: number
-  he: number;
-  b: number;
-  bt: number;
-  be: number;
-  a: number;
-  d: number;
-  bhe: number;
-  sre: number;
-  se: number;
+  jersey?: string;
+  firstName?: string;
+  lastName?: string;
+  playerid?: string;
+  k?: number;
+  h?: number
+  he?: number;
+  b?: number;
+  bt?: number;
+  be?: number;
+  a?: number;
+  d?: number;
+  bhe?: number;
+  sre?: number;
+  se?: number;
+  sa?: number;
 }

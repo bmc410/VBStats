@@ -202,6 +202,9 @@ export class MatchService {
             + cp[4].player.firstName + ", " + cp[5].player.firstName + ", "
             + cp[6].player.firstName + "]"
             break;
+      case "sa":
+          action = "Service ace by "
+          break;
       default:
         action = action
         break;

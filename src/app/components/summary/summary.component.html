@@ -1,6 +1,6 @@
 <div style="margin-top: 20px;" class="container">
-  <mat-tab-group [color]="'primary'" style="background-color: white"  >
-  <mat-tab  label="Play-By-Play">
+  <mat-tab-group [color]="'primary'" style="background-color: white">
+    <mat-tab label="Play-By-Play">
 
       <div style="margin-top: 10px; margin-bottom: 10px; display: none;" class="row align-items-center">
         <div class="col-sm">
@@ -25,28 +25,28 @@
       </div>
 
 
-    <p-table [resizableColumns]="true" [autoLayout]="true" [value]="playbyplay" selectionMode="none">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>{{match.home}}</th>
-          <th>{{match.opponent}}</th>
-          <th>&nbsp;</th>
-        </tr>
-      </ng-template>
-      <ng-template style="margin:10px" pTemplate="body" let-element>
-        <tr>
-          <td>{{ element.homescore }}</td>
-          <td>{{ element.opponentscore }}</td>
-          <td *ngIf="element.player != null ">{{ element.action + " " + element.player.firstName + " " + element.player.lastName.substring(0, 1) + "." }}</td>
-          <td *ngIf="element.player === null ">{{ element.action }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
+      <p-table [resizableColumns]="true" [autoLayout]="true" [value]="playbyplay" selectionMode="none">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{match.home}}</th>
+            <th>{{match.opponent}}</th>
+            <th>&nbsp;</th>
+          </tr>
+        </ng-template>
+        <ng-template style="margin:10px" pTemplate="body" let-element>
+          <tr>
+            <td>{{ element.homescore }}</td>
+            <td>{{ element.opponentscore }}</td>
+            <td *ngIf="element.player != null ">
+              {{ element.action + " " + element.player.firstName + " " + element.player.lastName.substring(0, 1) + "." }}
+            </td>
+            <td *ngIf="element.player === null ">{{ element.action }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
 
-
-
-  </mat-tab>
-  <mat-tab label="Individual Stats">
+    </mat-tab>
+    <mat-tab label="Individual Stats">
 
       <div style="margin-top: 10px; margin-bottom: 10px; display: none;" class="row align-items-center">
         <div class="col-sm">
@@ -67,50 +67,70 @@
               <mat-option value="5">5</mat-option>
             </mat-select></span>
         </div>
-
       </div>
 
+      <p-table [value]="statviews" selectionMode="none">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Player</th>
+            <th>K</th>
+            <th>HE</th>
+            <th>TA</th>
+            <th>PCT</th>
+            <th>B</th>
+            <th>BT</th>
+            <th>BE</th>
+            <th>A</th>
+            <th>D</th>
+            <th>BHE</th>
+            <th>SRE</th>
+            <th>SE</th>
+            <th>SA</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-element>
+          <tr>
+            <td>{{ element.firstName }}</td>
+            <td>{{ element.k }}</td>
+            <td>{{ element.he }}</td>
+            <td>{{ element.k + element.h + element.he }}</td>
+            <td>{{ ((element.k - element.he) / (element.k + element.h + element.he)) | number:'1.3-3' || "0" }}</td>
+            <td>{{ element.b }}</td>
+            <td>{{ element.bt }}</td>
+            <td>{{ element.be }}</td>
+            <td>{{ element.a }}</td>
+            <td>{{ element.d }}</td>
+            <td>{{ element.bhe }}</td>
+            <td>{{ element.sre }}</td>
+            <td>{{ element.se }}</td>
+            <td>{{ element.sa }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
 
-    <p-table [value]="statviews" selectionMode="none">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Player</th>
-          <th>K</th>
-          <th>HE</th>
-          <th>TA</th>
-          <th>PCT</th>
-          <th>B</th>
-          <th>BT</th>
-          <th>BE</th>
-          <th>A</th>
-          <th>D</th>
-          <th>BHE</th>
-          <th>SRE</th>
-          <th>SE</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-element>
-        <tr>
-          <td>{{ element.firstName }}</td>
-          <td>{{ element.k }}</td>
-          <td>{{ element.he }}</td>
-          <td>{{ element.k + element.h + element.he }}</td>
-          <td>{{ ((element.k - element.he) / (element.k + element.h + element.he)) | number:'1.3-3' || "0" }}</td>
-          <td>{{ element.b }}</td>
-          <td>{{ element.bt }}</td>
-          <td>{{ element.be }}</td>
-          <td>{{ element.a }}</td>
-          <td>{{ element.d }}</td>
-          <td>{{ element.bhe }}</td>
-          <td>{{ element.sre }}</td>
-          <td>{{ element.se }}</td>
-        </tr>
-      </ng-template>
 
-    </p-table>
-
-  </mat-tab>
-  <mat-tab label="Rotation Analysis"> Rotation Analysis </mat-tab>
-</mat-tab-group>
+      <p-table [value]="teamtotals" selectionMode="none">
+        <ng-template pTemplate="body" let-teamtotal>
+          <tr>
+            <td>Totals</td>
+            <td>{{ teamtotal.k }}</td>
+            <td>{{ teamtotal.he }}</td>
+            <td>{{ teamtotal.k + teamtotal.h + teamtotal.he }}</td>
+            <td>&nbsp;</td>
+            <td>{{ teamtotal.b }}</td>
+            <td>{{ teamtotal.bt }}</td>
+            <td>{{ teamtotal.be }}</td>
+            <td>{{ teamtotal.a }}</td>
+            <td>{{ teamtotal.d }}</td>
+            <td>{{ teamtotal.bhe }}</td>
+            <td>{{ teamtotal.sre }}</td>
+            <td>{{ teamtotal.se }}</td>
+            <td>{{ teamtotal.sa }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </mat-tab>
+    <mat-tab label="Rotation Analysis"> Rotation Analysis </mat-tab>
+  </mat-tab-group>
 
 </div>

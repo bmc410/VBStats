@@ -40,7 +40,7 @@
         class="row  align-items-center">
 
         <!-- Scoreboard -->
-        <app-scoreboard style="margin: 1vw;"></app-scoreboard>
+        <app-scoreboard homescore="{{game?.homescore}}" opponentscore="{{game?.opponentscore}}" (scorepost)="postScore($event)" style="margin: 1vw;"></app-scoreboard>
 
         <!-- Subs Section -->
         <div style="text-align: center;">
@@ -59,8 +59,8 @@
           </div>
         </div>
 
-           <!-- Game Section -->
-           <div style="text-align: center; margin-left: 5vw;">
+        <!-- Game Section -->
+        <div style="text-align: center; margin-left: 5vw;">
             <div class="sublabel">Game#</div>
             <div class="stepper-input stepper__input">
               <button class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
@@ -74,21 +74,22 @@
                 <img src="assets/plus.svg" />
               </button>
             </div>
-          </div>
+        </div>
 
+        <!-- Rotate and Start Buttons -->
         <div style="margin-right: 15px;" class="col align-self-end align-self-center">
           <!-- <div class="col-sm">  -->
-            <button [hidden]="startHidden" style=" border-radius: 10px; margin-left: 2vw; margin-bottom: 1vw; background-color: #46A78F; color: white;"
+            <button [hidden]="startHidden" style=" border-radius: 10px; margin-left: 2vw; margin-bottom: 1vw; background-color: #059B87; color: white;"
               type="button" (click)="startMatch()" class="float-right btn btn-responsive">
               <span class="hidden-sm hidden-xs">Start<br/></span>
-              <span class="glyphicon glyphicon-play
+              <span style="font-size: 3vw;" class="glyphicon glyphicon-play
                 " aria-hidden="true"></span>
             </button> <!-- </div> -->
 
-            <button  style=" border-radius: 10px; margin-left: 2vw; background-color: #16489d; color: white;" (click)="rotate()" type="button"
+            <button  style=" border-radius: 10px; margin-left: 2vw; background-color: #144A99; color: white;" (click)="rotate()" type="button"
               class="float-right btn btn-responsive">
               <span class="hidden-sm hidden-xs">Rotate<br/></span>
-              <span class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+              <span style="font-size: 3vw;" class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
             </button>
           <!-- </div> -->
           <!-- <div class="col-sm"> -->

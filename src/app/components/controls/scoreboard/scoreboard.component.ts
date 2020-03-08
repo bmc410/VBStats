@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-scoreboard',
@@ -7,15 +7,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ScoreboardComponent implements OnInit {
 
-  homescore: number = 0;
+  @Input() homescore: number;
+  @Input() opponentscore: number;
+  @Output() scorepost = new EventEmitter();
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  updateGame() {
-    this.homescore += 1;
-  }
 
+  updateGame(team: string, action: any, stat: string, player: any) {
+    let gameScore = {
+      team: team,
+      action: action,
+      stat: stat,
+      player: player
+    }
+    this.scorepost.emit(gameScore);
+  }
 }

@@ -19,14 +19,16 @@
   }
 }
 
-.btn-success {
+.btn-danger {
   background-color: #144A99;
 }
 
-.btn-danger {
-  background-color: #BBBBBF;
-  border-color: #BBBBBF;
+.btn-success {
+  background-color: #079479;
+  border-color: #079479;
 }
 
 
-
+.btn-light {
+  background-color: #E8BB0B;
+}

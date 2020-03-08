@@ -281,6 +281,11 @@ export class MatchComponent implements OnInit {
     this.playerPositions[6] = tempPlayer;
   }
 
+  postScore(event) {
+    console.log(event);
+    this.updateGame(event.team, event.action, event.stat, event.player)
+  }
+
   updateGame(team: string, action: any, stat: string, player: PlayerWithId) {
 
 

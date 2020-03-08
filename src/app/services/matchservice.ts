@@ -28,6 +28,9 @@ import { Guid } from "guid-typescript";
 import { DexieService } from "./dexie.service";
 import * as firebase from "firebase";
 import "firebase/firestore";
+import { MessageService } from 'primeng/api';
+import { Action } from 'rxjs/internal/scheduler/Action';
+
 
 @Injectable({
   providedIn: "root"
@@ -54,7 +57,8 @@ export class MatchService {
   constructor(
     private firestore: AngularFirestore,
     private http: HttpClient,
-    private dexieService: DexieService
+    private dexieService: DexieService,
+    private messageService: MessageService
   ) {
     this.matchtable = this.dexieService.table("match");
     this.playertable = this.dexieService.table("player");
@@ -162,9 +166,8 @@ export class MatchService {
 
   }
 
-  addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId, action: string = "" ) {
+  getActionFromStat(stat:string) {
     var action = ""
-
     switch (stat) {
       case "k":
         action = "Kill by "
@@ -190,24 +193,31 @@ export class MatchService {
       case "tp":
             action = "Team point"
           break;
-      case "start":
-          action = "Start [" + cp[1].player.firstName + ", "
-          + cp[2].player.firstName + ", " + cp[3].player.firstName + ", "
-          + cp[4].player.firstName + ", " + cp[5].player.firstName + ", "
-          + cp[6].player.firstName + "]"
-          break;
-      case "sub":
-          action = "Sub [" + cp[1].player.firstName + ", "
-            + cp[2].player.firstName + ", " + cp[3].player.firstName + ", "
-            + cp[4].player.firstName + ", " + cp[5].player.firstName + ", "
-            + cp[6].player.firstName + "]"
-            break;
       case "sa":
           action = "Service ace by "
           break;
       default:
         action = action
         break;
+    }
+    return action
+  }
+
+  addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId, action: string = "" ) {
+    var action = ""
+
+    if (stat === "start") {
+      action = "Start [" + cp[1].player.firstName + ", "
+      + cp[2].player.firstName + ", " + cp[3].player.firstName + ", "
+      + cp[4].player.firstName + ", " + cp[5].player.firstName + ", "
+      + cp[6].player.firstName + "]"
+    } else if (stat === "sub") {
+      action = "Sub [" + cp[1].player.firstName + ", "
+      + cp[2].player.firstName + ", " + cp[3].player.firstName + ", "
+      + cp[4].player.firstName + ", " + cp[5].player.firstName + ", "
+      + cp[6].player.firstName + "]"
+    } else {
+      action = this.getActionFromStat(stat);
     }
 
     let pbpObj = {
@@ -228,6 +238,7 @@ export class MatchService {
       },
     }
 
+    //this.messageService.add({severity:'success', summary:'Service Message', detail:'Via MessageService'});
     return this.createPBPInFirestore(pbpObj);
 
   }
@@ -481,6 +492,7 @@ export class MatchService {
       statdate: this.datetoepoch(new Date())
     };
     this.createStatInFirestore(statObj,g);
+    this.messageService.add({severity:'success', summary:'Service Message', detail:this.getActionFromStat(stat.stattype) + stat.player.firstName});
     //this.stattable.add(statObj);
   }
 }

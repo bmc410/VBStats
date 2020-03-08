@@ -308,6 +308,7 @@ export class MatchComponent implements OnInit {
           this.game.subs = this.game.subs - 1
     }
 
+
     this.matchService.updateGame(this.game, this.playerPositions)
     this.matchService.addPlayByPlay(this.game,this.playerPositions,stat,
       player)

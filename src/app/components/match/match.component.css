@@ -102,3 +102,120 @@
   overflow: hidden;
   display: block;
 } */
+
+.panel-primary>.panel-heading {
+  color: #fff;
+  background-color: #144A99;
+  border-color: #144A99;
+  font-style: italic;
+}
+
+
+
+#rounddisplay {
+  background-color: #383838;
+  text-align: center;
+  border-radius: 10px;
+  width: 70px;
+  padding: 15px 10px 10px 10px;
+
+}
+
+#roundcounter {
+  border-radius: 5px;
+  margin-bottom: 35px;
+}
+
+#roundplus,
+#roundminus {
+  background-color: #383838;
+  margin: 0 auto;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 30px;
+  height: 50px;
+  color: #ddd;
+  width: 100%;
+  border: none;
+  transition: 0.5s;
+
+}
+
+#roundplus {
+  margin-bottom: -20px;
+  width: 70px;
+  border-bottom-left-radius: 0;
+  border-bottom: 10px #383838 solid;
+  border-bottom-right-radius: 0;
+}
+
+#roundminus {
+  margin-top: -15px;
+  width: 70px;
+  box-shadow: inset 0px -4px 1px #232323;
+
+}
+
+.stepper__input {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.stepper__input .stepper-input-field {
+  color: #FFF;
+  font-family: Arial, sans-serif;
+  font-size: 3vw;
+  opacity: .5;
+  font-weight: bold;
+  padding: 0;
+  background: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  height: 2.5vw;
+  width: 3vw;
+  line-height: 25px;
+  border: none;
+  text-align: center;
+  margin: 0 7px;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.down {
+  background-color: #F46D4C;
+}
+
+.up {
+  background-color: #46A78F;
+}
+
+.stepper__input button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+    min-width: 25px;
+  height: 3vw;
+  width: 3vw;
+  border-radius: 5px;
+  line-height: 45px;
+  color: #fff;
+  user-select: none;
+  border: none;
+}
+
+.sublabel {
+  margin-bottom: 1vw;
+  color: #FFF;
+}

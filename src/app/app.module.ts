@@ -42,6 +42,8 @@ import { SummaryComponent } from './components/summary/summary.component';
 import {DropdownModule} from 'primeng/dropdown';
 import {CheckboxModule} from 'primeng/checkbox';
 import {ListboxModule} from 'primeng/listbox'
+import {ToastModule} from 'primeng/toast'
+
 import { DexieService } from './services/dexie.service';
 import { SKpadComponent } from './components/controls/s-kpad/s-kpad.component';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreModule } from '@angular/fire/firestore';
@@ -57,6 +59,9 @@ import { LayoutComponent } from './components/layout/layout.component';
 // import {MatMenuModule} from '@angular/material/menu';
 // import {MatRadioGroup, MatRadioModule} from '@angular/material/radio';
 import { MaterialModule } from './components/material/material.module';
+import { MessageService } from 'primeng/api';
+import { ScoreboardComponent } from './components/controls/scoreboard/scoreboard.component';
+import { TestpanelComponent } from './components/testpanel/testpanel.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +77,9 @@ import { MaterialModule } from './components/material/material.module';
     SKpadComponent,
     LayoutComponent,
     HeaderComponent,
-    SidenavListComponent
+    SidenavListComponent,
+    ScoreboardComponent,
+    TestpanelComponent
   ],
   imports: [
     BrowserModule,
@@ -92,6 +99,7 @@ import { MaterialModule } from './components/material/material.module';
     PanelModule,
     RouterModule,
     ListboxModule,
+    ToastModule,
     //MatDatepickerModule,
     //MatNativeDateModule,
     //MatSelectModule,
@@ -112,7 +120,7 @@ import { MaterialModule } from './components/material/material.module';
     AngularFirestoreModule.enablePersistence(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [CarService, MatchService, DexieService,AngularFirestore],
+  providers: [CarService, MatchService, DexieService,AngularFirestore, MessageService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

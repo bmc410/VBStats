@@ -1,0 +1,22 @@
+<link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet">
+<div>
+  <div>
+    <div class="btncontainer">
+      <div class="btn align-items-center" id="team1">
+        <span class="team1Name">Home</span>
+        <div style="font-size: 2vw;">{{homescore}}</div>
+      </div>
+        <button class="scorebtnminus" id="homeminus">-</button>
+        <button (click)="updateGame()" class="scorebtnplus" id="homeplus">+</button>
+    </div>
+
+    <div class="btncontainer">
+      <div class="btn align-items-center" id="team2">
+        <span class="team2Name">Away</span>
+        <div style="font-size: 2vw;">{{homescore}}</div>
+      </div>
+        <button class="scorebtnminus" id="awayminus">-</button>
+        <button class="scorebtnplus" id="awayplus">+</button>
+    </div>
+  </div>
+</div>

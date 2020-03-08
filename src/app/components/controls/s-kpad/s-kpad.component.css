@@ -18,3 +18,15 @@
     line-height: 1.2;
   }
 }
+
+.btn-success {
+  background-color: #144A99;
+}
+
+.btn-danger {
+  background-color: #BBBBBF;
+  border-color: #BBBBBF;
+}
+
+
+

@@ -16,7 +16,8 @@ import {
   CourtPosition,
   PointPlay,
   TeamWithId,
-  TeamPlayer
+  TeamPlayer,
+  pbpPosition
 } from "../models/appModels";
 import Dexie from "dexie";
 import {
@@ -123,30 +124,6 @@ export class MatchService  {
     //return this.firestore.collection("players").snapshotChanges();
   }
 
-  makeTeamFromRoster(r: Array<any>) {
-    var players: PlayerWithId[] = [];
-    var p: Observable<PlayerWithId[]>;
-    var _this = this;
-    r.forEach(function (value) {
-    _this.getPlayerById(value.id).subscribe(result => {
-        var json = JSON.stringify(result);
-        var data = JSON.parse(json);
-        let player = {
-          jersey: value.jersey,
-          firstName: data[0].FirstName,
-          lastName: data[0].LastName,
-          islibero: false,
-          playerid: data[0].objectId,
-          fullName: data[0].FirstName + ' ' + data[0].LastName
-        }
-        players.push(player)
-      });
-    });
-    //p = players;
-    return players;
-  }
-
-
   getPlayers() {
     const Players = Parse.Object.extend('Players');
     const query = new Parse.Query(Players);
@@ -182,29 +159,20 @@ export class MatchService  {
     query.include("Players");
     return from(query.find()).pipe(map(result => result));
     
-    // .then((results) => {
-    //   var json = JSON.stringify(results[0]);
-    //   var data = JSON.parse(json);
-    //   var r = JSON.parse(data.Roster);
-    //   var playerNumbers: string[] = [];
-    //   r.players.forEach(element => {
-    //     playerNumbers.push(element.id)
-    //   });
-
-    //   return this.getPlayersFromRoster(playerNumbers);
-    //   //const usersJson: any[] = Array.of(r.json());
-     
-    //});
-
-    //return from(query.find()).pipe(map(result => result));
-    
-    //return this.firestore.collection("teams").doc(t.id).collection("players").snapshotChanges();
   }
 
   getGamesForMatch(matchId: string) {
     const Games = Parse.Object.extend('Games');
     const query = new Parse.Query(Games);
     query.equalTo("MatchId", matchId);
+    return from(query.find()).pipe(map(result => result));
+    //return this.firestore.collection("games").snapshotChanges();
+  }
+
+  getGameById(gameId: string) {
+    const Games = Parse.Object.extend('Games');
+    const query = new Parse.Query(Games);
+    query.equalTo("objectId", gameId);
     return from(query.find()).pipe(map(result => result));
     //return this.firestore.collection("games").snapshotChanges();
   }
@@ -300,19 +268,17 @@ export class MatchService  {
     return action
   }
 
-  addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId, action: string = "" ) {
+  addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[], action: string = "" ) {
     var action = ""
-
+    var rotations: pbpPosition[] = [];
+    let pos = cp;
     if (stat === "start") {
       action = "Start [" + cp[1].player.FirstName + ", "
       + cp[2].player.FirstName + ", " + cp[3].player.FirstName + ", "
       + cp[4].player.FirstName + ", " + cp[5].player.FirstName + ", "
       + cp[6].player.FirstName + "]"
     } else if (stat === "sub") {
-      action = "Sub [" + cp[1].player.FirstName + ", "
-      + cp[2].player.FirstName + ", " + cp[3].player.FirstName + ", "
-      + cp[4].player.FirstName + ", " + cp[5].player.FirstName + ", "
-      + cp[6].player.FirstName + "]"
+      action = "Sub [" + p[0].FirstName + " for " + p[1].FirstName +  "]"
     } else {
       action = this.getActionFromStat(stat);
     }
@@ -320,7 +286,7 @@ export class MatchService  {
     let pbpObj = {
       id: g.objectId,
       pbpDate: this.datetoepoch(new Date()),
-      player: p,
+      player: p[0],
       stattype: stat,
       homescore: g.homescore,
       opponentscore: g.opponentscore,
@@ -335,8 +301,30 @@ export class MatchService  {
       },
     }
 
+    pos = pos.splice(1, 6);
+    var j = JSON.stringify(pos);
+    var d = JSON.parse(j);
+    d.forEach(element => {
+      let r = new pbpPosition();
+      r.posNo = element.posNo;
+      r.playerName = element.player.FirstName;
+      rotations.push(r);
+    });
+
+    var jR = JSON.stringify(rotations);    
+    const PlayByPlay = Parse.Object.extend('PlayByPlay');
+    const myNewObject = new PlayByPlay();
+
+    myNewObject.set('action', action);
+    myNewObject.set('homescore', g.homescore);
+    myNewObject.set('opponentscore', g.opponentscore);
+    myNewObject.set('playerId', p[0].objectId);
+    myNewObject.set('stattype', stat);
+    myNewObject.set('rotation', jR);
+
+    myNewObject.save();
     //this.messageService.add({severity:'success', summary:'Service Message', detail:'Via MessageService'});
-    return this.createPBPInFirestore(pbpObj);
+    //return this.createPBPInFirestore(pbpObj);
 
   }
 
@@ -358,31 +346,16 @@ export class MatchService  {
   }
 
 
-  updateGame(g: GameWithId, cp: CourtPosition[]) {
-    var game = this.firestore.collection("games").doc(g.objectId);
-
-    // Set the "capital" field of the city 'DC'
-    return game
-      .update({
-        homescore: g.homescore,
-        opponentscore: g.opponentscore,
-        subs: g.subs,
-        rotation: {
-          1: cp[1].player.FirstName,
-          2: cp[2].player.FirstName,
-          3: cp[3].player.FirstName,
-          4: cp[4].player.FirstName,
-          5: cp[5].player.FirstName,
-          6: cp[6].player.FirstName
-        },
-      })
-      .then(function() {
-        console.log("Document successfully updated!");
-      })
-      .catch(function(error) {
-        // The document probably doesn't exist.
-        console.error("Error updating document: ", error);
-      });
+  updateGame(g: GameWithId) {
+    const Games = Parse.Object.extend('Games');
+    const query = new Parse.Query(Games);
+    // here you put the objectId that you want to update
+    return from(query.get(g.objectId).then((object) => {
+      object.set('HomeScore', g.homescore);
+      object.set('OpponentScore', g.opponentscore);
+      object.set('Subs', g.subs);
+      object.save();
+    }));
   }
 
   statsByMatchAndGame() {}

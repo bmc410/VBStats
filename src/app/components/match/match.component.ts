@@ -89,7 +89,7 @@ export class MatchComponent implements OnInit {
 
   drop(event: CdkDragDrop<PlayerWithId[]>, container: any) {
 
-
+    var affectedPlayers: PlayerWithId[] = [];
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
       return false;
@@ -97,10 +97,12 @@ export class MatchComponent implements OnInit {
 
     // first check to see if the position contains a player
     if (this.playerPositions[container].player) {
+      affectedPlayers.push(this.playerPositions[container].player);
       this.players.push(this.playerPositions[container].player);
     }
 
     this.draggedplayer = event.previousContainer.data[event.previousIndex];
+    affectedPlayers.push(this.draggedplayer);
     event.previousContainer.data =
       event.previousContainer.data.filter(x => x.objectId != this.draggedplayer.objectId)
 
@@ -111,7 +113,7 @@ export class MatchComponent implements OnInit {
         !this.playerPositions[container].player.islibero))
       {
       //this.game.subs += 1;
-      this.updateGame('subs', 'a', '', null)
+      this.updateGame('subs', 'a', '', affectedPlayers)
     }
 
     if (container === 4) {
@@ -200,8 +202,8 @@ export class MatchComponent implements OnInit {
 
     this.matchService.getGameForMatchByNumber(this.match.objectId, this.match.gameNumber).subscribe(result => {
       var json = JSON.stringify(result);
-      this.games = JSON.parse(json);
-      if (this.games.length == 0) {
+      var game = JSON.parse(json);
+      if (game.length == 0) {
             let g = new GameWithId()
             g.gamenumber = this.gameNumber
             g.matchid = this.match.objectId
@@ -212,8 +214,10 @@ export class MatchComponent implements OnInit {
       }
       
       else {
+        game = game[0];
         var _this = this;
-
+        this.game.objectId = game.objectId;
+        this.game.subs = game.Subs;
         this.matchService.getPlayersByTeamId(this.match.HomeTeamId).subscribe(result => {
           var json = JSON.stringify(result);
           var data = JSON.parse(json);
@@ -221,7 +225,7 @@ export class MatchComponent implements OnInit {
 
           this.allPlayers = this.players;
           
-          this.matchService.getstats(this.games[0].objectId).subscribe(data => {
+          this.matchService.getstats(game.objectId).subscribe(data => {
             var j = JSON.stringify(data);
             var stats = JSON.parse(j);
             stats.forEach(function (s) {
@@ -249,6 +253,7 @@ export class MatchComponent implements OnInit {
               this.game.homescore = r.homescore;
               this.game.opponentscore = r.opponentscore;
               this.game.gamenumber = this.match.gameNumber;
+              this.game.subs = r.subs;
               var pos = r.rotation
               for (let i = 1; i < 7; i++) {
                 var p1 = this.allPlayers.filter(p => p.objectId == pos[i])[0]
@@ -359,7 +364,7 @@ export class MatchComponent implements OnInit {
     this.updateGame(event.team, event.action, event.stat, event.player)
   }
 
-  updateGame(team: string, action: any, stat: string, player: PlayerWithId) {
+  updateGame(team: string, action: any, stat: string, players: PlayerWithId[]) {
 
 
     if (team === "home") {
@@ -387,9 +392,11 @@ export class MatchComponent implements OnInit {
     }
 
 
-    this.matchService.updateGame(this.game, this.playerPositions)
-    this.matchService.addPlayByPlay(this.game,this.playerPositions,stat,
-      player)
+    this.matchService.updateGame(this.game)
+    const myClonedArray = []; 
+    this.playerPositions.forEach(val => myClonedArray.push(Object.assign({}, val)));
+    this.matchService.addPlayByPlay(this.game,myClonedArray,stat,
+      players, "")
 
   }
 
@@ -400,6 +407,7 @@ export class MatchComponent implements OnInit {
   }
 
   incrementStat(pos: number, player: PlayerWithId, stat: string) {
+    var affectedPlayer: PlayerWithId[] = [];
     const s = new Stat();
     s.gamenumber = this.gameNumber;
     s.homeScore = this.homescore;
@@ -413,10 +421,10 @@ export class MatchComponent implements OnInit {
     s.stattype = stat;
     this.matchService.incrementStat(s, this.game);
     if (this.homepointOptions.indexOf(stat) > -1) {
-      this.updateGame("home", "a", stat, player)
+      this.updateGame("home", "a", stat, affectedPlayer)
       //this.matchService.updateGame(this.game)
     } else if (this.opponentpointOptions.indexOf(stat) > -1) {
-      this.updateGame("opponent", "a", stat, player)
+      this.updateGame("opponent", "a", stat, affectedPlayer)
       //this.matchService.updateGame(this.game)
     }
 

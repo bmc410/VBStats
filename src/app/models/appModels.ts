@@ -1,5 +1,10 @@
 //import { staticViewQueryIds } from '@angular/compiler';
 
+export class pbpPosition {
+  posNo: number;
+  playerName: string;
+}
+
 export class CourtPosition {
   posNo: number;
   player?: PlayerWithId;

@@ -8,7 +8,7 @@ export class CourtPosition {
 
 export class Player {
   jersey?: string;
-  firstName?: string;
+  FirstName?: string;
   lastName?: string;
   islibero?: boolean = false;
   playerid?: string;
@@ -18,14 +18,14 @@ export class Player {
   constructor(jersey: string, fname: string, lastname: string, libero: boolean,
     playerId?: string) {
     this.jersey = jersey;
-    this.firstName = fname;
+    this.FirstName = fname;
     this.lastName = lastname;
     this.playerid = playerId;
   }
 }
 
 export class PlayerWithId extends Player {
-  id?: string;
+  objectId?: string;
 }
 
 
@@ -61,15 +61,16 @@ export class Stat {
 }
 
 export class Match {
-  home?: string;
-  opponent?: string;
-  matchdate?: number;
+  Home?: string;
+  HomeTeamId?: string
+  Opponent?: string;
+  MatchDate?: string;
   displaydate?: Date;
   //gameDate?: number;
 }
 
 export class MatchWithId extends Match {
-  id?: string;
+  objectId?: string;
 }
 
 export class Game {
@@ -102,7 +103,7 @@ export class TeamWithId extends Team {
 
 
 export class GameWithId extends Game {
-  id?: string;
+  objectId: string;
 }
 
 export class gameMatch extends MatchWithId {

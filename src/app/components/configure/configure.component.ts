@@ -20,6 +20,7 @@ import { ListboxModule } from 'primeng/listbox'
 import { Router } from "@angular/router";
 import { ConnectionService } from "ng-connection-service";
 import {FormControl} from '@angular/forms';
+import { Parse } from 'parse';
 
 @Component({
   selector: "app-configure",
@@ -103,13 +104,13 @@ export class ConfigureComponent implements OnInit {
   getTeamPlayers() {
     this.teamPlayers = []
     this.teamPlayerIDs = []
-    this.matchService.getPlayersByTeamId(this.team).subscribe(data => {
-      this.teamPlayerIDs = data.map(e => {
-        return {
-          id: e.payload.doc.id,
-          ...e.payload.doc.data() as {}
-        } as TeamPlayerWithID;
-      })
+    this.matchService.getPlayersByTeamId(this.team.id).subscribe(data => {
+      // this.teamPlayerIDs = data.map(e => {
+      //   return {
+      //     id: e.payload.doc.id,
+      //     ...e.payload.doc.data() as {}
+      //   } as TeamPlayerWithID;
+      // })
       this.teamPlayers = []
       for (let index = 0; index < this.teamPlayerIDs.length; index++) {
         const pId = this.teamPlayerIDs[index].playerId;
@@ -168,16 +169,15 @@ export class ConfigureComponent implements OnInit {
 
   }
 
-
-
   start() {
     this.matchDialogDisplay = false;
     let gm = new gameMatch();
     gm.gameNumber = this.game;
-    gm.home = this.match.home;
-    gm.matchdate = this.match.matchdate;
-    gm.id = this.match.id;
-    gm.opponent = this.match.opponent;
+    gm.Home = this.match.Home;
+    gm.MatchDate = this.match.MatchDate;
+    gm.objectId = this.match.objectId;
+    gm.Opponent = this.match.Opponent;
+    gm.HomeTeamId = this.match.HomeTeamId;
     this.router.navigate(["match", gm]);
   }
 
@@ -185,10 +185,10 @@ export class ConfigureComponent implements OnInit {
     this.matchDialogDisplay = false;
     let gm = new gameMatch();
     gm.gameNumber = this.game;
-    gm.home = this.match.home;
-    gm.matchdate = this.match.matchdate;
-    gm.id = this.match.id;
-    gm.opponent = this.match.opponent;
+    gm.Home = this.match.Home;
+    gm.MatchDate = this.match.MatchDate;
+    gm.objectId = this.match.objectId;
+    gm.Opponent = this.match.Opponent;
     this.router.navigate(["summary", gm]);
   }
 
@@ -236,36 +236,48 @@ export class ConfigureComponent implements OnInit {
       console.log(this.teams)
     });
 
-    this.matchService.getMatches().subscribe(data => {
-      this.matches = data.map(e => {
-        return {
-          id: e.payload.doc.id,
-          ...e.payload.doc.data() as {}
-        } as Match;
-      })
-      for (let index = 0; index < this.matches.length; index++) {
-        this.matches[index].displaydate = this.matchService.datefromepoch(this.matches[index].matchdate)
-      }
-    });
+   /*  Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
+    Parse.initialize(
+      '6jtb78oSAiGeNv2mcJTN0h039TxkJh4HDrWBz7RT', // This is your Application ID
+      'bRolkvWkFSewPWnlqQOaaRTpgT16ILr6r7PnU6AY', // This is your Javascript key
+      'dHvEstEM97ue9pBcTcW8ofNyqS2ERqT7kg4CnYhX' // This is your Master key (never use it in the frontend)
+    );
+    const Matches = Parse.Object.extend('Matches');
+    const query = new Parse.Query(Matches);
+    var ma;
+    return query.find().then((results) => {
+      var json = JSON.stringify(results);
+      //ma = JSON.parse(json);
+      //console.log('Matches found', obj);
+      this.matches = JSON.parse(json);
+    }); */
 
+
+    this.matchService.getMatches().subscribe(result => {
+      var json = JSON.stringify(result);
+      this.matches = JSON.parse(json);
+    });
+ 
     this.matchService.getPlayers().subscribe(data => {
-      this.players = data.map(e => {
-        return {
-          id: e.payload.doc.id,
-          ...e.payload.doc.data() as {}
-        } as PlayerWithId;
-      })
-      for (let index = 0; index < this.players.length; index++) {
-        const element = this.players[index];
-        this.players[index].fullName = this.players[index].firstName + " " + this.players[index].lastName
-      }
+      var json = JSON.stringify(data);
+      var d = JSON.parse(json);
+      // this.players = data.map(e => {
+      //   return {
+      //     id: e.payload.doc.id,
+      //     ...e.payload.doc.data() as {}
+      //   } as PlayerWithId;
+      // })
+      // for (let index = 0; index < this.players.length; index++) {
+      //   const element = this.players[index];
+      //   this.players[index].fullName = this.players[index].firstName + " " + this.players[index].lastName
+      // }
     });
   }
 
   SavePlayer() {
     let p = new PlayerWithId("","","",false)
     p.jersey = this.player.jersey
-    p.firstName = this.player.firstName
+    p.FirstName = this.player.FirstName
     p.lastName = this.player.lastName
     p.islibero = this.player.islibero
     this.matchService.savePlayer(p)
@@ -301,10 +313,10 @@ export class ConfigureComponent implements OnInit {
   }
 
   onRowSelect(event) {
-    this.dialogHome = event.data.home
-    this.dilogOpponent = event.data.opponent
-    this.gameDate.setValue(this.matchService.datefromepoch(event.data.matchdate))
-    this.dialogMatchId = event.data.id
+    this.dialogHome = event.data.Home
+    this.dilogOpponent = event.data.Opponent
+    //this.gameDate.setValue(this.matchService.datefromepoch(event.data.matchdate))
+    this.dialogMatchId = event.data.objectId
     this.match = event.data
     this.matchDialogDisplay = true;
     this.newMatch = false;
@@ -312,10 +324,10 @@ export class ConfigureComponent implements OnInit {
 
   SaveMatch() {
     let match = new MatchWithId()
-    match.matchdate = this.gameDate.value
-    match.id = this.dialogMatchId
-    match.opponent = this.dilogOpponent
-    match.home = this.dialogHome
+    match.MatchDate = this.gameDate.value
+    match.objectId = this.dialogMatchId
+    match.Opponent = this.dilogOpponent
+    match.Home = this.dialogHome
     this.matchService.saveMatch(match)
     this.matchDialogDisplay = false;
   }

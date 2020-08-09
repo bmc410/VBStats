@@ -1,6 +1,7 @@
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { Observable, BehaviorSubject, Subscriber } from "rxjs";
+import { Injectable, OnInit } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, BehaviorSubject, Subscriber, of, from } from "rxjs";
+import { map } from 'rxjs/operators';
 import {
   Match,
   Stat,
@@ -30,13 +31,15 @@ import * as firebase from "firebase";
 import "firebase/firestore";
 import { MessageService } from 'primeng/api';
 import { Action } from 'rxjs/internal/scheduler/Action';
+import { Parse } from 'parse';
+//import { url } from 'inspector';
 
 
 @Injectable({
   providedIn: "root"
 })
-export class MatchService {
-  matchtable: Dexie.Table<Match, number>;
+export class MatchService  {
+  //matchtable: Dexie.Table<Match, number>;
   playertable: Dexie.Table<PlayerWithId, number>;
   stattable: Dexie.Table<statEntry, number>;
   gametable: Dexie.Table<GameWithId, number>;
@@ -51,6 +54,7 @@ export class MatchService {
   statCol: AngularFirestoreCollection<statEntry>;
   gameCol: AngularFirestoreCollection<GameWithId>;
   teamCol: AngularFirestoreCollection<TeamWithId>;
+  match: Match[] = [];
 
   //mappedPos = new Array();
 
@@ -60,7 +64,7 @@ export class MatchService {
     private dexieService: DexieService,
     private messageService: MessageService
   ) {
-    this.matchtable = this.dexieService.table("match");
+    //this.matchtable = this.dexieService.table("match");
     this.playertable = this.dexieService.table("player");
     this.stattable = this.dexieService.table("stat");
     this.gametable = this.dexieService.table("game");
@@ -70,6 +74,7 @@ export class MatchService {
     this.dbStats = firestore.collection("stats").valueChanges();
     this.dbGames = firestore.collection("games").valueChanges();
     this.dbTeams = firestore.collection("teams").valueChanges();
+    this.initParse()
   }
 
   private itemDoc: AngularFirestoreDocument<PlayerWithId>;
@@ -87,6 +92,15 @@ export class MatchService {
   private _gameData$: BehaviorSubject<GameWithId>;
   public _gameData: GameWithId;
 
+  initParse() {
+    Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
+    Parse.initialize(
+      '6jtb78oSAiGeNv2mcJTN0h039TxkJh4HDrWBz7RT', // This is your Application ID
+      'bRolkvWkFSewPWnlqQOaaRTpgT16ILr6r7PnU6AY', // This is your Javascript key
+      'dHvEstEM97ue9pBcTcW8ofNyqS2ERqT7kg4CnYhX' // This is your Master key (never use it in the frontend)
+    );
+  }
+
   get gameData$() {
     return this._gameData$.asObservable();
   }
@@ -96,29 +110,112 @@ export class MatchService {
   }
 
   getMatches() {
-    return this.firestore.collection("matches").snapshotChanges();
-    //return this.matchtable.toArray()
+    const Matches = Parse.Object.extend('Matches');
+    const query = new Parse.Query(Matches);
+    return from(query.find()).pipe(map(result => result));
   }
+
+  getPlayerById(id: string) {
+    const Players = Parse.Object.extend('Players');
+    const query = new Parse.Query(Players);
+    query.equalTo("objectId", id);
+    return from(query.find()).pipe(map(result => result));
+    //return this.firestore.collection("players").snapshotChanges();
+  }
+
+  makeTeamFromRoster(r: Array<any>) {
+    var players: PlayerWithId[] = [];
+    var p: Observable<PlayerWithId[]>;
+    var _this = this;
+    r.forEach(function (value) {
+    _this.getPlayerById(value.id).subscribe(result => {
+        var json = JSON.stringify(result);
+        var data = JSON.parse(json);
+        let player = {
+          jersey: value.jersey,
+          firstName: data[0].FirstName,
+          lastName: data[0].LastName,
+          islibero: false,
+          playerid: data[0].objectId,
+          fullName: data[0].FirstName + ' ' + data[0].LastName
+        }
+        players.push(player)
+      });
+    });
+    //p = players;
+    return players;
+  }
+
 
   getPlayers() {
-    return this.firestore.collection("players").snapshotChanges();
+    const Players = Parse.Object.extend('Players');
+    const query = new Parse.Query(Players);
+    return from(query.find()).pipe(map(result => result));
   }
 
-  getstats(g: GameWithId) {
-    return this.firestore.collection("games").doc(g.id).collection("stats", ref => ref.orderBy("statdate")).snapshotChanges();
+  getstats(id: string) {
+    const Stats = Parse.Object.extend('Stats');
+    const query = new Parse.Query(Stats);
+    query.equalTo("GameId", id);
+    query.ascending("createdAt");
+    return from(query.find()).pipe(map(result => result));
+    
+    //return this.firestore.collection("games").doc(g.id).collection("stats", ref => ref.orderBy("statdate")).snapshotChanges();
     //return this.firestore.collection("stats").snapshotChanges();
   }
 
   getPlayByPlay(g: GameWithId) {
-    return this.firestore.collection("games").doc(g.id).collection("playbyplay", ref => ref.orderBy("pbpDate", "desc")).snapshotChanges();
+    return this.firestore.collection("games").doc(g.objectId).collection("playbyplay", ref => ref.orderBy("pbpDate", "desc")).snapshotChanges();
   }
 
-  getPlayersByTeamId(t: TeamWithId) {
-    return this.firestore.collection("teams").doc(t.id).collection("players").snapshotChanges();
+  getPlayersFromRoster(playerNumbers: Array<any>) {
+    const Players = Parse.Object.extend('Players');
+    const query1 = new Parse.Query(Players);
+    query1.containedIn("objectId", playerNumbers);
+    return from(query1.find()).pipe(map(result => result));
   }
 
-  getGames() {
-    return this.firestore.collection("games").snapshotChanges();
+  getPlayersByTeamId(teamId: string){
+    const Teams = Parse.Object.extend('Teams')
+    const query = new Parse.Query(Teams);
+    query.equalTo("objectId", teamId);
+    query.include("Players");
+    return from(query.find()).pipe(map(result => result));
+    
+    // .then((results) => {
+    //   var json = JSON.stringify(results[0]);
+    //   var data = JSON.parse(json);
+    //   var r = JSON.parse(data.Roster);
+    //   var playerNumbers: string[] = [];
+    //   r.players.forEach(element => {
+    //     playerNumbers.push(element.id)
+    //   });
+
+    //   return this.getPlayersFromRoster(playerNumbers);
+    //   //const usersJson: any[] = Array.of(r.json());
+     
+    //});
+
+    //return from(query.find()).pipe(map(result => result));
+    
+    //return this.firestore.collection("teams").doc(t.id).collection("players").snapshotChanges();
+  }
+
+  getGamesForMatch(matchId: string) {
+    const Games = Parse.Object.extend('Games');
+    const query = new Parse.Query(Games);
+    query.equalTo("MatchId", matchId);
+    return from(query.find()).pipe(map(result => result));
+    //return this.firestore.collection("games").snapshotChanges();
+  }
+
+  getGameForMatchByNumber(matchId: string, gameNumber: number) {
+    const Games = Parse.Object.extend('Games');
+    const query = new Parse.Query(Games);
+    query.equalTo("MatchId", matchId);
+    query.equalTo("GameNumber", Number(gameNumber));
+    return from(query.find()).pipe(map(result => result));
+    //return this.firestore.collection("games").snapshotChanges();
   }
 
   getTeams() {
@@ -126,11 +223,11 @@ export class MatchService {
   }
 
   updatePlayer(p: PlayerWithId) {
-    var player = this.firestore.collection("players").doc(p.id);
+    var player = this.firestore.collection("players").doc(p.objectId);
     return player
     .update({
       jersey: p.jersey,
-      firstName: p.firstName,
+      firstName: p.FirstName,
       lastName: p.lastName,
       islibero: p.islibero,
     })
@@ -145,12 +242,12 @@ export class MatchService {
   }
 
   updateMatch(m: MatchWithId) {
-    var match = this.firestore.collection("matches").doc(m.id);
+    var match = this.firestore.collection("matches").doc(m.objectId);
     return match
     .update({
-      matchdate: m.matchdate,
-      opponent: m.opponent,
-      home: m.home
+      matchdate: m.MatchDate,
+      opponent: m.Opponent,
+      home: m.Home
     })
     .then(function() {
       console.log("Document successfully updated!");
@@ -207,21 +304,21 @@ export class MatchService {
     var action = ""
 
     if (stat === "start") {
-      action = "Start [" + cp[1].player.firstName + ", "
-      + cp[2].player.firstName + ", " + cp[3].player.firstName + ", "
-      + cp[4].player.firstName + ", " + cp[5].player.firstName + ", "
-      + cp[6].player.firstName + "]"
+      action = "Start [" + cp[1].player.FirstName + ", "
+      + cp[2].player.FirstName + ", " + cp[3].player.FirstName + ", "
+      + cp[4].player.FirstName + ", " + cp[5].player.FirstName + ", "
+      + cp[6].player.FirstName + "]"
     } else if (stat === "sub") {
-      action = "Sub [" + cp[1].player.firstName + ", "
-      + cp[2].player.firstName + ", " + cp[3].player.firstName + ", "
-      + cp[4].player.firstName + ", " + cp[5].player.firstName + ", "
-      + cp[6].player.firstName + "]"
+      action = "Sub [" + cp[1].player.FirstName + ", "
+      + cp[2].player.FirstName + ", " + cp[3].player.FirstName + ", "
+      + cp[4].player.FirstName + ", " + cp[5].player.FirstName + ", "
+      + cp[6].player.FirstName + "]"
     } else {
       action = this.getActionFromStat(stat);
     }
 
     let pbpObj = {
-      id: g.id,
+      id: g.objectId,
       pbpDate: this.datetoepoch(new Date()),
       player: p,
       stattype: stat,
@@ -229,12 +326,12 @@ export class MatchService {
       opponentscore: g.opponentscore,
       action: action,
       rotation: {
-        1: cp[1].player.firstName,
-        2: cp[2].player.firstName,
-        3: cp[3].player.firstName,
-        4: cp[4].player.firstName,
-        5: cp[5].player.firstName,
-        6: cp[6].player.firstName
+        1: cp[1].player.FirstName,
+        2: cp[2].player.FirstName,
+        3: cp[3].player.FirstName,
+        4: cp[4].player.FirstName,
+        5: cp[5].player.FirstName,
+        6: cp[6].player.FirstName
       },
     }
 
@@ -262,7 +359,7 @@ export class MatchService {
 
 
   updateGame(g: GameWithId, cp: CourtPosition[]) {
-    var game = this.firestore.collection("games").doc(g.id);
+    var game = this.firestore.collection("games").doc(g.objectId);
 
     // Set the "capital" field of the city 'DC'
     return game
@@ -271,12 +368,12 @@ export class MatchService {
         opponentscore: g.opponentscore,
         subs: g.subs,
         rotation: {
-          1: cp[1].player.firstName,
-          2: cp[2].player.firstName,
-          3: cp[3].player.firstName,
-          4: cp[4].player.firstName,
-          5: cp[5].player.firstName,
-          6: cp[6].player.firstName
+          1: cp[1].player.FirstName,
+          2: cp[2].player.FirstName,
+          3: cp[3].player.FirstName,
+          4: cp[4].player.FirstName,
+          5: cp[5].player.FirstName,
+          6: cp[6].player.FirstName
         },
       })
       .then(function() {
@@ -297,7 +394,7 @@ export class MatchService {
     return this.firestore.collection("matches").add(match);
   }
   createStatInFirestore(stat: any, g: GameWithId) {
-    return this.firestore.collection("games").doc(g.id).collection("stats").add(stat);
+    return this.firestore.collection("games").doc(g.objectId).collection("stats").add(stat);
   }
   createGameInFirestore(game: any) {
     return this.firestore.collection("games").add(game);
@@ -346,14 +443,25 @@ export class MatchService {
   }
 
   createGame(g: GameWithId) {
-    let game = {
-      gamenumber: g.gamenumber,
-      matchid: g.matchid,
-      homescore: g.homescore,
-      opponentscore: g.opponentscore,
-      subs: g.subs
-    };
-    return this.createGameInFirestore(game);
+    const Games = Parse.Object.extend('Games');
+    const newGame = new Games();
+
+    newGame.set('GameNumber', 2);
+    newGame.set('MatchId', g.matchid);
+    newGame.set('HomeScore', g.homescore);
+    newGame.set('OpponentScore', g.opponentscore);
+    newGame.set('Subs', g.subs);
+
+    newGame.save();
+
+    // let game = {
+    //   gamenumber: g.gamenumber,
+    //   matchid: g.matchid,
+    //   homescore: g.homescore,
+    //   opponentscore: g.opponentscore,
+    //   subs: g.subs
+    // };
+    // return this.createGameInFirestore(game);
   }
 
   createTeam(t: TeamWithId) {
@@ -362,19 +470,7 @@ export class MatchService {
     };
     return this.createTeamInFirestore(team);
   }
-
-
-
-  getPlayerById(id: number) {
-    // let p = this.dbPlayers.
-    // this.playertable
-    //   .where("playerid")
-    //   .equals(id)
-    //   .first(data => {
-    //     return data;
-    //   });
-  }
-
+ 
   saveTeam(t: TeamWithId) {
     if (!t.id) {
       let team = {
@@ -391,10 +487,10 @@ export class MatchService {
   }
 
   savePlayer(p: PlayerWithId) {
-    if (!p.id) {
+    if (!p.objectId) {
       let player = {
         jersey: p.jersey,
-        firstName: p.firstName,
+        firstName: p.FirstName,
         lastName: p.lastName,
         islibero: p.islibero
       };
@@ -402,10 +498,10 @@ export class MatchService {
     } else {
       let player = {
         jersey: p.jersey,
-        firstName: p.firstName,
+        firstName: p.FirstName,
         lastName: p.lastName,
         islibero: p.islibero,
-        id: p.id
+        id: p.objectId
       };
       this.updatePlayer(player);
     }
@@ -415,23 +511,23 @@ export class MatchService {
 
   saveMatch(m: MatchWithId) {
     let match = {
-      home: m.home,
-      opponent: m.opponent,
-      matchdate: m.matchdate,
+      home: m.Home,
+      opponent: m.Opponent,
+      matchdate: m.MatchDate,
     };
-    if (m.id === "") {
+    if (m.objectId === "") {
       let match = {
-        home: m.home,
-        opponent: m.opponent,
-        matchdate: m.matchdate,
+        home: m.Home,
+        opponent: m.Opponent,
+        matchdate: m.MatchDate,
       };
       this.createMatchInFirestore(match);
     } else {
       let match = {
-        home: m.home,
-        opponent: m.opponent,
-        matchdate: m.matchdate,
-        id: m.id
+        Home: m.Home,
+        Opponent: m.Opponent,
+        MatchDate: m.MatchDate,
+        objectId: m.objectId
       };
       this.updateMatch(match);
     }
@@ -480,19 +576,19 @@ export class MatchService {
       opponentscore: g.opponentscore,
       subs: g.subs,
       rotation: {
-        1: stat.positions[1].player.firstName,
-        2: stat.positions[2].player.firstName,
-        3: stat.positions[3].player.firstName,
-        4: stat.positions[4].player.firstName,
-        5: stat.positions[5].player.firstName,
-        6: stat.positions[6].player.firstName
+        1: stat.positions[1].player.FirstName,
+        2: stat.positions[2].player.FirstName,
+        3: stat.positions[3].player.FirstName,
+        4: stat.positions[4].player.FirstName,
+        5: stat.positions[5].player.FirstName,
+        6: stat.positions[6].player.FirstName
       },
-      playerid: stat.player.id,
+      playerid: stat.player.objectId,
       //rotation: stat.positions,
       statdate: this.datetoepoch(new Date())
     };
     this.createStatInFirestore(statObj,g);
-    this.messageService.add({severity:'success', summary:'Service Message', detail:this.getActionFromStat(stat.stattype) + stat.player.firstName});
+    this.messageService.add({severity:'success', summary:'Service Message', detail:this.getActionFromStat(stat.stattype) + stat.player.FirstName});
     //this.stattable.add(statObj);
   }
 }

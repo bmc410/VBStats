@@ -12,9 +12,9 @@
         </ng-template>
         <ng-template pTemplate="body" let-match>
           <tr [pSelectableRow]="match">
-            <td>{{ match.home }}</td>
-            <td>{{ match.opponent }}</td>
-            <td>{{ match.displaydate | date:'short' }}</td>
+            <td>{{ match.Home }}</td>
+            <td>{{ match.Opponent }}</td>
+            <td>{{ match.MatchDate }}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary" let-rowData>
@@ -104,11 +104,26 @@
 
       </div> -->
       <div class="d-flex no-wrap">
-        <button (click)="setGame(1)" style="margin-right: .7vw;" color="" mat-mini-fab>1</button>
-        <button (click)="setGame(2)" style="margin-right: .7vw;" color="" mat-mini-fab>2</button>
-        <button (click)="setGame(3)" style="margin-right: .7vw;" color="" mat-mini-fab>3</button>
-        <button (click)="setGame(4)" style="margin-right: .7vw;" color="" mat-mini-fab>4</button>
-        <button (click)="setGame(5)" color="" mat-mini-fab>5</button>
+        <button (click)="setGame(1)" style="margin-right: .7vw; outline: none; border: 0px; background-color: transparent;" color="">
+          <span style="color: green;" *ngIf="game==1" class="glyphicon glyphicon-ok"></span>
+          <span *ngIf="game!=1">1</span>
+        </button>
+        <button (click)="setGame(2)" style="margin-right: .7vw; outline: none; border: 0px; background-color: transparent;" color="">
+          <span style="color: green;" *ngIf="game==2" class="glyphicon glyphicon-ok"></span>
+          <span *ngIf="game!=2">2</span>
+        </button>
+        <button (click)="setGame(3)" style="margin-right: .7vw; outline: none; border: 0px; background-color: transparent;" color="">
+          <span style="color: green;" *ngIf="game==3" class="glyphicon glyphicon-ok"></span>
+          <span *ngIf="game!=3">3</span>
+        </button>
+        <button (click)="setGame(4)" style="margin-right: .7vw; outline: none; border: 0px; background-color: transparent;" color="">
+          <span style="color: green;" *ngIf="game==4" class="glyphicon glyphicon-ok"></span>
+          <span *ngIf="game!=4">4</span>
+        </button>
+        <button (click)="setGame(5)" color="" style="outline: none; border: 0px; background-color: transparent;">
+          <span style="color: green;" *ngIf="game==5" class="glyphicon glyphicon-ok"></span>
+          <span *ngIf="game!=5">5</span>
+        </button>
 
         <!-- <mat-radio-button (click)="setGame(1)" value="1"></mat-radio-button>
           <mat-radio-button (click)="setGame(2)" value="2"></mat-radio-button>
@@ -146,7 +161,7 @@
         <label for="home">First Name</label>
       </div>
       <div class="ui-g-8">
-        <input style="width: 100%; padding: 5px;" pInputText id="fname" [(ngModel)]="player.firstName" autofocus />
+        <input style="width: 100%; padding: 5px;" pInputText id="fname" [(ngModel)]="player.FirstName" autofocus />
       </div>
     </div>
     <div class="ui-g-12">

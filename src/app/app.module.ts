@@ -25,6 +25,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import {ToolbarModule} from 'primeng/toolbar';
 import { RouterModule, Routes } from '@angular/router';
+import { Parse } from "parse";
 
 // import {MatDatepickerModule} from '@angular/material/datepicker';
 // import {MatNativeDateModule} from '@angular/material/core';

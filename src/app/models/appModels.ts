@@ -103,7 +103,7 @@ export class Team {
 
 
 export class TeamWithId extends Team {
-  id?: string;
+  objectId?: string;
 }
 
 

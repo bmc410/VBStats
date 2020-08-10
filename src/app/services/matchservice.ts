@@ -161,6 +161,9 @@ export class MatchService  {
     
   }
 
+  
+
+
   getGamesForMatch(matchId: string) {
     const Games = Parse.Object.extend('Games');
     const query = new Parse.Query(Games);
@@ -187,7 +190,9 @@ export class MatchService  {
   }
 
   getTeams() {
-    return this.firestore.collection("teams").snapshotChanges();
+    const Teams = Parse.Object.extend('Teams');
+    const query = new Parse.Query(Teams);
+    return from(query.find()).pipe(map(result => result));
   }
 
   updatePlayer(p: PlayerWithId) {
@@ -336,7 +341,7 @@ export class MatchService  {
   }
 
   upDateTeam(t: TeamWithId) {
-    var team = this.firestore.collection("teams").doc(t.id);
+    var team = this.firestore.collection("teams").doc(t.objectId);
 
     return team
     .update({
@@ -370,8 +375,27 @@ export class MatchService  {
   createPlayerInFirestore(player: any) {
     return this.firestore.collection("players").add(player);
   }
-  createMatchInFirestore(match: any) {
-    return this.firestore.collection("matches").add(match);
+  
+  DateToYYYYMMDD(Date: Date): string {
+    let DS: string = ('0' + (Date.getMonth() + 1)).slice(-2) 
+        + '/' + ('0' + Date.getDate()).slice(-2)
+        + '/' + Date.getFullYear()
+    return DS
+  }
+
+  createMatch(match: MatchWithId) {
+    const Matches = Parse.Object.extend('Matches');
+    const myNewObject = new Matches();
+
+    let newDate = new Date(match.MatchDate);
+    var md = this.DateToYYYYMMDD(newDate);
+    myNewObject.set('Home', match.Home);
+    myNewObject.set('Opponent', match.Opponent);
+    myNewObject.set('MatchDate', md);
+    myNewObject.set('HomeTeamId', match.HomeTeamId);
+
+    return from(myNewObject.save()).pipe(map(result => result));;
+
   }
   createStat(stat: any, g: GameWithId) {
     var rotations: pbpPosition[] = [];
@@ -469,7 +493,7 @@ export class MatchService  {
   }
  
   saveTeam(t: TeamWithId) {
-    if (!t.id) {
+    if (!t.objectId) {
       let team = {
         TeamName: t.TeamName
       };
@@ -477,7 +501,7 @@ export class MatchService  {
     } else {
       let team = {
         TeamName: t.TeamName,
-        id: t.id
+        id: t.objectId
       };
       this.upDateTeam(team)
     }
@@ -504,36 +528,29 @@ export class MatchService  {
     }
     //return this.matchtable.add(match);
   }
-
-
+  
   saveMatch(m: MatchWithId) {
-    let match = {
-      home: m.Home,
-      opponent: m.Opponent,
-      matchdate: m.MatchDate,
-    };
-    if (m.objectId === "") {
-      let match = {
-        home: m.Home,
-        opponent: m.Opponent,
-        matchdate: m.MatchDate,
-      };
-      this.createMatchInFirestore(match);
-    } else {
-      let match = {
-        Home: m.Home,
-        Opponent: m.Opponent,
-        MatchDate: m.MatchDate,
-        objectId: m.objectId
-      };
-      this.updateMatch(match);
-    }
+      return this.createMatch(m);
+    // } else {
+    //   let match = {
+    //     Home: m.Home,
+    //     Opponent: m.Opponent,
+    //     MatchDate: m.MatchDate,
+    //     objectId: m.objectId
+    //   };
+    //   return this.createMatch(m);
+      //return this.updateMatch(match);
+    //}
     //return this.matchtable.add(match);
   }
-
+  
   deleteMatch(id: string) {
-    return;
-    //return this.matchtable.delete(id);
+    const Matches = Parse.Object.extend('Matches');
+    const query = new Parse.Query(Matches);
+    // here you put the objectId that you want to delete
+    return new Promise(function(resolve, reject) {
+      query.get(id).then((object) => { object.destroy()});
+    })
   }
 
   datefromepoch(epoch: any) {

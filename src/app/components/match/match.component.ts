@@ -361,7 +361,6 @@ export class MatchComponent implements OnInit {
     affectedPlayer.push(player);
     //s.stattime = new Date();
     s.stattype = stat;
-    this.matchService.incrementStat(s, this.game);
     if (this.homepointOptions.indexOf(stat) > -1) {
       this.updateGame("home", "a", stat, affectedPlayer)
       //this.matchService.updateGame(this.game)
@@ -369,6 +368,7 @@ export class MatchComponent implements OnInit {
       this.updateGame("opponent", "a", stat, affectedPlayer)
       //this.matchService.updateGame(this.game)
     }
+    this.matchService.incrementStat(s, this.game);
 
     //this.game.homescore = this.homescore;
     //this.game.opponentscore = this.opponentscore;

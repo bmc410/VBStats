@@ -35,7 +35,7 @@ export class ConfigureComponent implements OnInit {
   teamPlayers: PlayerWithId[] = [];
   teamPlayerIDs: TeamPlayerWithID[] = []
   match: MatchWithId = {};
-  player: Player = {};
+  player: PlayerWithId = {};
   matches: Match[] = [];
   display: boolean = false;
   matchDate: Date;
@@ -43,16 +43,17 @@ export class ConfigureComponent implements OnInit {
   teams: TeamWithId[] = [];
   team: TeamWithId;
   selectedTeamName = ""
-  games = [
-    { label: "1", value: 1 },
-    { label: "2", value: 2 },
-    { label: "3", value: 3 },
-    { label: "4", value: 4 },
-    { label: "5", value: 5 }
-  ];
+  selectedTeamId = ""
   game = 1;
 
+  levels:Array<Object> = [
+    {num: 0, name: "AA"},
+    {num: 1, name: "BB"}
+  ];
+  selectTeam = 99;
+ 
   dialogHome: string
+  dialogHomeId: string;
   dilogOpponent: string
   dialogGameDate: Date
   dialogGame: number
@@ -64,7 +65,7 @@ export class ConfigureComponent implements OnInit {
   playersDialogListDisplay: boolean = false;
   selectedMatch: Match;
   selectedPlayer: Player;
-  selectedPlayers: Player[];
+  selectedPlayers: PlayerWithId[];
   selectedTeamPlayer: Player;
   selectedTeam: TeamWithId;
   newMatch: boolean;
@@ -104,21 +105,15 @@ export class ConfigureComponent implements OnInit {
   getTeamPlayers() {
     this.teamPlayers = []
     this.teamPlayerIDs = []
-    this.matchService.getPlayersByTeamId(this.team.id).subscribe(data => {
-      // this.teamPlayerIDs = data.map(e => {
-      //   return {
-      //     id: e.payload.doc.id,
-      //     ...e.payload.doc.data() as {}
-      //   } as TeamPlayerWithID;
-      // })
+    this.matchService.getPlayersByTeamId(this.team.objectId).subscribe(result => {
+      var json = JSON.stringify(result);
+      var data = JSON.parse(json);
+      var data1 = JSON.parse(data[0].Roster);
       this.teamPlayers = []
-      for (let index = 0; index < this.teamPlayerIDs.length; index++) {
-        const pId = this.teamPlayerIDs[index].playerId;
-        const tp = this.players.filter(x => x.playerid === pId)[0]
-        if (tp) {
-          this.teamPlayers.push(tp)
-        }
-      }
+      data1.forEach(element => {
+        this.teamPlayers.push(element)        
+      });
+
       this.teamPlayers.sort((a, b) => {
         return +a.jersey - +b.jersey;
       });
@@ -227,13 +222,8 @@ export class ConfigureComponent implements OnInit {
   ngOnInit() {
 
     this.matchService.getTeams().subscribe(data => {
-      this.teams = data.map(e => {
-        return {
-          id: e.payload.doc.id,
-          ...e.payload.doc.data() as {}
-        } as TeamWithId;
-      })
-      console.log(this.teams)
+      var json = JSON.stringify(data);
+      this.teams = JSON.parse(json);
     });
 
    /*  Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
@@ -261,16 +251,27 @@ export class ConfigureComponent implements OnInit {
     this.matchService.getPlayers().subscribe(data => {
       var json = JSON.stringify(data);
       var d = JSON.parse(json);
+      this.selectedPlayers = d
+
+      this.selectedPlayers = this.selectedPlayers.sort((t1, t2) => {
+        const name1 = t1.LastName.toLowerCase();
+        const name2 = t2.LastName.toLowerCase();
+        if (name1 > name2) { return 1; }
+        if (name1 < name2) { return -1; }
+        return 0;
+      });
+
+      this.players = this.selectedPlayers;
       // this.players = data.map(e => {
       //   return {
       //     id: e.payload.doc.id,
       //     ...e.payload.doc.data() as {}
       //   } as PlayerWithId;
       // })
-      // for (let index = 0; index < this.players.length; index++) {
-      //   const element = this.players[index];
-      //   this.players[index].fullName = this.players[index].firstName + " " + this.players[index].lastName
-      // }
+      for (let index = 0; index < this.players.length; index++) {
+        const element = this.players[index];
+        this.players[index].fullName = this.players[index].FirstName + " " + this.players[index].LastName
+      }
     });
   }
 
@@ -295,21 +296,32 @@ export class ConfigureComponent implements OnInit {
   DeletePlayer() {
 
   }
+  
+  onChange($event) {
+    this.selectedTeamName = $event.target.options[$event.target.options.selectedIndex].text;
+    var split = $event.target.options[$event.target.options.selectedIndex].value.split(":");
+    this.selectedTeamId = split[1].trim();
+  } 
+
   AddMatch() {
     this.dialogHome = ""
     this.dilogOpponent = ""
     this.gameDate.setValue(new Date)
     this.dialogMatchId = ""
     this.matchDialogDisplay = true;
+    this.selectedTeamId = "";
     //this.matchService.createMatch("Fusion", "Ballyhoo", new Date());
     //this.getMatches();
   }
 
   DeleteMatch() {
-    // this.matchService.deleteMatch(this.match.matchid).then(() => {
-    //   this.getMatches();
-    // });
-    this.matchDialogDisplay = false;
+    this.matchService.deleteMatch(this.match.objectId).then(result => {
+      this.matchService.getMatches().subscribe(result => {
+        var json = JSON.stringify(result);
+        this.matches = JSON.parse(json);
+        this.matchDialogDisplay = false;
+      });
+    });
   }
 
   onRowSelect(event) {
@@ -318,17 +330,27 @@ export class ConfigureComponent implements OnInit {
     //this.gameDate.setValue(this.matchService.datefromepoch(event.data.matchdate))
     this.dialogMatchId = event.data.objectId
     this.match = event.data
+    this.selectedTeamId = event.data.HomeTeamId;
     this.matchDialogDisplay = true;
     this.newMatch = false;
   }
 
   SaveMatch() {
     let match = new MatchWithId()
+    match.HomeTeamId = this.selectedTeamId
     match.MatchDate = this.gameDate.value
     match.objectId = this.dialogMatchId
     match.Opponent = this.dilogOpponent
-    match.Home = this.dialogHome
-    this.matchService.saveMatch(match)
+    match.Home = this.selectedTeamName
+    this.matchService.saveMatch(match).subscribe(data => {
+      this.matchService.getMatches().subscribe(result => {
+        var json = JSON.stringify(result);
+        this.matches = JSON.parse(json);
+      });
+    });
+
+
+
     this.matchDialogDisplay = false;
   }
 }

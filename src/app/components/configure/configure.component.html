@@ -50,16 +50,14 @@
         (onRowSelect)="onPlayerSelect($event)">
         <ng-template pTemplate="header">
           <tr>
-            <th>#</th>
             <th>First Name</th>
             <th>Last Name</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-player>
           <tr [pSelectableRow]="player">
-            <td>{{ player.jersey }}</td>
-            <td>{{ player.firstName }}</td>
-            <td>{{ player.lastName  }}</td>
+            <td>{{ player.FirstName }}</td>
+            <td>{{ player.LastName  }}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary" let-rowData>
@@ -77,8 +75,13 @@
 
   <div class="row align-items-center">
     <div class="col">
-      <label for="inputEmail">Home</label>
-      <input [(ngModel)]="dialogHome" type="text" class="form-control" id="inputHome" placeholder="Home">
+      <label for="inputEmail">Home</label><br/>
+      <select (change)="onChange($event)" style="height: calc(1.5em + 0.75rem + 0px); border: 1px solid #ced4da; width: 100%; border-radius: 0.25rem; color: #7b8a8b; padding: 0.375rem 0.75rem;" type="number" 
+        [(ngModel)]="selectedTeamId">
+        <option value='' [disabled]="true">Select home team</option>
+        <option *ngFor="let team of teams" [ngValue]="team.objectId">{{team.TeamName}}</option>
+      </select>
+      <!-- <input [(ngModel)]="dialogHome" type="text" class="form-control" id="inputHome" placeholder="Home"> -->
     </div>
     <div class="col">
       <label for="inputEmail">Opponent</label>
@@ -216,8 +219,8 @@
           <ng-template pTemplate="body" let-teamPlayer>
             <tr [pSelectableRow]="teamPlayer">
               <td>{{ teamPlayer.jersey }}</td>
-              <td>{{ teamPlayer.firstName }}</td>
-              <td>{{ teamPlayer.lastName  }}</td>
+              <td>{{ teamPlayer.FirstName }}</td>
+              <td>{{ teamPlayer.LastName  }}</td>
             </tr>
           </ng-template>
           <ng-template pTemplate="summary" let-rowData>

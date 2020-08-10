@@ -196,7 +196,7 @@ export class MatchService  {
     .update({
       jersey: p.jersey,
       firstName: p.FirstName,
-      lastName: p.lastName,
+      lastName: p.LastName,
       islibero: p.islibero,
     })
     .then(function() {
@@ -280,16 +280,23 @@ export class MatchService  {
     } else if (stat === "sub") {
       action = "Sub [" + p[0].FirstName + " for " + p[1].FirstName +  "]"
     } else {
-      action = this.getActionFromStat(stat);
+      action = this.getActionFromStat(stat) + p[0].FirstName + ' ' + p[0].LastName;
+    }
+
+    var player = null;
+    var objId = null
+    if (p != null) {
+      player = p[0];
+      objId = player.objectId;
     }
 
     let pbpObj = {
       id: g.objectId,
       pbpDate: this.datetoepoch(new Date()),
-      player: p[0],
+      player: player,
       stattype: stat,
-      homescore: g.homescore,
-      opponentscore: g.opponentscore,
+      homescore: g.HomeScore,
+      opponentscore: g.OpponentScore,
       action: action,
       rotation: {
         1: cp[1].player.FirstName,
@@ -316,9 +323,9 @@ export class MatchService  {
     const myNewObject = new PlayByPlay();
 
     myNewObject.set('action', action);
-    myNewObject.set('homescore', g.homescore);
-    myNewObject.set('opponentscore', g.opponentscore);
-    myNewObject.set('playerId', p[0].objectId);
+    myNewObject.set('homescore', g.HomeScore);
+    myNewObject.set('opponentscore', g.OpponentScore);
+    myNewObject.set('playerId', objId);
     myNewObject.set('stattype', stat);
     myNewObject.set('rotation', jR);
 
@@ -351,8 +358,8 @@ export class MatchService  {
     const query = new Parse.Query(Games);
     // here you put the objectId that you want to update
     return from(query.get(g.objectId).then((object) => {
-      object.set('HomeScore', g.homescore);
-      object.set('OpponentScore', g.opponentscore);
+      object.set('HomeScore', g.HomeScore);
+      object.set('OpponentScore', g.OpponentScore);
       object.set('Subs', g.subs);
       object.save();
     }));
@@ -366,8 +373,33 @@ export class MatchService  {
   createMatchInFirestore(match: any) {
     return this.firestore.collection("matches").add(match);
   }
-  createStatInFirestore(stat: any, g: GameWithId) {
-    return this.firestore.collection("games").doc(g.objectId).collection("stats").add(stat);
+  createStat(stat: any, g: GameWithId) {
+    var rotations: pbpPosition[] = [];
+    // let pos = stat.rotation;
+
+    // pos = pos.splice(1, 6);
+    // var j = JSON.stringify(pos);
+    // var d = JSON.parse(j);
+    // d.forEach(element => {
+    //   let r = new pbpPosition();
+    //   r.posNo = element.posNo;
+    //   r.playerName = element.player.FirstName;
+    //   rotations.push(r);
+    // });
+
+    var jr = JSON.stringify(stat.rotation);   
+    const Stats = Parse.Object.extend('Stats');
+    const myNewObject = new Stats();
+    myNewObject.set('GameId', g.objectId);
+    myNewObject.set('HomeScore', g.HomeScore);
+    myNewObject.set('OpponentScore', g.OpponentScore);
+    myNewObject.set('PlayerId', stat.playerid);
+    myNewObject.set('StatType', stat.stattype);
+    myNewObject.set('Subs', g.subs);
+    myNewObject.set('Rotation', jr);
+
+    myNewObject.save()
+    //return this.firestore.collection("games").doc(g.objectId).collection("stats").add(stat);
   }
   createGameInFirestore(game: any) {
     return this.firestore.collection("games").add(game);
@@ -419,22 +451,14 @@ export class MatchService  {
     const Games = Parse.Object.extend('Games');
     const newGame = new Games();
 
-    newGame.set('GameNumber', 2);
+    newGame.set('GameNumber', Number(g.gamenumber));
     newGame.set('MatchId', g.matchid);
-    newGame.set('HomeScore', g.homescore);
-    newGame.set('OpponentScore', g.opponentscore);
+    newGame.set('HomeScore', g.HomeScore);
+    newGame.set('OpponentScore', g.OpponentScore);
     newGame.set('Subs', g.subs);
 
-    newGame.save();
-
-    // let game = {
-    //   gamenumber: g.gamenumber,
-    //   matchid: g.matchid,
-    //   homescore: g.homescore,
-    //   opponentscore: g.opponentscore,
-    //   subs: g.subs
-    // };
-    // return this.createGameInFirestore(game);
+    return from(newGame.save()).pipe(map(result => result));;
+   
   }
 
   createTeam(t: TeamWithId) {
@@ -464,7 +488,7 @@ export class MatchService  {
       let player = {
         jersey: p.jersey,
         firstName: p.FirstName,
-        lastName: p.lastName,
+        lastName: p.LastName,
         islibero: p.islibero
       };
       this.createPlayerInFirestore(player);
@@ -472,7 +496,7 @@ export class MatchService  {
       let player = {
         jersey: p.jersey,
         firstName: p.FirstName,
-        lastName: p.lastName,
+        lastName: p.LastName,
         islibero: p.islibero,
         id: p.objectId
       };
@@ -540,27 +564,30 @@ export class MatchService  {
     //   var pos = { element.player.id, index };
     //   posArray.push(pos)
     // }
+
+    var rotations: pbpPosition[] = [];
+    for (let index = 1; index < 7; index++) {
+      let p = new pbpPosition();
+      p.playerName = stat.positions[index].player.FirstName;
+      p.posNo = index;
+      p.objectId = stat.positions[index].player.objectId
+      rotations.push(p);
+    }
+
     let statObj = {
       //statorder: await this.getMaxStatId(),
       matchid: stat.matchid,
       gamenumber: stat.gamenumber,
       stattype: stat.stattype,
-      homescore: g.homescore,
-      opponentscore: g.opponentscore,
+      homescore: g.HomeScore,
+      opponentscore: g.OpponentScore,
       subs: g.subs,
-      rotation: {
-        1: stat.positions[1].player.FirstName,
-        2: stat.positions[2].player.FirstName,
-        3: stat.positions[3].player.FirstName,
-        4: stat.positions[4].player.FirstName,
-        5: stat.positions[5].player.FirstName,
-        6: stat.positions[6].player.FirstName
-      },
+      rotation: rotations,
       playerid: stat.player.objectId,
       //rotation: stat.positions,
       statdate: this.datetoepoch(new Date())
     };
-    this.createStatInFirestore(statObj,g);
+    this.createStat(statObj,g);
     this.messageService.add({severity:'success', summary:'Service Message', detail:this.getActionFromStat(stat.stattype) + stat.player.FirstName});
     //this.stattable.add(statObj);
   }

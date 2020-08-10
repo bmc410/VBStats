@@ -278,7 +278,7 @@ export class ConfigureComponent implements OnInit {
     let p = new PlayerWithId("","","",false)
     p.jersey = this.player.jersey
     p.FirstName = this.player.FirstName
-    p.lastName = this.player.lastName
+    p.LastName = this.player.LastName
     p.islibero = this.player.islibero
     this.matchService.savePlayer(p)
     this.playerDialogDisplay = false;

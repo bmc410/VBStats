@@ -180,8 +180,8 @@ export class SummaryComponent implements OnInit {
     if (this.selectedGame) this.showData();
     else {
       this.selectedGame = new GameWithId();
-      this.selectedGame.homescore = 0;
-      this.selectedGame.opponentscore = 0;
+      this.selectedGame.HomeScore = 0;
+      this.selectedGame.OpponentScore = 0;
     }
   }
 
@@ -217,7 +217,7 @@ export class SummaryComponent implements OnInit {
     this.players.forEach(element => {
       let sv = <statView>{};
       sv.firstName = element.FirstName;
-      sv.lastName = element.lastName;
+      sv.lastName = element.LastName;
       sv.jersey = element.jersey;
       sv.playerid = element.objectId;
       sv.k = 0;

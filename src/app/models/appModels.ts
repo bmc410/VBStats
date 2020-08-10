@@ -3,6 +3,7 @@
 export class pbpPosition {
   posNo: number;
   playerName: string;
+  objectId: string;
 }
 
 export class CourtPosition {
@@ -14,7 +15,7 @@ export class CourtPosition {
 export class Player {
   jersey?: string;
   FirstName?: string;
-  lastName?: string;
+  LastName?: string;
   islibero?: boolean = false;
   playerid?: string;
   fullName?: string;
@@ -24,7 +25,7 @@ export class Player {
     playerId?: string) {
     this.jersey = jersey;
     this.FirstName = fname;
-    this.lastName = lastname;
+    this.LastName = lastname;
     this.playerid = playerId;
   }
 }
@@ -81,8 +82,8 @@ export class MatchWithId extends Match {
 export class Game {
   gamenumber?: number;
   matchid?: string;
-  homescore?: number;
-  opponentscore?: number;
+  HomeScore?: number;
+  OpponentScore?: number;
   subs?: number;
 }
 

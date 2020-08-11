@@ -99,8 +99,18 @@ export class TeamPlayerWithID extends TeamPlayer{
 
 export class Team {
   TeamName?: string;
+  ClubId?: string;
+  Year?: Number;
 }
 
+
+export class Club {
+  ClubName?: string;
+}
+
+export class ClubWithId extends Club {  
+  objectId: string
+}
 
 export class TeamWithId extends Team {
   objectId?: string;

@@ -30,16 +30,18 @@
         <ng-template pTemplate="header">
           <tr>
             <th>Team Name</th>
+            <th>Club</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-team>
           <tr [pSelectableRow]="team">
             <td>{{ team.TeamName }}</td>
+            <td>{{ getClubNameById(team.ClubId) }}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary" let-rowData>
           <div style="text-align:left">
-            <button type="button" pButton icon="fa fa-plus" (click)="showPlayerDialog()" label="Add"></button>
+            <button type="button" pButton icon="fa fa-plus" (click)="showAddTeamDialog()" label="Add"></button>
           </div>
         </ng-template>
       </p-table>
@@ -156,6 +158,40 @@
 </p-dialog>
 
 
+<p-dialog header="Add Team" [(visible)]="addTeamDialogDisplay" [focusOnShow]="false" [responsive]="true"
+  showEffect="fade" [modal]="true" [style]="{ width: '400px' }">
+  <div class="ui-g ui-fluid" *ngIf="player">
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="home">Club</label>
+      </div>
+      <div class="ui-g-8">
+        <select (change)="onClubChange($event)" style="height: calc(1.5em + 0.75rem + 0px); border: 1px solid #ced4da; width: 100%; border-radius: 0.25rem; color: #7b8a8b; padding: 0.375rem 0.75rem;" type="number" 
+        [(ngModel)]="selectedClubId">
+        <option value='' [disabled]="true">Select Club</option>
+        <option *ngFor="let club of clubs" [ngValue]="club.objectId">{{club?.ClubName}}</option>
+        </select>      
+      </div>
+    </div>
+    <div class="ui-g-12">
+      <div class="ui-g-4">
+        <label for="opponent">Team Name</label>
+      </div>
+      <div class="ui-g-8">
+        <input style="width: 100%; padding: 5px;" pInputText id="lname" [(ngModel)]="teamName" />
+      </div>
+    </div>
+  </div>
+  <p-footer>
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button style=" font-size:small; background-color: crimson;" type="button" pButton icon="fa fa-close"
+        (click)="DeletePlayer()" label="Delete"></button>
+      <button style=" font-size:small;" type="button" pButton icon="fa fa-check" (click)="SaveTeam($event)"
+        label="Save"></button>
+    </div>
+  </p-footer>
+</p-dialog>
+
 <p-dialog header="Player Details" [(visible)]="playerDialogDisplay" [focusOnShow]="false" [responsive]="true"
   showEffect="fade" [modal]="true" [style]="{ width: '400px' }">
   <div class="ui-g ui-fluid" *ngIf="player">
@@ -195,15 +231,31 @@
 </p-dialog>
 
 <p-dialog [baseZIndex]=9999 [autoZIndex]="false" header="Team Details" [(visible)]="teamDialogDisplay" [focusOnShow]="false"
-  showEffect="fade" [modal]="true" [style]="{ width: '60vw' }" styleClass="teamdialog">
+  showEffect="fade" [modal]="true" [style]="{ width: '50vw' }" styleClass="teamdialog">
   <div class="container">
     <div class="row align-items-center mb-3">
-      <div class="col align-middle">
-        <label for="teamname">Team Name</label>
+      <div class="col-4">
+        <label for="teamname">Team Name</label><br/>
+        <input style="height: calc(1.5em + 0.75rem + 0px); border: 1px solid #ced4da; width: 100%; border-radius: 0.25rem; color: #7b8a8b; padding: 0.375rem 0.75rem;" 
+          id="teamname" [(ngModel)]="selectedTeamName" autofocus />
       </div>
-      <div class="col">
-        <input pInputText id="teamname" [(ngModel)]="selectedTeamName" autofocus />
+      <div class="col-4">
+        <label for="teamname">Club</label><br/>
+        <select (change)="onTeamClubChange($event)" style="height: calc(1.5em + 0.75rem + 0px); border: 1px solid #ced4da; width: 100%; border-radius: 0.25rem; color: #7b8a8b; padding: 0.375rem 0.75rem;" type="number" 
+        [(ngModel)]="selectedTeamClubId">
+        <option value='' [disabled]="true">Select Club</option>
+        <option *ngFor="let club of clubs" [ngValue]="club.objectId">{{club?.ClubName}}</option>
+        </select>
       </div>
+      <div class="col-4">
+        <label for="teamname">Club Year</label><br/>
+        <select (change)="onClubYearChange($event)" style="height: calc(1.5em + 0.75rem + 0px); border: 1px solid #ced4da; width: 100%; border-radius: 0.25rem; color: #7b8a8b; padding: 0.375rem 0.75rem;" type="number" 
+        [(ngModel)]="selectedTeamYear">
+        <option value='' [disabled]="true">Select Club Year</option>
+        <option *ngFor="let year of teamYears" [ngValue]="year">{{year}}</option>
+        </select>
+      </div>
+      
     </div>
     <div class="row justify-content-center">
       <div class="col">
@@ -218,7 +270,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-teamPlayer>
             <tr [pSelectableRow]="teamPlayer">
-              <td>{{ teamPlayer.jersey }}</td>
+              <td>{{ teamPlayer?.jersey }}</td>
               <td>{{ teamPlayer.FirstName }}</td>
               <td>{{ teamPlayer.LastName  }}</td>
             </tr>
@@ -239,7 +291,7 @@
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button style=" font-size:small;" type="button" pButton icon="fa fa-check" (click)="SaveTeam()"
+      <button style=" font-size:small;" type="button" pButton icon="fa fa-check" (click)="SaveTeam($event)"
         label="Save"></button>
     </div>
   </p-footer>
@@ -249,16 +301,19 @@
   showEffect="fade" [modal]="true" styleClass="teamdialog">
   <div class="ui-g ui-fluid" *ngIf="player">
     <div class="ui-g-12">
-      <p-listbox multiple="multiple" checkbox="checkbox" [style] = "{'height':'10vw'}" [options]="players" [(ngModel)]="selectedPlayers" optionLabel="fullName" >
-
+      <p-listbox 
+        multiple="multiple" 
+        checkbox="checkbox" 
+        [style] = "{'height':'10vw', 'width':'50vw'}" 
+        [options]="selectedPlayers" 
+        [(ngModel)]="pickedPlayers" 
+        optionLabel="fullName" >
       </p-listbox>
     </div>
   </div>
   <p-footer>
     <div class="">
       <button (click)="AddPlayer()" class="btn btn-sm btn-responsive btn-success" type="button">Add</button>
-
-
     </div>
   </p-footer>
 </p-dialog>

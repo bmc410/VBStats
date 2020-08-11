@@ -10,7 +10,8 @@ import {
   MatchWithId,
   TeamWithId,
   Team,
-  TeamPlayerWithID
+  TeamPlayerWithID,
+  ClubWithId
 } from "src/app/models/appModels";
 import { MatchService } from "src/app/services/matchservice";
 import { DialogModule } from "primeng/dialog";
@@ -34,6 +35,7 @@ export class ConfigureComponent implements OnInit {
   players: PlayerWithId[] = [];
   teamPlayers: PlayerWithId[] = [];
   teamPlayerIDs: TeamPlayerWithID[] = []
+  pickedPlayers: PlayerWithId[] = [];
   match: MatchWithId = {};
   player: PlayerWithId = {};
   matches: Match[] = [];
@@ -42,9 +44,16 @@ export class ConfigureComponent implements OnInit {
   items: MenuItem[];
   teams: TeamWithId[] = [];
   team: TeamWithId;
+  club: ClubWithId;
+  clubs: ClubWithId[] = [];
   selectedTeamName = ""
   selectedTeamId = ""
+  selectedClubName = ""
+  selectedClubId = ""
   game = 1;
+  teamName = "";
+  teamClubId = "";
+  selectedTeamClubId = "";
 
   levels:Array<Object> = [
     {num: 0, name: "AA"},
@@ -62,6 +71,7 @@ export class ConfigureComponent implements OnInit {
   matchDialogDisplay: boolean = false;
   playerDialogDisplay: boolean = false;
   teamDialogDisplay: boolean = false;
+  addTeamDialogDisplay: boolean = false;
   playersDialogListDisplay: boolean = false;
   selectedMatch: Match;
   selectedPlayer: Player;
@@ -76,6 +86,8 @@ export class ConfigureComponent implements OnInit {
   isConnected = true;
   matchsubcription: any;
   gameDate = new FormControl(new Date());
+  teamYears: Number[] = [];
+  selectedTeamYear: Number;
 
   constructor(
     private matchService: MatchService,
@@ -96,6 +108,15 @@ export class ConfigureComponent implements OnInit {
     //this.getPlayers()
   }
 
+  showAddTeamDialog() {
+    //this.newPlayer = false;
+    //this.player = new PlayerWithId("","","",false,)
+    this.addTeamDialogDisplay = true;
+    //this.matchService.addPlayers();
+    //this.getPlayers()
+  }
+
+
   onPlayerSelect(event) {
     this.newPlayer = false;
     this.player = this.clonePlayer(event.data);
@@ -105,28 +126,23 @@ export class ConfigureComponent implements OnInit {
   getTeamPlayers() {
     this.teamPlayers = []
     this.teamPlayerIDs = []
-    this.matchService.getPlayersByTeamId(this.team.objectId).subscribe(result => {
+     this.matchService.getPlayersByTeamId(this.team.objectId).subscribe(result => {
       var json = JSON.stringify(result);
       var data = JSON.parse(json);
-      var data1 = JSON.parse(data[0].Roster);
-      this.teamPlayers = []
-      data1.forEach(element => {
-        this.teamPlayers.push(element)        
+      data.forEach(p => {
+        this.pickedPlayers.push(this.selectedPlayers.filter(x => x.objectId == p.PlayerId)[0]);
+        this.teamPlayers.push(this.selectedPlayers.filter(x => x.objectId == p.PlayerId)[0]);
       });
-
-      this.teamPlayers.sort((a, b) => {
-        return +a.jersey - +b.jersey;
-      });
-
-      //this.teamPlayers.sort((a, b) => (a.jersey - b.jersey) ? 1 : -1)
-      console.log(this.teamPlayers)
-    });
-  }s
+    })
+  }
 
   onTeamSelect(event) {
     this.newTeam = false;
     this.team = this.cloneTeam(event.data);
     this.selectedTeamName = this.team.TeamName;
+    this.selectedTeamId = this.team.objectId;
+    this.selectedTeamClubId = this.team.ClubId
+    this.selectedTeamYear = this.team.Year;
     this.getTeamPlayers()
     this.teamDialogDisplay = true;
   }
@@ -143,16 +159,11 @@ export class ConfigureComponent implements OnInit {
   }
 
   AddPlayer() {
-    console.log(this.selectedPlayers)
-    for (let index = 0; index < this.selectedPlayers.length; index++) {
-      const player = this.selectedPlayers[index];
-      let tp = {
-        playerId: player.playerid
-      }
-      this.matchService.AddPlayerToFirestoreTeam(this.selectedTeam, tp)
-      //this.getTeamPlayers()
-      this.playersDialogListDisplay = false
-    }
+    var t = this.pickedPlayers;
+    this.matchService.addPlayersToTeam(this.pickedPlayers, this.team.objectId).subscribe(result => {
+
+    })
+
   }
 
   RemovePlayer() {
@@ -221,9 +232,21 @@ export class ConfigureComponent implements OnInit {
 
   ngOnInit() {
 
+    let year = new Date().getFullYear();
+    this.teamYears.push(year);
+    for (let index = 1; index < 5; index++) {
+      year += 1;
+      this.teamYears.push(year);
+    }
+
     this.matchService.getTeams().subscribe(data => {
       var json = JSON.stringify(data);
       this.teams = JSON.parse(json);
+    });
+
+    this.matchService.getClubs().subscribe(data => {
+      var json = JSON.stringify(data);
+      this.clubs = JSON.parse(json);
     });
 
    /*  Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
@@ -285,16 +308,51 @@ export class ConfigureComponent implements OnInit {
     this.playerDialogDisplay = false;
   }
 
-  SaveTeam() {
-    let t = new TeamWithId()
-    t.TeamName = this.team.TeamName
-    this.matchService.saveTeam(t);
-    this.playerDialogDisplay = false;
+  SaveTeam($event) {
+    if (this.selectedTeamId == "") {
+      let t = new TeamWithId()
+      t.TeamName = this.teamName;
+      t.ClubId = this.selectedClubId;
+      this.matchService.createTeam(t).subscribe(data => {
+        this.addTeamDialogDisplay = false;
+        this.teamDialogDisplay = false;
+        this.matchService.getTeams().subscribe(data => {
+          var json = JSON.stringify(data);
+          this.teams = JSON.parse(json);
+        });
+      })
+    }
+    else {
+      let t = new TeamWithId()
+      t.TeamName = this.selectedTeamName;
+      t.ClubId = this.selectedTeamClubId;
+      t.Year = this.selectedTeamYear
+      t.objectId = this.selectedTeamId
+      this.matchService.upDateTeam(t).subscribe(data => {
+        this.addTeamDialogDisplay = false;
+        this.teamDialogDisplay = false;
+        this.matchService.getTeams().subscribe(data => {
+          var json = JSON.stringify(data);
+          this.teams = JSON.parse(json);
+        });
+      })
+    } 
+   
   }
 
 
   DeletePlayer() {
 
+  }
+
+  getClubNameById(id: string) {
+    var c =  this.clubs.filter(x => x.objectId == id)[0]
+    if (c) {
+      return c.ClubName
+    }
+    else {
+      return ''
+    }
   }
   
   onChange($event) {
@@ -302,6 +360,22 @@ export class ConfigureComponent implements OnInit {
     var split = $event.target.options[$event.target.options.selectedIndex].value.split(":");
     this.selectedTeamId = split[1].trim();
   } 
+
+  onClubChange($event) {
+    this.selectedClubName = $event.target.options[$event.target.options.selectedIndex].text;
+    var split = $event.target.options[$event.target.options.selectedIndex].value.split(":");
+    this.selectedClubId = split[1].trim();
+  } 
+
+  onTeamClubChange($event) {
+    var split = $event.target.options[$event.target.options.selectedIndex].value.split(":");
+    this.selectedTeamClubId = split[1].trim();
+  }
+
+  onClubYearChange($event) {
+    var split = $event.target.options[$event.target.options.selectedIndex].value.split(":");
+    this.selectedTeamYear = Number(split[1].trim());
+  }
 
   AddMatch() {
     this.dialogHome = ""
@@ -314,26 +388,19 @@ export class ConfigureComponent implements OnInit {
     //this.getMatches();
   }
 
-  async DeleteMatch() {
-
-    let promise = new Promise((resolve, reject) => {
-      this.matchService.deleteMatch(this.match.objectId)
+  DeleteMatch() {
+    const Match = Parse.Object.extend('Matches');
+    const query = new Parse.Query(Match);
+    // here you put the objectId that you want to delete
+    query.get(this.match.objectId).then((object) => {
+      object.destroy().then((response) => {
+        this.matchService.getMatches().subscribe(result => {
+          var json = JSON.stringify(result);
+          this.matches = JSON.parse(json);
+          this.matchDialogDisplay = false;
+        });  
+      });
     });
-
-    let result = await promise; // wait until the promise resolves (*)
-    this.matchService.getMatches().subscribe(result => {
-      var json = JSON.stringify(result);
-      this.matches = JSON.parse(json);
-      this.matchDialogDisplay = false;
-    });
-    
-    // await this.matchService.deleteMatch(this.match.objectId).then(result => {
-    //   this.matchService.getMatches().subscribe(result => {
-    //     var json = JSON.stringify(result);
-    //     this.matches = JSON.parse(json);
-    //     this.matchDialogDisplay = false;
-    //   });
-    // });
   }
 
   onRowSelect(event) {

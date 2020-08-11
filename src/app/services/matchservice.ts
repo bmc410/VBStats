@@ -116,6 +116,14 @@ export class MatchService  {
     return from(query.find()).pipe(map(result => result));
   }
 
+  getMatchById(id: string) {
+    const Matches = Parse.Object.extend('Matches');
+    const query = new Parse.Query(Matches);
+    query.equalTo("objectId", id);
+    return from(query.find()).pipe(map(result => result));
+    //return this.firestore.collection("players").snapshotChanges();
+  }
+
   getPlayerById(id: string) {
     const Players = Parse.Object.extend('Players');
     const query = new Parse.Query(Players);
@@ -543,14 +551,13 @@ export class MatchService  {
     //}
     //return this.matchtable.add(match);
   }
+
   
   deleteMatch(id: string) {
     const Matches = Parse.Object.extend('Matches');
     const query = new Parse.Query(Matches);
     // here you put the objectId that you want to delete
-    return new Promise(function(resolve, reject) {
       query.get(id).then((object) => { object.destroy()});
-    })
   }
 
   datefromepoch(epoch: any) {

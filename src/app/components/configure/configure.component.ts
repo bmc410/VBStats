@@ -314,14 +314,26 @@ export class ConfigureComponent implements OnInit {
     //this.getMatches();
   }
 
-  DeleteMatch() {
-    this.matchService.deleteMatch(this.match.objectId).then(result => {
-      this.matchService.getMatches().subscribe(result => {
-        var json = JSON.stringify(result);
-        this.matches = JSON.parse(json);
-        this.matchDialogDisplay = false;
-      });
+  async DeleteMatch() {
+
+    let promise = new Promise((resolve, reject) => {
+      this.matchService.deleteMatch(this.match.objectId)
     });
+
+    let result = await promise; // wait until the promise resolves (*)
+    this.matchService.getMatches().subscribe(result => {
+      var json = JSON.stringify(result);
+      this.matches = JSON.parse(json);
+      this.matchDialogDisplay = false;
+    });
+    
+    // await this.matchService.deleteMatch(this.match.objectId).then(result => {
+    //   this.matchService.getMatches().subscribe(result => {
+    //     var json = JSON.stringify(result);
+    //     this.matches = JSON.parse(json);
+    //     this.matchDialogDisplay = false;
+    //   });
+    // });
   }
 
   onRowSelect(event) {

@@ -204,25 +204,6 @@ export class MatchService  {
     return from(query.find()).pipe(map(result => result));
   }
 
-  updatePlayer(p: PlayerWithId) {
-    var player = this.firestore.collection("players").doc(p.objectId);
-    return player
-    .update({
-      jersey: p.jersey,
-      firstName: p.FirstName,
-      lastName: p.LastName,
-      islibero: p.islibero,
-    })
-    .then(function() {
-      console.log("Document successfully updated!");
-    })
-    .catch(function(error) {
-      // The document probably doesn't exist.
-      console.error("Error updating document: ", error);
-    });
-
-  }
-
   updateMatch(m: MatchWithId) {
     var match = this.firestore.collection("matches").doc(m.objectId);
     return match
@@ -274,6 +255,21 @@ export class MatchService  {
           break;
       case "sa":
           action = "Service ace by "
+          break;
+      case "bt":
+          action = "Block touch by "
+          break;
+      case "h":
+          action = "Attach by "
+          break;
+      case "d":
+          action = "Dig by "
+          break;
+      case "b":
+          action = "Block by "
+          break;
+      case "a":
+          action = "Assist by "
           break;
       default:
         action = action
@@ -403,7 +399,7 @@ export class MatchService  {
   }
   createStat(stat: any, g: GameWithId) {
     var rotations: pbpPosition[] = [];
-    // let pos = stat.rotation;
+    //let pos = stat.rotation;
 
     // pos = pos.splice(1, 6);
     // var j = JSON.stringify(pos);
@@ -416,7 +412,7 @@ export class MatchService  {
     // });
 
     var jr = JSON.stringify(stat.rotation);   
-    const Stats = Parse.Object.extened('Stats');
+    const Stats = Parse.Object.extend('Stats');
     const myNewObject = new Stats();
     myNewObject.set('GameId', g.objectId);
     myNewObject.set('HomeScore', g.HomeScore);
@@ -429,50 +425,44 @@ export class MatchService  {
     myNewObject.save()
     //return this.firestore.collection("games").doc(g.objectId).collection("stats").add(stat);
   }
-  createGameInFirestore(game: any) {
-    return this.firestore.collection("games").add(game);
-  }
-  createPBPInFirestore(pbp:any) {
-    return this.firestore.collection("games").doc(pbp.id).collection("playbyplay").add(pbp);
-  }
-  createTeamInFirestore(team:any) {
-    return this.firestore.collection("teams").doc(team.id).collection("team").add(team);
-  }
-  AddPlayerToFirestoreTeam(team:any, tp: TeamPlayer) {
-    return this.firestore.collection("teams").doc(team.id).collection("players").add(tp);
-  }
-  RemovePlayerFromFirestoreTeam(team:any, tpId: string) {
-    return this.firestore.collection("teams").doc(team.id).collection("players").doc(tpId).delete();
+  
+  savePlayer(p: any) {
+    if (!p.objectId) {
+      return this.createPlayer(p)
+    } else {
+      return this.updatePlayer(p)
+    }
   }
 
-
-  addPlayers(): PlayerWithId[] {
-    this.players = [];
-    this.createPlayer("3", "Ally", "Nadzam");
-    this.createPlayer("6", "Sophie", "Rojas");
-    this.createPlayer("8", "Abbie", "Shultz");
-    this.createPlayer("9", "Lauren", " Gretting");
-    this.createPlayer("11", "Maddie", "Geeting");
-    this.createPlayer("14", "Roxy", "Ladar");
-    this.createPlayer("16", "Gracie", "Singleton");
-    this.createPlayer("22", "Megan", "Hoffer");
-    this.createPlayer("26", "Kayla", "Unger");
-    this.createPlayer("27", "Sydney", "Devine");
-
-
-    return this.players;
+  updatePlayer(p: any) {
+    const Players = Parse.Object.extend('Players');
+    const query = new Parse.Query(Players);
+    // here you put the objectId that you want to update
+    return query.get(p.objectId).then((object) => {
+      object.set('FirstName', p.FirstName);
+      object.set('LastName', p.LastName);
+      object.save()
+    }) 
   }
 
+  createPlayer(p: any) {
+    const Players = Parse.Object.extend('Players');
+    const myNewObject = new Players();
+    
+    myNewObject.set('FirstName', p.FirstName);
+    myNewObject.set('LastName', p.LastName);
+    
+    return myNewObject.save()
 
-  createPlayer(jersey: string, fname: string, lname: string) {
-    let player = {
-      jersey: jersey,
-      firstName: fname,
-      lastName: lname,
-      islibero: false,
-      playerid: String(Guid.create())
-    };
-    return this.createPlayerInFirestore(player);
+  }
+
+  deletePlayer(p: any) {
+    const Players = Parse.Object.extend('Players');
+    const query = new Parse.Query(Players);
+    // here you put the objectId that you want to delete
+    return query.get(p.objectId).then((object) => {
+      object.destroy()
+    })
   }
 
   createGame(g: GameWithId) {
@@ -550,28 +540,6 @@ export class MatchService  {
       object.set('ClubId', t.ClubId);
       object.save()
     })
-  }
-
-  savePlayer(p: PlayerWithId) {
-    if (!p.objectId) {
-      let player = {
-        jersey: p.jersey,
-        firstName: p.FirstName,
-        lastName: p.LastName,
-        islibero: p.islibero
-      };
-      this.createPlayerInFirestore(player);
-    } else {
-      let player = {
-        jersey: p.jersey,
-        firstName: p.FirstName,
-        lastName: p.LastName,
-        islibero: p.islibero,
-        id: p.objectId
-      };
-      this.updatePlayer(player);
-    }
-    //return this.matchtable.add(match);
   }
   
   saveMatch(m: MatchWithId) {

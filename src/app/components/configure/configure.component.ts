@@ -124,6 +124,7 @@ export class ConfigureComponent implements OnInit {
   onPlayerSelect(event) {
     this.newPlayer = false;
     this.player = this.clonePlayer(event.data);
+    this.player.objectId = event.data.objectId;
     this.playerDialogDisplay = true;
   }
 
@@ -331,13 +332,14 @@ export class ConfigureComponent implements OnInit {
   }
 
   SavePlayer() {
-    let p = new PlayerWithId("","","",false)
-    p.jersey = this.player.jersey
-    p.FirstName = this.player.FirstName
-    p.LastName = this.player.LastName
-    p.islibero = this.player.islibero
-    this.matchService.savePlayer(p)
-    this.playerDialogDisplay = false;
+    this.matchService.savePlayer(this.player).then(result => {
+      this.matchService.getPlayers().subscribe(data => {
+        var json = JSON.stringify(data);
+        var d = JSON.parse(json);
+        this.players = d
+        this.playerDialogDisplay = false;
+      })
+    })
   }
 
   SaveTeam($event) {
@@ -374,7 +376,14 @@ export class ConfigureComponent implements OnInit {
 
 
   DeletePlayer() {
-
+    this.matchService.deletePlayer(this.player).then(result => {
+      this.matchService.getPlayers().subscribe(data => {
+        var json = JSON.stringify(data);
+        var d = JSON.parse(json);
+        this.players = d
+        this.playerDialogDisplay = false;
+      })
+    })
   }
 
   getClubNameById(id: string) {

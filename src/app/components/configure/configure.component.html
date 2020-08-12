@@ -211,19 +211,11 @@
         <input style="width: 100%; padding: 5px;" pInputText id="lname" [(ngModel)]="player.LastName" />
       </div>
     </div>
-    <div class="ui-g-12">
-      <div class="ui-g-4">
-        <label for="opponent">Jersey</label>
-      </div>
-      <div class="ui-g-8">
-        <input style="width: 100%; padding: 5px;" pInputText id="lname" [(ngModel)]="player.jersey" />
-      </div>
-    </div>
   </div>
   <p-footer>
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
-      <button style=" font-size:small; background-color: crimson;" type="button" pButton icon="fa fa-close"
-        (click)="DeletePlayer()" label="Delete"></button>
+      <!-- <button style=" font-size:small; background-color: crimson;" type="button" pButton icon="fa fa-close"
+        (click)="DeletePlayer()" label="Delete"></button> -->
       <button style=" font-size:small;" type="button" pButton icon="fa fa-check" (click)="SavePlayer()"
         label="Save"></button>
     </div>

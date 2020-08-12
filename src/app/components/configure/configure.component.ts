@@ -34,6 +34,7 @@ export class ConfigureComponent implements OnInit {
   draggedplayer: PlayerWithId;
   players: PlayerWithId[] = [];
   teamPlayers: PlayerWithId[] = [];
+  teamPlayer: PlayerWithId;
   teamPlayerIDs: TeamPlayerWithID[] = []
   pickedPlayers: PlayerWithId[] = [];
   match: MatchWithId = {};
@@ -134,6 +135,20 @@ export class ConfigureComponent implements OnInit {
         this.teamPlayers.push(this.selectedPlayers.filter(x => x.objectId == p.PlayerId)[0]);
       });
     })
+  }
+
+  onEditComplete(event) {
+    console.log(event)
+  }
+
+  onEditInit(event): void {
+    console.log(event);
+    console.log('Edit Init Event Called');
+  }
+
+  onEditCancel(event):void {
+    console.log(event);
+    console.log('Edit Cancel Event Called');
   }
 
   onTeamSelect(event) {

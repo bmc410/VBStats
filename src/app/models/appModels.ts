@@ -89,6 +89,12 @@ export class Game {
 
 export class TeamPlayer{
   playerId: string
+  jersey?: string;
+  FirstName?: string;
+  LastName?: string;
+  islibero?: boolean = false;
+  playerid?: string;
+  fullName?: string;
 }
 
 

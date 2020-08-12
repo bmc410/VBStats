@@ -259,7 +259,8 @@
     </div>
     <div class="row justify-content-center">
       <div class="col">
-        <p-table [scrollable]="true" scrollHeight="10vw" [value]="teamPlayers" selectionMode="single"
+        <p-table dataKey="objectId" (onEditComplete)="onEditComplete($event)" (onEditInit)="onEditInit($event)" (onEditCancel)="onEditCancel($event)"
+          [scrollable]="true" scrollHeight="10vw" [value]="teamPlayers" selectionMode="single"
           [(selection)]="selectedTeamPlayer" >
           <ng-template pTemplate="header">
             <tr>
@@ -268,9 +269,18 @@
               <th>Last Name</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-teamPlayer>
-            <tr [pSelectableRow]="teamPlayer">
-              <td>{{ teamPlayer?.jersey }}</td>
+          <ng-template pTemplate="body" let-teamPlayer >
+            <tr >
+              <td pEditableColumn pEditableColumn="{{ teamPlayer.objectId }}" pEditableColumnField="{{ teamPlayer.jersey }}">
+                <p-cellEditor>
+                    <ng-template pTemplate="input">
+                        <input style="color: black;" pInputText type="text" [(ngModel)]="teamPlayer.jersey">
+                    </ng-template>
+                    <ng-template pTemplate="output">
+                      {{ teamPlayer?.jersey }}
+                    </ng-template>
+                </p-cellEditor>
+            </td>
               <td>{{ teamPlayer.FirstName }}</td>
               <td>{{ teamPlayer.LastName  }}</td>
             </tr>

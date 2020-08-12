@@ -259,7 +259,7 @@
     </div>
     <div class="row justify-content-center">
       <div class="col">
-        <p-table dataKey="objectId" (onEditComplete)="onEditComplete($event)" (onEditInit)="onEditInit($event)" (onEditCancel)="onEditCancel($event)"
+        <p-table dataKey="objectId" (onEditComplete)="onEditComplete($event)" (onRowSelect)="onTeamPlayerSelect($event)"
           [scrollable]="true" scrollHeight="10vw" [value]="teamPlayers" selectionMode="single"
           [(selection)]="selectedTeamPlayer" >
           <ng-template pTemplate="header">
@@ -270,7 +270,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-teamPlayer >
-            <tr >
+            <tr [pSelectableRow]="teamPlayer">
               <td pEditableColumn pEditableColumn="{{ teamPlayer.objectId }}" pEditableColumnField="{{ teamPlayer.jersey }}">
                 <p-cellEditor>
                     <ng-template pTemplate="input">
@@ -307,18 +307,24 @@
   </p-footer>
 </p-dialog>
 
-<p-dialog header="Player List" [(visible)]="playersDialogListDisplay" [focusOnShow]="false" [responsive]="true"
+<p-dialog header="Available Players" [(visible)]="playersDialogListDisplay" [focusOnShow]="false" [responsive]="true"
   showEffect="fade" [modal]="true" styleClass="teamdialog">
   <div class="ui-g ui-fluid" *ngIf="player">
     <div class="ui-g-12">
-      <p-listbox 
+      <mat-selection-list [(ngModel)]="pickedPlayers"  [style] = "{'height':'10vw', 'width':'50vw'}"  
+       #avp  >
+        <mat-list-option *ngFor="let player of availablePlayers" [value]="player">
+          {{player.FirstName + ' ' + player.LastName }}
+        </mat-list-option>
+      </mat-selection-list>
+      <!-- <p-listbox 
         multiple="multiple" 
         checkbox="checkbox" 
         [style] = "{'height':'10vw', 'width':'50vw'}" 
-        [options]="selectedPlayers" 
+        [options]="availablePlayers" 
         [(ngModel)]="pickedPlayers" 
         optionLabel="fullName" >
-      </p-listbox>
+      </p-listbox> -->
     </div>
   </div>
   <p-footer>

@@ -17,7 +17,8 @@ import {
   PointPlay,
   TeamWithId,
   TeamPlayer,
-  pbpPosition
+  pbpPosition,
+  TeamPlayerWithID
 } from "../models/appModels";
 import Dexie from "dexie";
 import {
@@ -157,11 +158,19 @@ export class MatchService  {
     const Teams = Parse.Object.extend('TeamPlayers')
     const query = new Parse.Query(Teams);
     query.equalTo("TeamId", teamId);
-    return from(query.find()).pipe(map(result => result));
+    return query.find();
     
   }
 
-  
+  updatePlayerJersey(jersey: string, objectId: string) {
+    const TeamPlayers = Parse.Object.extend('TeamPlayers');
+    const query = new Parse.Query(TeamPlayers);
+    // here you put the objectId that you want to update
+    return from(query.get(objectId).then((object) => {
+      object.set('Jersey', jersey);
+      return object.save()
+    }))
+  }
 
 
   getGamesForMatch(matchId: string) {
@@ -492,17 +501,40 @@ export class MatchService  {
 
   }
 
-  addPlayersToTeam(players: PlayerWithId[], teamId: string) : Observable<any[]> {
+  removePlayerFromTeam(id: string) {
     const TeamPlayers = Parse.Object.extend('TeamPlayers');
-    const myNewObject = new TeamPlayers();
+    const query = new Parse.Query(TeamPlayers);
+    // here you put the objectId that you want to delete
+    query.get(id).then((object) => {
+      object.destroy()
+      })
+    }
+
+  addPlayersToTeam(players: PlayerWithId[], teamId: string) : Observable<any[]> {
     var arrayOfResponses: Array<any> = [];
 
     players.forEach(p => {
+      const TeamPlayers = Parse.Object.extend('TeamPlayers');
+      const myNewObject = new TeamPlayers();
       myNewObject.set('PlayerId', p.objectId);
       myNewObject.set('TeamId', teamId);
       var resp = from(myNewObject.save())
       arrayOfResponses.push(resp);
-      myNewObject.save()      
+    });
+
+    return forkJoin(arrayOfResponses);
+  }
+
+
+  getPlayersByIds(players: any[]) : Observable<any[]> {
+    var arrayOfResponses: Array<any> = [];
+
+    players.forEach(p => {
+      const Players = Parse.Object.extend('Players');
+      const query = new Parse.Query(Players);
+      query.equalTo("objectId", p.PlayerId);
+      var resp = from(query.find())
+      arrayOfResponses.push(resp);
     });
 
     return forkJoin(arrayOfResponses);

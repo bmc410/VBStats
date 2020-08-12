@@ -99,7 +99,7 @@ export class TeamPlayer{
 
 
 export class TeamPlayerWithID extends TeamPlayer{
-  id: string
+  objectId: string
 }
 
 

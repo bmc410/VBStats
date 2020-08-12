@@ -200,10 +200,19 @@ export class MatchComponent implements OnInit {
     this.gameNumber = this.match.gameNumber;
     this.game.subs = 0;
 
-    this.matchService.getPlayersByTeamId(this.match.HomeTeamId).subscribe(result => {
+    this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(result => {
       var json = JSON.stringify(result);
-      var data = JSON.parse(json);
-      this.players = JSON.parse(data[0].Roster);
+      var tpData = JSON.parse(json);
+      this.matchService.getPlayersByIds(tpData).subscribe(results => {
+        var json = JSON.stringify(results);
+        var data = JSON.parse(json);
+        data.forEach(p => {
+          p[0].jersey = tpData.filter(x => x.PlayerId == p[0].objectId)[0].Jersey
+          this.players.push(p[0]);
+        });
+        
+    
+
       this.allPlayers = this.players;
 
       this.matchService.getGameForMatchByNumber(this.match.objectId, this.match.gameNumber).subscribe(result => {
@@ -275,6 +284,7 @@ export class MatchComponent implements OnInit {
           this.game.subs = game[0].Subs;
         }
       })  
+    })
     })
   }
 

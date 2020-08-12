@@ -31,4 +31,9 @@ body {
   width: 50vw;
   height: 50vw;
 }
+mat-selection-list {
+  max-height: 20vw;
+  width: 30vw;
+  overflow: auto;
+}
 

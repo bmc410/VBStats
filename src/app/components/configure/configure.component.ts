@@ -33,10 +33,11 @@ export class ConfigureComponent implements OnInit {
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
   players: PlayerWithId[] = [];
-  teamPlayers: PlayerWithId[] = [];
+  teamPlayers: TeamPlayerWithID[] = [];
   teamPlayer: PlayerWithId;
   teamPlayerIDs: TeamPlayerWithID[] = []
   pickedPlayers: PlayerWithId[] = [];
+  selectedOptions: PlayerWithId[] = []
   match: MatchWithId = {};
   player: PlayerWithId = {};
   matches: Match[] = [];
@@ -77,7 +78,9 @@ export class ConfigureComponent implements OnInit {
   selectedMatch: Match;
   selectedPlayer: Player;
   selectedPlayers: PlayerWithId[];
-  selectedTeamPlayer: Player;
+  availablePlayers:  PlayerWithId[] = [];
+  selectedTeamPlayer: TeamPlayerWithID;
+  selectedTeamPlayerId: string;
   selectedTeam: TeamWithId;
   newMatch: boolean;
   newPlayer: boolean;
@@ -124,31 +127,39 @@ export class ConfigureComponent implements OnInit {
     this.playerDialogDisplay = true;
   }
 
-  getTeamPlayers() {
+  async getTeamPlayers() {
     this.teamPlayers = []
     this.teamPlayerIDs = []
-     this.matchService.getPlayersByTeamId(this.team.objectId).subscribe(result => {
+    this.pickedPlayers = []
+    this.availablePlayers = []
+    this.selectedPlayers.forEach((x) => {
+      this.availablePlayers.push(Object.assign({}, x));
+    })
+     await this.matchService.getPlayersByTeamId(this.team.objectId).then(result => {
       var json = JSON.stringify(result);
       var data = JSON.parse(json);
       data.forEach(p => {
-        this.pickedPlayers.push(this.selectedPlayers.filter(x => x.objectId == p.PlayerId)[0]);
-        this.teamPlayers.push(this.selectedPlayers.filter(x => x.objectId == p.PlayerId)[0]);
+        var pl = this.selectedPlayers.filter(x => x.objectId == p.PlayerId)[0];
+        this.availablePlayers.forEach( (item, index) => {
+          if(item.objectId == pl.objectId) 
+          {
+            this.availablePlayers.splice(index,1); 
+          }
+        });
+        //this.pickedPlayers.push(this.selectedPlayers.filter(x => x.objectId = p.PlayerId)[0]);
+        let tp = new TeamPlayerWithID()
+        tp.FirstName = pl.FirstName
+        tp.LastName = pl.LastName
+        tp.objectId = p.objectId;
+        tp.jersey = p.Jersey
+        this.teamPlayers.push(tp);
       });
     })
   }
 
   onEditComplete(event) {
-    console.log(event)
-  }
-
-  onEditInit(event): void {
-    console.log(event);
-    console.log('Edit Init Event Called');
-  }
-
-  onEditCancel(event):void {
-    console.log(event);
-    console.log('Edit Cancel Event Called');
+    this.matchService.updatePlayerJersey(event.field, event.data).subscribe(result => {
+    })
   }
 
   onTeamSelect(event) {
@@ -174,19 +185,22 @@ export class ConfigureComponent implements OnInit {
   }
 
   AddPlayer() {
-    var t = this.pickedPlayers;
     this.matchService.addPlayersToTeam(this.pickedPlayers, this.team.objectId).subscribe(result => {
-
+      this.getTeamPlayers()
+      this.playersDialogListDisplay = false
     })
-
   }
 
+ 
   RemovePlayer() {
-    console.log(this.selectedPlayers)
-    const teamplayer = this.teamPlayerIDs.filter(x => x.playerId === this.selectedTeamPlayer.playerid)[0]
-    this.matchService.RemovePlayerFromFirestoreTeam(this.selectedTeam, teamplayer.id)
-    //this.getTeamPlayers()
-    this.playersDialogListDisplay = false
+    const TeamPlayers = Parse.Object.extend('TeamPlayers');
+    const query = new Parse.Query(TeamPlayers);
+    // here you put the objectId that you want to delete
+    query.get(this.selectedTeamPlayerId).then((object) => {
+      object.destroy().then((result) => {
+        this.getTeamPlayers()
+      })
+    })
 
   }
 
@@ -236,6 +250,8 @@ export class ConfigureComponent implements OnInit {
     }
     return player;
   }
+
+
 
   setGame(n) {
     this.game = n
@@ -300,6 +316,7 @@ export class ConfigureComponent implements OnInit {
       });
 
       this.players = this.selectedPlayers;
+      this.availablePlayers = this.selectedPlayers;
       // this.players = data.map(e => {
       //   return {
       //     id: e.payload.doc.id,
@@ -429,6 +446,10 @@ export class ConfigureComponent implements OnInit {
     this.newMatch = false;
   }
 
+  onTeamPlayerSelect(e) {
+    this.selectedTeamPlayerId = e.data.objectId
+  }
+
   SaveMatch() {
     let match = new MatchWithId()
     match.HomeTeamId = this.selectedTeamId
@@ -442,9 +463,12 @@ export class ConfigureComponent implements OnInit {
         this.matches = JSON.parse(json);
       });
     });
-
-
-
+    
     this.matchDialogDisplay = false;
   }
+
+  onTeamPlayerSelection(e) {
+      console.log(e);
+  }
+
 }

@@ -1,6 +1,6 @@
-<div style="font-size: 16px; margin-left: 15px; margin-top: 15px;" class="ui-g">
+<div style="font-size: 16px;  margin-top: 15px;" class="ui-g">
 
-  <div cdkDropList #todoList="cdkDropList" style="background-color: #144A99; color: #fff; border-radius: 25px;
+  <div class="col-2" cdkDropList #todoList="cdkDropList" style="background-color: #144A99; color: #fff; border-radius: 25px;
     border: 1px #fff solid; opacity: .8;" 
     [cdkDropListData]="players"
     [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]" class="player-list col "
@@ -103,7 +103,7 @@
       </div>
       <!-- </div> -->
 
-      <div style="margin-right: -5px; margin-left: -5px;" class="row flex-nowrap">
+      <div class="row flex-nowrap">
         <div class="col col-sm-4">
           <div id="pos4" style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
             <div class="panel-heading"><strong>{{ playerPositions[4].playerPos }}</strong></div>
@@ -136,7 +136,7 @@
         </div>
       </div>
 
-      <div style="margin-right: -5px; margin-left: -5px;" class="row flex-nowrap">
+      <div class="row flex-nowrap">
         <div class="col col-sm-4" id="pos5">
           <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
             <div class="panel-heading"><strong>{{ playerPositions[5].playerPos }}</strong></div>
@@ -202,8 +202,3 @@
 
     </div>
   </p-dialog>
-</div>
-
-
-
-

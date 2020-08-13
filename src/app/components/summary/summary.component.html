@@ -37,10 +37,7 @@
           <tr>
             <td>{{ element.homescore }}</td>
             <td>{{ element.opponentscore }}</td>
-            <td *ngIf="element.player != null ">
-              {{ element.action + " " + element.player.firstName + " " + element.player.lastName.substring(0, 1) + "." }}
-            </td>
-            <td *ngIf="element.player === null ">{{ element.action }}</td>
+            <td>{{ element.action }}</td>
           </tr>
         </ng-template>
       </p-table>

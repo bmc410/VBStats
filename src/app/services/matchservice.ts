@@ -137,14 +137,17 @@ export class MatchService  {
     const query = new Parse.Query(Stats);
     query.equalTo("GameId", id);
     query.ascending("createdAt");
-    return from(query.find()).pipe(map(result => result));
+    return query.find();
     
     //return this.firestore.collection("games").doc(g.id).collection("stats", ref => ref.orderBy("statdate")).snapshotChanges();
     //return this.firestore.collection("stats").snapshotChanges();
   }
 
-  getPlayByPlay(g: GameWithId) {
-    return this.firestore.collection("games").doc(g.objectId).collection("playbyplay", ref => ref.orderBy("pbpDate", "desc")).snapshotChanges();
+  getPlayByPlay(gId: string) {
+    const PlayByPlay = Parse.Object.extend('PlayByPlay');
+    const query = new Parse.Query(PlayByPlay);
+    query.equalTo("gameId", gId);
+    return query.find()
   }
 
   getPlayersFromRoster(playerNumbers: Array<any>) {
@@ -156,6 +159,14 @@ export class MatchService  {
 
   getPlayersByTeamId(teamId: string){
     const Teams = Parse.Object.extend('TeamPlayers')
+    const query = new Parse.Query(Teams);
+    query.equalTo("TeamId", teamId);
+    return query.find();
+    
+  }
+
+  getPlayersById(teamId: string){
+    const Teams = Parse.Object.extend('Players')
     const query = new Parse.Query(Teams);
     query.equalTo("TeamId", teamId);
     return query.find();
@@ -338,6 +349,7 @@ export class MatchService  {
     myNewObject.set('playerId', objId);
     myNewObject.set('stattype', stat);
     myNewObject.set('rotation', jR);
+    myNewObject.set('gameId', g.objectId);
 
     myNewObject.save();
     //this.messageService.add({severity:'success', summary:'Service Message', detail:'Via MessageService'});
@@ -372,8 +384,12 @@ export class MatchService  {
 
   statsByMatchAndGame() {}
 
-  createPlayerInFirestore(player: any) {
-    return this.firestore.collection("players").add(player);
+  getGameId(gn: Number, matchId: string) {
+    const Games = Parse.Object.extend('Games');
+    const query = new Parse.Query(Games);
+    query.equalTo("GameNumber", gn);
+    query.equalTo("MatchId", matchId);
+    return query.find()
   }
   
   DateToYYYYMMDD(Date: Date): string {

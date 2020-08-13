@@ -44,6 +44,7 @@ export class SummaryComponent implements OnInit {
   playbyplay: any[] = [];
   matchgameStats: statEntry[] = [];
   players: PlayerWithId[] = [];
+  allPlayers: PlayerWithId[] = [];
   statviews: statView[] = [];
   teamtotal: statView;
   teamtotals: statView[] = []
@@ -70,6 +71,38 @@ export class SummaryComponent implements OnInit {
       this.match = this.route.snapshot.params;
       this.selectedgame = this.match.gameNumber;
     }
+
+    this.matchService.getPlayers().subscribe(result => {
+      var json = JSON.stringify(result);
+      this.allPlayers = JSON.parse(json)
+      this.matchService.getMatchById(this.match.objectId).then(result => {
+        var json = JSON.stringify(result);
+        var g = JSON.parse(json);
+        this.matchService.getPlayersByTeamId(g[0].HomeTeamId).then(result => {
+          var json = JSON.stringify(result);
+          var g = JSON.parse(json);
+          g.forEach(p => {
+            this.players.push(this.allPlayers.filter(x => x.objectId == p.PlayerId)[0])
+          });
+          this.matchService.getstats(this.match.gameId).then(result => {
+            var json = JSON.stringify(result);
+            this.stats = JSON.parse(json);
+            this.matchService.getPlayByPlay(this.match.gameId).then(result => {
+              var json = JSON.stringify(result);
+              this.playbyplay= JSON.parse(json);
+            })
+            this.setupStatView();
+            this.showData();
+          })
+        })
+      })
+    })
+
+   
+
+   
+
+    
 
     // this.matchService.getGames().subscribe(data => {
     //   this.gamesPlayed = data.map(e => {
@@ -197,7 +230,7 @@ export class SummaryComponent implements OnInit {
       jersey: "",
       firstName: "",
       lastName: "",
-      playerid: "",
+      PlayerId: "",
       k: 0,
       h: 0,
       he: 0,
@@ -218,8 +251,8 @@ export class SummaryComponent implements OnInit {
       let sv = <statView>{};
       sv.firstName = element.FirstName;
       sv.lastName = element.LastName;
-      sv.jersey = element.jersey;
-      sv.playerid = element.objectId;
+      //sv.jersey = element.jersey;
+      sv.PlayerId = element.objectId;
       sv.k = 0;
       sv.h = 0;
       sv.a = 0;
@@ -281,20 +314,12 @@ export class SummaryComponent implements OnInit {
   }
 
   showData() {
-    this.allstats.forEach(element => {
-      if (
-        element.matchid == this.match.objectId &&
-        element.gamenumber == this.selectedgame
-      ) {
-        this.matchgameStats.push(element);
-      }
-    });
-
-    this.matchgameStats.forEach(element => {
+      
+    this.stats.forEach(element => {
       const index = this.statviews.findIndex(
-        sv => sv.playerid === element.playerid
+        sv => sv.PlayerId === element.PlayerId
       );
-      switch (element.stattype) {
+      switch (element.StatType) {
         case "k":
           this.statviews[index].k += 1;
           this.teamtotal.k += 1;

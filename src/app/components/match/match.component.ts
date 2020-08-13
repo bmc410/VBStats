@@ -240,7 +240,7 @@ export class MatchComponent implements OnInit {
         
         else {
           this.game = game[0];
-          this.matchService.getstats(this.game.objectId).subscribe(data => {
+          this.matchService.getstats(this.game.objectId).then(data => {
             var j = JSON.stringify(data);
             var stats = JSON.parse(j);
             stats.forEach(function (s) {

@@ -130,6 +130,7 @@ export class GameWithId extends Game {
 
 export class gameMatch extends MatchWithId {
   gameNumber?: number;
+  gameId?: string;
 }
 
 export class GameScore {
@@ -164,8 +165,8 @@ export interface statEntry {
   homescore?: number,
   matchid?: string,
   gamenumber?: number,
-  stattype?: string,
-  playerid?: string,
+  StatType?: string,
+  PlayerId?: string,
   statdate?: number,
   pos?: Map<any,any>,
   id?: string,
@@ -215,7 +216,7 @@ export interface statView {
   jersey?: string;
   firstName?: string;
   lastName?: string;
-  playerid?: string;
+  PlayerId?: string;
   k?: number;
   h?: number
   he?: number;

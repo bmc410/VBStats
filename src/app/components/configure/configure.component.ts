@@ -170,8 +170,13 @@ export class ConfigureComponent implements OnInit {
     this.selectedTeamId = this.team.objectId;
     this.selectedTeamClubId = this.team.ClubId
     this.selectedTeamYear = this.team.Year;
-    this.getTeamPlayers()
-    this.teamDialogDisplay = true;
+    this.matchService.getPlayers().subscribe(data => {
+      var json = JSON.stringify(data);
+      var d = JSON.parse(json);
+      this.selectedPlayers = d
+      this.getTeamPlayers()
+      this.teamDialogDisplay = true;
+    })
   }
 
   showDialogToAdd() {
@@ -218,14 +223,20 @@ export class ConfigureComponent implements OnInit {
   }
 
   summary() {
+
     this.matchDialogDisplay = false;
     let gm = new gameMatch();
-    gm.gameNumber = this.game;
-    gm.Home = this.match.Home;
-    gm.MatchDate = this.match.MatchDate;
-    gm.objectId = this.match.objectId;
-    gm.Opponent = this.match.Opponent;
-    this.router.navigate(["summary", gm]);
+    this.matchService.getGameId(this.game, this.match.objectId).then(result => {
+      var json = JSON.stringify(result);
+      var g = JSON.parse(json);
+      gm.gameNumber = this.game;
+      gm.Home = this.match.Home;
+      gm.MatchDate = this.match.MatchDate;
+      gm.objectId = this.match.objectId;
+      gm.Opponent = this.match.Opponent;
+      gm.gameId = g[0].objectId
+      this.router.navigate(["summary", gm]);
+    })
   }
 
   cloneMatch(m: Match): Match {

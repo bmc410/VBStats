@@ -22,6 +22,7 @@ import {
 import { FormGroup, FormControl, ReactiveFormsModule } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { catchError, switchMap } from 'rxjs/operators';
+import { Parse } from 'parse';
 
 @Component({
   selector: "app-match",
@@ -200,91 +201,93 @@ export class MatchComponent implements OnInit {
     this.gameNumber = this.match.gameNumber;
     this.game.subs = 0;
 
-    this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(result => {
-      var json = JSON.stringify(result);
+    this.matchService.getPlayers().subscribe(allPlayers => {
+      var json = JSON.stringify(allPlayers);
       var tpData = JSON.parse(json);
-      this.matchService.getPlayersByIds(tpData).subscribe(results => {
-        var json = JSON.stringify(results);
-        var data = JSON.parse(json);
-        data.forEach(p => {
-          p[0].jersey = tpData.filter(x => x.PlayerId == p[0].objectId)[0].Jersey
-          this.players.push(p[0]);
+      this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(teamPlayers => {
+        var json1 = JSON.stringify(teamPlayers);
+        var tpData1 = JSON.parse(json1);
+        tpData1.forEach(p => {
+          var player = tpData.filter(x => x.objectId == p.PlayerId)[0]
+          player.jersey = tpData1.filter(x => x.PlayerId == player.objectId)[0].Jersey
+          this.players.push(player);
         });
-        
-    
 
-      this.allPlayers = this.players;
-
-      this.matchService.getGameForMatchByNumber(this.match.objectId, this.match.gameNumber).subscribe(result => {
-        var json = JSON.stringify(result);
-        var game = JSON.parse(json);
-        if (game.length == 0) {
-              let g = new GameWithId()
-              g.gamenumber = this.gameNumber
-              g.matchid = this.match.objectId
-              g.OpponentScore = 0
-              g.HomeScore = 0
-              g.subs = 0
-              this.matchService.createGame(g).subscribe(result => {
-                this.matchService.getGameForMatchByNumber(this.match.objectId, this.gameNumber).subscribe(result => {
-                  var j = JSON.stringify(result);
-                  var game = JSON.parse(j);
-                  this.game.objectId = game[0].objectId;
-                  this.game.HomeScore = 0;
-                  this.game.OpponentScore = 0;
-                  this.game.subs = 0;
-                  this.game.gamenumber = this.gameNumber;
+          this.allPlayers = this.players;
+  
+          this.matchService.getGameForMatchByNumber(this.match.objectId, this.match.gameNumber).subscribe(result => {
+          var json = JSON.stringify(result);
+          var game = JSON.parse(json);
+          if (game.length == 0) {
+                let g = new GameWithId()
+                g.gamenumber = this.gameNumber
+                g.matchid = this.match.objectId
+                g.OpponentScore = 0
+                g.HomeScore = 0
+                g.subs = 0
+                this.matchService.createGame(g).subscribe(result => {
+                  this.matchService.getGameForMatchByNumber(this.match.objectId, this.gameNumber).subscribe(result => {
+                    var j = JSON.stringify(result);
+                    var game = JSON.parse(j);
+                    this.game.objectId = game[0].objectId;
+                    this.game.HomeScore = 0;
+                    this.game.OpponentScore = 0;
+                    this.game.subs = 0;
+                    this.game.gamenumber = this.gameNumber;
+                  })
                 })
-              })
-        }
-        
-        else {
-          this.game = game[0];
-          this.matchService.getstats(this.game.objectId).then(data => {
-            var j = JSON.stringify(data);
-            var stats = JSON.parse(j);
-            stats.forEach(function (s) {
-              var rotation = JSON.parse(s.Rotation);
-              let stat = {
-                statid: s.GameId,
-                homescore: s.HomeScore,
-                matchid: s.OpponentScore,
-                gamenumber: _this.match.gameNumber,
-                stattype: s.StatType,
-                playerid: s.PlayerId,
-                statdate: s.createdAt,
-                //pos: Map<any,any>,
-                id: s.objectId,
-                opponentscore: s.OpponentScore,
-                rotation: rotation,
-                subs: s.Subs
+          }
+          
+          else {
+            this.game = game[0];
+            this.matchService.getstats(this.game.objectId).then(data => {
+              var j = JSON.stringify(data);
+              var stats = JSON.parse(j);
+              stats.forEach(function (s) {
+                var rotation = JSON.parse(s.Rotation);
+                let stat = {
+                  statid: s.GameId,
+                  homescore: s.HomeScore,
+                  matchid: s.OpponentScore,
+                  gamenumber: _this.match.gameNumber,
+                  stattype: s.StatType,
+                  playerid: s.PlayerId,
+                  statdate: s.createdAt,
+                  //pos: Map<any,any>,
+                  id: s.objectId,
+                  opponentscore: s.OpponentScore,
+                  rotation: rotation,
+                  subs: s.Subs
+                }
+                _this.stats.push(stat); 
+              });
+      
+              if (this.stats && this.stats.length > 0) {
+                this.startMatch();
+                var r = this.stats[this.stats.length-1]
+                this.game.HomeScore = r.homescore;
+                this.game.OpponentScore = r.opponentscore;
+                this.game.subs = r.subs;
+                var pos = r.rotation
+                for (let i = 0; i < 6; i++) {
+                  var p1 = this.allPlayers.filter(p => p.objectId == pos[i].objectId)[0]
+                  this.playerPositions[i + 1].posNo = pos[i].posNo;
+                  this.playerPositions[i + 1].player = p1;
+                  this.playerPositions[i + 1].playerPos =
+                    p1.FirstName + " - " + p1.jersey;
+                  this.players = this.players.filter(x => x.objectId != p1.objectId)
+                }
               }
-              _this.stats.push(stat); 
             });
-    
-            if (this.stats && this.stats.length > 0) {
-              this.startMatch();
-              var r = this.stats[this.stats.length-1]
-              this.game.HomeScore = r.homescore;
-              this.game.OpponentScore = r.opponentscore;
-              this.game.gamenumber = this.match.gameNumber;
-              this.game.subs = r.subs;
-              var pos = r.rotation
-              for (let i = 0; i < 6; i++) {
-                var p1 = this.allPlayers.filter(p => p.objectId == pos[i].objectId)[0]
-                this.playerPositions[i + 1].posNo = pos[i].posNo;
-                this.playerPositions[i + 1].player = p1;
-                this.playerPositions[i + 1].playerPos =
-                  p1.FirstName + " - " + p1.jersey;
-                this.players = this.players.filter(x => x.objectId != p1.objectId)
-              }
+            this.game.gamenumber = this.match.gameNumber;
+            this.game.objectId = game[0].objectId;
+            this.game.subs = game[0].Subs;
             }
-          });
-          this.game.objectId = game[0].objectId;
-          this.game.subs = game[0].Subs;
-        }
-      })  
+          })  
     })
+
+   
+     
     })
   }
 

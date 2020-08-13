@@ -532,19 +532,14 @@ export class MatchService  {
   }
 
 
-  getPlayersByIds(players: any[]) : Observable<any[]> {
-    var arrayOfResponses: Array<any> = [];
-
-    players.forEach(p => {
-      const Players = Parse.Object.extend('Players');
-      const query = new Parse.Query(Players);
-      query.equalTo("objectId", p.PlayerId);
-      var resp = from(query.find())
-      arrayOfResponses.push(resp);
-    });
-
-    return forkJoin(arrayOfResponses);
-  }
+  // getPlayersByIds(players: any[]){
+  //    const Players = Parse.Object.extend('Players');
+  //     const query = new Parse.Query(Players);
+  //     query.equalTo("objectId", p.PlayerId);
+  //     return query.find()
+ 
+  //   // return forkJoin(arrayOfResponses);
+  // }
  
   updateTeam(t: TeamWithId) {
     const Teams = Parse.Object.extend('Teams');

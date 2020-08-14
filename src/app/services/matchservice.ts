@@ -132,6 +132,12 @@ export class MatchService  {
     return from(query.find()).pipe(map(result => result));
   }
 
+  getAllPlayers() {
+    const Players = Parse.Object.extend('Players');
+    const query = new Parse.Query(Players);
+    return query.find();
+  }
+
   getstats(id: string) {
     const Stats = Parse.Object.extend('Stats');
     const query = new Parse.Query(Stats);
@@ -205,7 +211,7 @@ export class MatchService  {
     const query = new Parse.Query(Games);
     query.equalTo("MatchId", matchId);
     query.equalTo("GameNumber", Number(gameNumber));
-    return from(query.find()).pipe(map(result => result));
+    return query.find();
     //return this.firestore.collection("games").snapshotChanges();
   }
 

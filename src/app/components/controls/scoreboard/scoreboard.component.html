@@ -1,22 +1,32 @@
 <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet">
-<div>
-  <div>
-    <div class="btncontainer">
+<div class="row d-flex justify-content-center">
+    <div style="margin-right: 50px;">
       <div class="btn align-items-center" id="team1">
         <span class="team1Name">Home</span>
-        <div style="font-size: 2vw;">{{homescore}}</div>
+        <div style="font-size: 5vw;">{{homescore}}</div>
       </div>
-        <button (click)="updateGame('home', 's', 'te', null)" class="scorebtnminus" id="homeminus">-</button>
-        <button (click)="updateGame('home', 'a', 'tp', null)" class="scorebtnplus" id="homeplus">+</button>
+      <div style="margin-top: 5px;" class="stepper-input stepper__input align-items-center">
+        <button style="width: 7vw; height: 7vw;  margin-right: 5px;"  (click)="updateGame('home', 's', 'te', null)" class="up" id="homeminus">
+          <span style="vertical-align: middle;" class="glyphicon glyphicon-plus glyph"></span>
+        </button>
+        <button style="width: 7vw; height: 7vw; margin-left: 5px;" (click)="updateGame('home', 'a', 'tp', null)" class="down" id="homeplus">
+          <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
+        </button>
+      </div>  
     </div>
 
-    <div class="btncontainer">
+    <div style="margin-left: 50px;" class="">
       <div class="btn align-items-center" id="team2">
         <span class="team2Name">Away</span>
-        <div style="font-size: 2vw;">{{opponentscore}}</div>
+        <div style="font-size: 5vw;">{{opponentscore}}</div>
       </div>
-        <button (click)="updateGame('opponent', 's', 'tp', null)" class="scorebtnminus" id="awayminus">-</button>
-        <button (click)="updateGame('opponent', 'a', 'te', null)" class="scorebtnplus" id="awayplus">+</button>
+      <div style="margin-top: 5px;" class="stepper-input stepper__input align-items-center">
+        <button style="width: 7vw; height: 7vw; margin-right: 5px;" class="up" (click)="updateGame('opponent', 's', 'tp', null)"  id="awayminus">
+            <span style="vertical-align: middle;" class="glyphicon glyphicon-plus glyph"></span>
+          </button>
+          <button (click)="updateGame('opponent', 'a', 'te', null)" style="width: 7vw; height: 7vw;  margin-left: 5px;" class="down" id="awayplus">
+            <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
+          </button>
+      </div>
     </div>
-  </div>
 </div>

@@ -25,11 +25,11 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { Parse } from 'parse';
 
 @Component({
-  selector: "app-match",
-  templateUrl: "./match.component.html",
-  styleUrls: ["./match.component.css"]
+  selector: 'app-mobile-match',
+  templateUrl: './mobile-match.component.html',
+  styleUrls: ['./mobile-match.component.css']
 })
-export class MatchComponent implements OnInit {
+export class MobileMatchComponent implements OnInit {
   availableCars: Car[];
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
@@ -201,10 +201,10 @@ export class MatchComponent implements OnInit {
     this.gameNumber = this.match.gameNumber;
     this.game.subs = 0;
 
-    this.matchService.getPlayers().subscribe(allPlayers => {
+    await this.matchService.getAllPlayers().then(async allPlayers => {
       var json = JSON.stringify(allPlayers);
       var tpData = JSON.parse(json);
-      this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(async teamPlayers => {
+      await this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(async teamPlayers => {
         var json1 = JSON.stringify(teamPlayers);
         var tpData1 = JSON.parse(json1);
         tpData1.forEach(p => {

@@ -63,6 +63,8 @@ import { MaterialModule } from './components/material/material.module';
 import { MessageService } from 'primeng/api';
 import { ScoreboardComponent } from './components/controls/scoreboard/scoreboard.component';
 import { TestpanelComponent } from './components/testpanel/testpanel.component';
+import { FMobileKpadComponent } from './components/controls/f-mobile-kpad/f-mobile-kpad.component';
+import { MobileMatchComponent } from './components/mobile-match/mobile-match.component';
 
 @NgModule({
   declarations: [
@@ -80,7 +82,9 @@ import { TestpanelComponent } from './components/testpanel/testpanel.component';
     HeaderComponent,
     SidenavListComponent,
     ScoreboardComponent,
-    TestpanelComponent
+    TestpanelComponent,
+    FMobileKpadComponent,
+    MobileMatchComponent
   ],
   imports: [
     BrowserModule,

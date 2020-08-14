@@ -1,0 +1,208 @@
+<div style="font-size: 16px;  margin-top: 15px;" class="ui-g">
+
+  <div
+    style="border-radius: 15px; border-style: solid; border-color: #FFF; margin-top: 5px; margin-bottom: 10px; "
+    class="container col-12 align-items-center">
+
+    <!-- Scoreboard -->
+    <div class="row d-flex justify-content-center">
+      <app-scoreboard homescore="{{game?.HomeScore}}" opponentscore="{{game?.OpponentScore}}" (scorepost)="postScore($event)" style="margin: 1vw; width: 100%;"></app-scoreboard>
+    </div>
+
+    <!-- Subs and Games NumberSection -->
+    <div class="row d-flex justify-content-center">
+         <div style="text-align: center;">
+      <div class="sublabel">Subs</div>
+      <div class="stepper-input stepper__input">
+        <button style="width: 7vw; height: 7vw;" class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
+          <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
+        </button>
+        <div style="width: 7vw; height: 7vw; font-size: 5vw;" class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
+          aria-relevant="all">
+          {{this.game.subs}}
+        </div>
+        <button style="width: 7vw; height: 7vw;" class="toggle-more up" (click)="updateGame('subs', 'a', '', null)">
+          <span style="vertical-align: middle;" class="glyphicon glyphicon-plus glyph"></span>
+        </button>
+      </div>
+      </div>
+      <div style="text-align: center; margin-left: 5vw;">
+        <div class="sublabel">Game#</div>
+        <div class="stepper-input stepper__input">
+          <button style="width: 7vw; height: 7vw;" class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
+            <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
+          </button>
+          <div style="width: 7vw; height: 7vw; font-size: 5vw;" class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
+            aria-relevant="all">
+            {{game?.gamenumber}}
+          </div>
+          <button style="width: 7vw; height: 7vw;" class="toggle-more up" (click)="updateGame('subs', 'a', '', null)">
+            <span style="vertical-align: middle;" class="glyphicon glyphicon-plus glyph"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+     <!-- Rotate and Start Buttons -->
+    <div style="padding-top: 20px; margin-bottom: 5px;" class="row d-flex justify-content-center">
+      <div d-flex justify-content-center style="width:100%; border: 1 solid; text-align: center;">
+     
+        <div class="col-sm"> 
+          <button [hidden]="startHidden" style=" margin-right: 5px; border-radius: 10px; background-color: #059B87; color: white;"
+            type="button" (click)="startMatch()" class="btn btn-responsive">
+            <span class="hidden-sm hidden-xs">Start<br/></span>
+            <span style="font-size: 3vw;" class="glyphicon glyphicon-play
+              " aria-hidden="true"></span>
+          </button> 
+
+          <button  style=" margin-left: 5px; border-radius: 10px; background-color: #144A99; color: white;" (click)="rotate()" type="button"
+            class="btn btn-responsive">
+            <span class="hidden-sm hidden-xs">Rotate<br/></span>
+            <span style="font-size: 3vw;" class="glyphicon glyphicon-retweet" aria-hidden="true"></span>
+          </button>
+        <!-- </div> -->
+        <!-- <div class="col-sm"> -->
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+  
+  <!-- Game Play Area -->
+  <div class="container-fluid p-0 col-12 ">
+    <div class="row col-12" style="margin-left: 5px;">
+      <div class="col-3" cdkDropList #todoList="cdkDropList" style="background-color: #144A99; color: #fff; border-radius: 5px;
+        border: 1px #fff solid; opacity: .8; height: 95%;" 
+        [cdkDropListData]="players"
+        [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1, pos5, pos6]" 
+        (cdkDropListDropped)="drop($event,0)">
+        
+        <div *ngFor="let player of players" cdkDrag>
+          <div style="padding-bottom: 1vw; padding-top: 2vw;" class="row d-flex flex-nowrap">
+            <!-- <div style="text-align: left;" class="col-2">
+              <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true"></p-checkbox>
+            </div> -->
+            <div style="font-size: 1.5vw;" class="col-3 btn-responsive">
+              <img *cdkDragPreview style="width: 20px;" src='../../../assets/icons/girl-volleyball-player-hitting.png'>
+              {{ player.FirstName }}
+            </div>
+            <div class="col-7 d-flex justify-content-end">
+              <span style="width: 10px;" class="glyphicon glyphicon-move"></span>
+              <!-- <img class="img-fluid" style="width: 20px; color: #fff;" src='../../../assets/icons/arrow.png'> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size: 2vw; margin-right: -5px; background-color: 
+        transparent; border-color: transparent;" class="col-9">
+        <div class="panel panel-default" style="background-color: transparent; border-color: transparent;">
+          <!-- <div > -->
+          <!-- <div class="container"> -->
+          
+          <!-- </div> -->
+
+            <div >
+              <div id="pos4" style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
+                <div class="btn-primary" style="padding-left: 10px;">{{ playerPositions[4].playerPos }}</div>
+                <div cdkDropList #pos4="cdkDropList" (cdkDropListDropped)="drop($event,4)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-f-mobile-kpad playerName="{{ playerPositions[4].playerPos }}" posNum="4" (statPost)="postStat($event)"></app-f-mobile-kpad>
+
+                </div>
+              </div>
+            </div>
+
+            <div  id="pos3">
+              <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
+                <div class="btn-primary" style="padding-left: 10px;">{{ playerPositions[3].playerPos }}</div>
+                <div cdkDropList #pos3="cdkDropList" (cdkDropListDropped)="drop($event,3)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-f-mobile-kpad playerName="{{ playerPositions[3].playerPos }}" posNum="3" (statPost)="postStat($event)"></app-f-mobile-kpad>
+                </div>
+              </div>
+            </div>
+
+            <div  id="pos2">
+              <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
+                <div class="btn-primary" style="padding-left: 10px;">{{ playerPositions[2].playerPos }}</div>
+                <div cdkDropList #pos2="cdkDropList" (cdkDropListDropped)="drop($event,2)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-f-mobile-kpad playerName="{{ playerPositions[2].playerPos }}" posNum="2" (statPost)="postStat($event)"></app-f-mobile-kpad>
+                </div>
+              </div>
+            </div>
+            <div >
+              <div id="pos5" style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
+                <div class="btn-primary" style="padding-left: 10px;">{{ playerPositions[5].playerPos }}</div>
+                <div cdkDropList #pos5="cdkDropList" (cdkDropListDropped)="drop($event,5)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-f-mobile-kpad playerName="{{ playerPositions[5].playerPos }}" posNum="5" (statPost)="postStat($event)"></app-f-mobile-kpad>
+
+                </div>
+              </div>
+            </div>
+
+            <div  id="pos6">
+              <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
+                <div class="btn-primary" style="padding-left: 10px;">{{ playerPositions[6].playerPos }}</div>
+                <div cdkDropList #pos6="cdkDropList" (cdkDropListDropped)="drop($event,6)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-f-mobile-kpad playerName="{{ playerPositions[6].playerPos }}" posNum="6" (statPost)="postStat($event)"></app-f-mobile-kpad>
+                </div>
+              </div>
+            </div>
+
+            <div  id="pos1">
+              <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
+                <div class="btn-primary" style="padding-left: 10px;">{{ playerPositions[1].playerPos }}</div>
+                <div cdkDropList #pos1="cdkDropList" (cdkDropListDropped)="drop($event,1)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-f-mobile-kpad playerName="{{ playerPositions[1].playerPos }}" posNum="1" (statPost)="postStat($event)"></app-f-mobile-kpad>
+                </div>
+              </div>
+            </div>
+          
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+  
+    <p-dialog header="Create Match" [(visible)]="display">
+      <div>
+        <form [formGroup]="matchForm" (ngSubmit)="onSubmit()">
+
+          <div class="form-group">
+            <label for="inputEmail">Email</label>
+            <input type="email" class="form-control" id="inputEmail" placeholder="Email">
+          </div>
+
+          <div class="form-group">
+            <label for="hometeam">Home Team</label>
+            <input class="form-control" formControlName="home" id="hometeam" />
+          </div>
+
+          <div class="form-group">
+            <label for="opponent">Opponent</label>
+            <input class="form-control" formControlName="opponent" id="opponent" />
+          </div>
+
+          <div class="form-group">
+            <label for="exampleInputPassword1">Match Date</label><br />
+            <p-calendar formControlName="dateofmatch" appendTo="body" [readonlyInput]="true" [touchUI]="true"
+              [(ngModel)]="matchDate"></p-calendar>
+          </div>
+          <button type="submit" [disabled]="false">Submit</button>
+        </form>
+
+
+      </div>
+    </p-dialog>
+  
+</div>

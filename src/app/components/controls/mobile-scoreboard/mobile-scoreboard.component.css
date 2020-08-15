@@ -1,0 +1,141 @@
+
+.scorecontainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    border-radius: 10px;
+    position: absolute;
+    z-index: -10;
+  }
+  
+  .btn {
+    margin-top: 0px;
+    cursor: default;
+    /* height: 3.5vw; */
+    color: white;
+    border: 0;
+    border-radius: 10px;
+    outline: none !important;
+    font-size: 2vw;
+    font-family: rubik;
+    text-shadow: 1px 1px 1px;
+    display: block;
+    z-index: 5;
+    top: 15px;
+  }
+  
+  .team1Name {
+    color:#fff;
+    font-size: 2vw;
+    margin-bottom: 2vw;
+  }
+  
+  .team2Name {
+    color: #fff;
+    font-size: 2vw;
+    margin-bottom: 2vw;
+  }
+  
+  #team1 {
+    background-color: #059B87;
+    /* box-shadow: inset 0 -5px 1px #144A99, 6px 7px 3px rgba(66, 66, 66, 0.5); */
+  }
+  
+  #team2 {
+    background-color:#144A99;
+    /* box-shadow: inset 0 -5px 1px darkgray, 6px 7px 3px rgba(66, 66, 66, 0.5); */
+  }
+  
+  .btncontainer {
+    display: inline-block;
+    text-align: center;
+    font-size: 30px;
+    background-color: transparent;
+    color: #383838;
+    border-radius: 10px;
+    padding: 0px 5px 0px 5px;
+    margin-right: 5vw;
+  }
+  
+  .scorebtnplus {
+    background-color: #46A78F;
+    color: white;
+    display: inline-block;
+    font-size: 2vw;
+    border-radius: 5px;
+    /* box-shadow: inset 0 -4px 1px #383838, 4px 4px 3px rgba(66, 66, 66, 0.5); */
+    border: 0;
+    top: -10px;
+    margin: .5vw .5vw 0px .5vw;
+    width: 3vw;
+    height: 3vw;
+    transition: 0.5s;
+  }
+  
+  .scorebtnminus {
+    background-color: #E8960B;
+    color: white;
+    
+  }
+  
+  .down {
+    background-color: #e8960b;
+  }
+  
+  .up {
+    background-color: #46A78F;
+  }
+  
+  .stepper__input button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+      min-width: 25px;
+    height: 3vw;
+    width: 3vw;
+    border-radius: 5px;
+    line-height: 45px;
+    color: #fff;
+    user-select: none;
+    border: none;
+  }
+  
+  .stepper__input {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+  
+  .stepper__input .stepper-input-field {
+    color: #FFF;
+    font-family: Arial, sans-serif;
+    font-size: 3vw;
+    opacity: .5;
+    font-weight: bold;
+    padding: 0;
+    background: transparent;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    height: 2.5vw;
+    width: 3vw;
+    line-height: 25px;
+    border: none;
+    text-align: center;
+    margin: 0 7px;
+    -webkit-box-flex: 1;
+    -ms-flex-positive: 1;
+    flex-grow: 1;
+  }
+  
+  

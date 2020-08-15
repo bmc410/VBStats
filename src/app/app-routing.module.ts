@@ -6,10 +6,11 @@ import { SummaryComponent } from './components/summary/summary.component';
 import { ScoreboardComponent } from './components/controls/scoreboard/scoreboard.component';
 import { TestpanelComponent } from './components/testpanel/testpanel.component';
 import { MobileMatchComponent } from './components/mobile-match/mobile-match.component';
+import { MobileScoreboardComponent } from './components/controls/mobile-scoreboard/mobile-scoreboard.component';
 
 const routes: Routes = [
   { path: "configure", component: ConfigureComponent },
-  { path: "match", component: MobileMatchComponent },
+  { path: "match", component: MatchComponent },
   { path: "summary", component: SummaryComponent },
   { path: "scoreboard", component: ScoreboardComponent},
   { path: "test", component: TestpanelComponent },

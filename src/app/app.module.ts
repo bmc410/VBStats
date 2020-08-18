@@ -66,6 +66,7 @@ import { TestpanelComponent } from './components/testpanel/testpanel.component';
 import { FMobileKpadComponent } from './components/controls/f-mobile-kpad/f-mobile-kpad.component';
 import { MobileMatchComponent } from './components/mobile-match/mobile-match.component';
 import { MobileScoreboardComponent } from './components/controls/mobile-scoreboard/mobile-scoreboard.component';
+import { HybridMatchComponent } from './components/hybrid-match/hybrid-match.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { MobileScoreboardComponent } from './components/controls/mobile-scoreboa
     TestpanelComponent,
     FMobileKpadComponent,
     MobileMatchComponent,
-    MobileScoreboardComponent
+    MobileScoreboardComponent,
+    HybridMatchComponent
   ],
   imports: [
     BrowserModule,

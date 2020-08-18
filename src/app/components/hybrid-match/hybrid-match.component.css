@@ -1,0 +1,221 @@
+.bgimg {
+    background-image: url("../../../assets/vball2.jpg");
+}
+.player-list {
+  max-width: 100%;
+
+  min-height: 50px;
+
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.no-gutters {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.example-box {
+  padding: 20px 0px;
+  /* border-bottom: solid 1px #ccc; */
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background:transparent;
+  font-size: 14px;
+}
+
+@font-face {
+  font-family: 'Digital';
+  src: url('../../../assets/fonts/digital-7.ttf')  format('truetype');
+  font-weight: bold;
+  }
+
+  .example-handle {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #ccc;
+    cursor: move;
+    width: 24px;
+    height: 24px;
+  }
+
+  .cdk-drag-placeholder {
+    opacity: 0;
+  }
+/* Animate an item that has been dropped. */
+/* .cdk-drag-animating {
+  transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+} */
+
+/* .example-box {
+  padding: 20px 10px;
+  border-bottom: solid 1px #ccc;
+  color: rgba(0, 0, 0, 0.87);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  cursor: move;
+  background: white;
+  font-size: 14px;
+} */
+
+/* .cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+              0 8px 10px 1px rgba(0, 0, 0, 0.14),
+              0 3px 14px 2px rgba(0, 0, 0, 0.12);
+} */
+
+/* .cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+} */
+
+/* .example-box:last-child {
+  border: none;
+} */
+
+/* .example-list.cdk-drop-list-dragging .example-box:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+} */
+
+ /* .example-custom-placeholder {
+  background: #ccc;
+  border: dotted 3px #999;
+  min-height: 60px;
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+} */
+
+/* .player-list {
+  border: solid 1px #ccc;
+  min-height: 60px;
+  background: white;
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+} */
+
+.panel-primary>.panel-heading {
+  color: #fff;
+  background-color: #144A99;
+  border-color: #144A99;
+  font-style: italic;
+}
+
+
+
+#rounddisplay {
+  background-color: #383838;
+  text-align: center;
+  border-radius: 10px;
+  width: 70px;
+  padding: 15px 10px 10px 10px;
+
+}
+
+#roundcounter {
+  border-radius: 5px;
+  margin-bottom: 35px;
+}
+
+#roundplus,
+#roundminus {
+  background-color: #383838;
+  margin: 0 auto;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 30px;
+  height: 50px;
+  color: #ddd;
+  width: 100%;
+  border: none;
+  transition: 0.5s;
+
+}
+
+#roundplus {
+  margin-bottom: -20px;
+  width: 70px;
+  border-bottom-left-radius: 0;
+  border-bottom: 10px #383838 solid;
+  border-bottom-right-radius: 0;
+}
+
+#roundminus {
+  margin-top: -15px;
+  width: 70px;
+  box-shadow: inset 0px -4px 1px #232323;
+
+}
+
+.stepper__input {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.stepper__input .stepper-input-field {
+  color: #FFF;
+  font-family: Arial, sans-serif;
+  font-size: 3vw;
+  opacity: .5;
+  font-weight: bold;
+  padding: 0;
+  background: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  height: 2.5vw;
+  width: 3vw;
+  line-height: 25px;
+  border: none;
+  text-align: center;
+  margin: 0 7px;
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+
+.down {
+  background-color: #e8960b;
+}
+
+.up {
+  background-color: #46A78F;
+}
+
+.stepper__input button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+    min-width: 25px;
+  height: 3vw;
+  width: 3vw;
+  border-radius: 5px;
+  line-height: 45px;
+  color: #fff;
+  user-select: none;
+  border: none;
+}
+
+.sublabel {
+  margin-bottom: 1vw;
+  color: #FFF;
+}

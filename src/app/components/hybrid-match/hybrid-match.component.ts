@@ -25,11 +25,12 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { Parse } from 'parse';
 
 @Component({
-  selector: 'app-mobile-match',
-  templateUrl: './mobile-match.component.html',
-  styleUrls: ['./mobile-match.component.css']
+  selector: 'app-hybrid-match',
+  templateUrl: './hybrid-match.component.html',
+  styleUrls: ['./hybrid-match.component.css']
 })
-export class MobileMatchComponent implements OnInit {
+export class HybridMatchComponent implements OnInit {
+
   availableCars: Car[];
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
@@ -201,10 +202,10 @@ export class MobileMatchComponent implements OnInit {
     this.gameNumber = this.match.gameNumber;
     this.game.subs = 0;
 
-    await this.matchService.getAllPlayers().then(async allPlayers => {
+    this.matchService.getPlayers().subscribe(allPlayers => {
       var json = JSON.stringify(allPlayers);
       var tpData = JSON.parse(json);
-      await this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(async teamPlayers => {
+      this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(async teamPlayers => {
         var json1 = JSON.stringify(teamPlayers);
         var tpData1 = JSON.parse(json1);
         tpData1.forEach(p => {
@@ -226,7 +227,7 @@ export class MobileMatchComponent implements OnInit {
                 g.HomeScore = 0
                 g.subs = 0
                 this.matchService.createGame(g).subscribe(result => {
-                  this.matchService.getGameForMatchByNumber(this.match.objectId, this.gameNumber).then(result => {
+                  this.matchService.getGameForMatchByNumber(this.match.objectId, this.gameNumber).subscribe(result => {
                     var j = JSON.stringify(result);
                     var game = JSON.parse(j);
                     this.game.objectId = game[0].objectId;

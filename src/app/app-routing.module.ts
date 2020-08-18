@@ -7,10 +7,11 @@ import { ScoreboardComponent } from './components/controls/scoreboard/scoreboard
 import { TestpanelComponent } from './components/testpanel/testpanel.component';
 import { MobileMatchComponent } from './components/mobile-match/mobile-match.component';
 import { MobileScoreboardComponent } from './components/controls/mobile-scoreboard/mobile-scoreboard.component';
+import { HybridMatchComponent } from './components/hybrid-match/hybrid-match.component';
 
 const routes: Routes = [
   { path: "configure", component: ConfigureComponent },
-  { path: "match", component: MatchComponent },
+  { path: "match", component: HybridMatchComponent },
   { path: "summary", component: SummaryComponent },
   { path: "scoreboard", component: ScoreboardComponent},
   { path: "test", component: TestpanelComponent },

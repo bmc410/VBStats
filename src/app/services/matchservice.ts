@@ -97,7 +97,7 @@ export class MatchService  {
   getMatches() {
     const Matches = Parse.Object.extend('Matches');
     const query = new Parse.Query(Matches);
-    return from(query.find()).pipe(map(result => result));
+    return query.find();
   }
 
   getClubs() {
@@ -129,7 +129,7 @@ export class MatchService  {
   getPlayers() {
     const Players = Parse.Object.extend('Players');
     const query = new Parse.Query(Players);
-    return from(query.find()).pipe(map(result => result));
+    return query.find();
   }
 
   getAllPlayers() {

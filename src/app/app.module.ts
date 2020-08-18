@@ -67,6 +67,7 @@ import { FMobileKpadComponent } from './components/controls/f-mobile-kpad/f-mobi
 import { MobileMatchComponent } from './components/mobile-match/mobile-match.component';
 import { MobileScoreboardComponent } from './components/controls/mobile-scoreboard/mobile-scoreboard.component';
 import { HybridMatchComponent } from './components/hybrid-match/hybrid-match.component';
+import { AppStateService } from './services/app-state-service.service';
 
 @NgModule({
   declarations: [
@@ -129,7 +130,7 @@ import { HybridMatchComponent } from './components/hybrid-match/hybrid-match.com
     AngularFirestoreModule.enablePersistence(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [CarService, MatchService, DexieService,AngularFirestore, MessageService],
+  providers: [CarService, MatchService, DexieService,AngularFirestore, MessageService, AppStateService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

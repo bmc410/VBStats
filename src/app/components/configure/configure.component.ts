@@ -163,14 +163,14 @@ export class ConfigureComponent implements OnInit {
     })
   }
 
-  onTeamSelect(event) {
+  async onTeamSelect(event) {
     this.newTeam = false;
     this.team = this.cloneTeam(event.data);
     this.selectedTeamName = this.team.TeamName;
     this.selectedTeamId = this.team.objectId;
     this.selectedTeamClubId = this.team.ClubId
     this.selectedTeamYear = this.team.Year;
-    this.matchService.getPlayers().subscribe(data => {
+    await this.matchService.getPlayers().then(data => {
       var json = JSON.stringify(data);
       var d = JSON.parse(json);
       this.selectedPlayers = d
@@ -273,7 +273,7 @@ export class ConfigureComponent implements OnInit {
   ngOnDestroy() {
   }
 
-  ngOnInit() {
+  async ngOnInit() {
 
     let year = new Date().getFullYear();
     this.teamYears.push(year);
@@ -309,12 +309,12 @@ export class ConfigureComponent implements OnInit {
     }); */
 
 
-    this.matchService.getMatches().subscribe(result => {
+    await this.matchService.getMatches().then(result => {
       var json = JSON.stringify(result);
       this.matches = JSON.parse(json);
     });
  
-    this.matchService.getPlayers().subscribe(data => {
+    await this.matchService.getPlayers().then(data => {
       var json = JSON.stringify(data);
       var d = JSON.parse(json);
       this.selectedPlayers = d

@@ -201,10 +201,10 @@ export class MatchComponent implements OnInit {
     this.gameNumber = this.match.gameNumber;
     this.game.subs = 0;
 
-    this.matchService.getPlayers().subscribe(allPlayers => {
+    await this.matchService.getPlayers().then(async allPlayers => {
       var json = JSON.stringify(allPlayers);
       var tpData = JSON.parse(json);
-      this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(async teamPlayers => {
+      await this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(async teamPlayers => {
         var json1 = JSON.stringify(teamPlayers);
         var tpData1 = JSON.parse(json1);
         tpData1.forEach(p => {
@@ -213,7 +213,7 @@ export class MatchComponent implements OnInit {
           this.players.push(player);
         });
 
-          this.allPlayers = this.players;
+        this.allPlayers = this.players.slice();
   
         await this.matchService.getGameForMatchByNumber(this.match.objectId, this.match.gameNumber).then(async result => {
           var json = JSON.stringify(result);
@@ -226,7 +226,7 @@ export class MatchComponent implements OnInit {
                 g.HomeScore = 0
                 g.subs = 0
                 this.matchService.createGame(g).subscribe(result => {
-                  this.matchService.getGameForMatchByNumber(this.match.objectId, this.gameNumber).subscribe(result => {
+                  this.matchService.getGameForMatchByNumber(this.match.objectId, this.gameNumber).then(result => {
                     var j = JSON.stringify(result);
                     var game = JSON.parse(j);
                     this.game.objectId = game[0].objectId;

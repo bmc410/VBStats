@@ -23,6 +23,7 @@ import { FormGroup, FormControl, ReactiveFormsModule } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { catchError, switchMap } from 'rxjs/operators';
 import { Parse } from 'parse';
+import { AppStateService } from 'src/app/services/app-state-service.service';
 
 @Component({
   selector: 'app-hybrid-match',
@@ -66,7 +67,8 @@ export class HybridMatchComponent implements OnInit {
   constructor(
     private matchService: MatchService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private stateService: AppStateService
   ) {
     this.playerPositions = [];
   }
@@ -227,7 +229,7 @@ export class HybridMatchComponent implements OnInit {
                 g.HomeScore = 0
                 g.subs = 0
                 this.matchService.createGame(g).subscribe(result => {
-                  this.matchService.getGameForMatchByNumber(this.match.objectId, this.gameNumber).subscribe(result => {
+                  this.matchService.getGameForMatchByNumber(this.match.objectId, this.gameNumber).then(result => {
                     var j = JSON.stringify(result);
                     var game = JSON.parse(j);
                     this.game.objectId = game[0].objectId;

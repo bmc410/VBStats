@@ -1,9 +1,9 @@
 
 <!-- Desktop and Tablet View -->
-<div style="font-size: 16px;  margin-top: 15px;" class="d-none d-md-block">
+<div style="font-size: 16px;  margin-top: 15px;" >
 
-  <!-- Scoreboard -->
-  <div
+  <!-- Desktop Scoreboard -->
+  <div *ngIf="!mobile"
         style="border-radius: 15px; border-style: solid; border-color: #FFF; margin-top: 5px; margin-bottom: 10px; margin-left: 15px; margin-right: 15px;"
         class="row  d-flex justify-content-center">
 
@@ -74,128 +74,8 @@
 
   </div>
 
-  <!-- Game Play Area -->
-  <div class="container-fluid" style="padding: 0px;">
-    <div class="row col-12 flex-grow-1" style="margin-left: 5px;">
-      <div class="col-2" cdkDropList #todoList="cdkDropList" style="background-color: #144A99; color: #fff; border-radius: 25px;
-        border: 1px #fff solid; opacity: .8;" 
-        [cdkDropListData]="players"
-        [cdkDropListConnectedTo]="[pos4, pos3, pos2, pos1,pos6,pos5]" class="player-list col "
-        (cdkDropListDropped)="drop($event,0)">
-        <div style="margin-top: 15px;" class="row d-flex flex-nowrap">
-          <div style="text-align: left; font-size: 1vw;" class="col-2">
-            L
-          </div>
-          <div style="font-size: 1.5vw;">
-            Players
-          </div>
-          <div style="font-weight: bolder;" class="col d-flex justify-content-end">
-            <span class="glyphicon glyphicon-move"></span>
-            <!-- <img style="width: 30px; color: #FFF;" src='../../../assets/icons/pointer.png'> -->
-          </div>
-        </div>
-        <hr />
-        <div *ngFor="let player of players" cdkDrag>
-          <div style="padding-bottom: 10px; padding-top: 10px;" class="row d-flex flex-nowrap">
-            <div style="text-align: left;" class="col-2">
-              <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true"></p-checkbox>
-            </div>
-            <div style="font-size: 1.5vw;" class="col-3 btn-responsive">
-              <img *cdkDragPreview style="width: 50px;" src='../../../assets/icons/girl-volleyball-player-hitting.png'>
-              {{ player.FirstName }}
-            </div>
-            <div class="col-7 d-flex justify-content-end">
-              <span class="glyphicon glyphicon-move"></span>
-              <!-- <img class="img-fluid" style="width: 20px; color: #fff;" src='../../../assets/icons/arrow.png'> -->
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style="font-size: 2vw; margin-right: -5px; background-color: transparent; border-color: transparent;" 
-      class="col-10">
-      <div class="panel panel-default" style="background-color: transparent; border-color: transparent;">
-      
-        <div class="">
-          <div class="row flex-nowrap">
-            <div class="col col-sm-4">
-              <div id="pos4" style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
-                <div class="panel-heading"><strong>{{ playerPositions[4].playerPos }}</strong></div>
-                <div cdkDropList #pos4="cdkDropList" (cdkDropListDropped)="drop($event,4)"
-                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
-                  <app-f-kpad posNum="4" (statPost)="postStat($event)"></app-f-kpad>
-  
-                </div>
-              </div>
-            </div>
-  
-            <div class="col col-sm-4" id="pos3">
-              <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
-                <div class="panel-heading"><strong>{{ playerPositions[3].playerPos }}</strong></div>
-                <div cdkDropList #pos3="cdkDropList" (cdkDropListDropped)="drop($event,3)"
-                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
-                  <app-f-kpad posNum="3" (statPost)="postStat($event)"></app-f-kpad>
-                </div>
-              </div>
-            </div>
-  
-            <div class="col col-sm-4" id="pos2">
-              <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
-                <div class="panel-heading"><strong>{{ playerPositions[2].playerPos }}</strong></div>
-                <div cdkDropList #pos2="cdkDropList" (cdkDropListDropped)="drop($event,2)"
-                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
-                  <app-f-kpad posNum="2" (statPost)="postStat($event)"></app-f-kpad>
-                </div>
-              </div>
-            </div>
-          </div>
-  
-          <div class="row flex-nowrap">
-            <div class="col col-sm-4" id="pos5">
-              <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
-                <div class="panel-heading"><strong>{{ playerPositions[5].playerPos }}</strong></div>
-                <div cdkDropList #pos5="cdkDropList" (cdkDropListDropped)="drop($event,5)"
-                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
-                  <app-r-kpad posNum="5" (statPost)="postStat($event)"></app-r-kpad>
-  
-                </div>
-              </div>
-            </div>
-  
-            <div class="col col-sm-4" id="pos6">
-              <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
-                <div class="panel-heading"><strong>{{ playerPositions[6].playerPos }}</strong></div>
-                <div cdkDropList #pos6="cdkDropList" (cdkDropListDropped)="drop($event,6)"
-                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
-                  <app-r-kpad posNum="6" (statPost)="postStat($event)"></app-r-kpad>
-                </div>
-              </div>
-            </div>
-  
-            <div class="col col-sm-4" id="pos1">
-              <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
-                <div class="panel-heading"><strong>{{ playerPositions[1].playerPos }}</strong></div>
-                <div cdkDropList #pos1="cdkDropList" (cdkDropListDropped)="drop($event,1)"
-                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
-                  <app-s-kpad posNum="1" (statPost)="postStat($event)"></app-s-kpad>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-  
-  
-      </div>
-    </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- Mobile View -->
-<div style="font-size: 16px;  margin-top: 15px;" class="d-md-none d-lg-none d-xl-none">
-
-  <!-- Scoreboard -->
-  <div
+  <!-- Mobile Scoreboard -->
+  <div *ngIf="mobile"
     style="border-radius: 15px; border-style: solid; border-color: #FFF; margin-bottom: 10px; "
     class="container col-12 align-items-center">
 
@@ -259,33 +139,110 @@
      
     </div>
   </div>
-  
+
+
   <!-- Game Play Area -->
   <div class="container-fluid" style="padding: 0px;">
-    <div class="row col-12 flex-grow-1" style="margin-left: 1px;">
-      <div class="col-3" cdkDropList #todoList="cdkDropList" style="background-color: #144A99; color: #fff; border-radius: 5px;
-        border: 1px #fff solid; opacity: .8; height: 95%;" 
+    <div class="row col-12 flex-grow-1" style="margin-left: 5px;">
+      <div class="col-2" cdkDropList #todoList="cdkDropList" style="background-color: #144A99; color: #fff; border-radius: 10px;
+        border: 1px #fff solid; opacity: .8;" 
         [cdkDropListData]="players"
-        [cdkDropListConnectedTo]="[pos1, pos2, pos3, pos4, pos5, pos6]" 
+        [cdkDropListConnectedTo]="['pos4', 'pos3', 'pos2', 'pos1', 'pos6', 'pos5']" class="player-list col "
         (cdkDropListDropped)="drop($event,0)">
-        
         <div *ngFor="let player of players" cdkDrag>
-          <div style="padding-bottom: 1vw; padding-top: 2vw;" class="row d-flex flex-nowrap">
-            <!-- <div style="text-align: left;" class="col-2">
+          <div style="padding-bottom: 10px; padding-top: 10px;" class="row d-flex flex-nowrap">
+            <div style="text-align: left;" class="col-1">
               <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true"></p-checkbox>
-            </div> -->
-            <div style="font-size: 3vw;" class="col-9 btn-responsive">
-              <img *cdkDragPreview style="width: 20px;" src='../../../assets/icons/girl-volleyball-player-hitting.png'>
-              {{ player?.FirstName }}
+            </div>
+            <div style="font-size: 2vw;" class="col-6 btn-responsive">
+              <img *cdkDragPreview style="width: 50px;" src='../../../assets/icons/girl-volleyball-player-hitting.png'>
+              {{ player.FirstName }}
             </div>
             <div class="col-1 d-flex justify-content-end">
-              <span  class="glyphicon glyphicon-move"></span>
+              <span class="glyphicon glyphicon-move"></span>
               <!-- <img class="img-fluid" style="width: 20px; color: #fff;" src='../../../assets/icons/arrow.png'> -->
             </div>
           </div>
         </div>
       </div>
-      <div class="col-8 d-flex justify-content-end" style="font-size: 3vw; padding: 0px; background-color: 
+      
+      <div *ngIf="!mobile" style="font-size: 2vw; margin-right: -5px; background-color: transparent; border-color: transparent;" 
+      class="col-10">
+      <div class="panel panel-default" style="background-color: transparent; border-color: transparent;">
+      
+        <div class="">
+          <div class="row flex-nowrap">
+            <div class="col col-sm-4">
+              <div  style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
+                <div class="panel-heading"><strong>{{ playerPositions[4].playerPos }}</strong></div>
+                <div cdkDropList id="pos4" (cdkDropListDropped)="drop($event,4)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-f-kpad posNum="4" (statPost)="postStat($event)"></app-f-kpad>
+  
+                </div>
+              </div>
+            </div>
+  
+            <div class="col col-sm-4" >
+              <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
+                <div class="panel-heading"><strong>{{ playerPositions[3].playerPos }}</strong></div>
+                <div cdkDropList id="pos3" (cdkDropListDropped)="drop($event,3)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-f-kpad posNum="3" (statPost)="postStat($event)"></app-f-kpad>
+                </div>
+              </div>
+            </div>
+  
+            <div class="col col-sm-4" >
+              <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
+                <div class="panel-heading"><strong>{{ playerPositions[2].playerPos }}</strong></div>
+                <div cdkDropList id="pos2" (cdkDropListDropped)="drop($event,2)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-f-kpad posNum="2" (statPost)="postStat($event)"></app-f-kpad>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <div class="row flex-nowrap">
+            <div class="col col-sm-4" >
+              <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
+                <div class="panel-heading"><strong>{{ playerPositions[5].playerPos }}</strong></div>
+                <div cdkDropList id="pos5" (cdkDropListDropped)="drop($event,5)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-r-kpad posNum="5" (statPost)="postStat($event)"></app-r-kpad>
+  
+                </div>
+              </div>
+            </div>
+  
+            <div class="col col-sm-4" >
+              <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
+                <div class="panel-heading"><strong>{{ playerPositions[6].playerPos }}</strong></div>
+                <div cdkDropList id="pos6" (cdkDropListDropped)="drop($event,6)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-r-kpad posNum="6" (statPost)="postStat($event)"></app-r-kpad>
+                </div>
+              </div>
+            </div>
+  
+            <div class="col col-sm-4" >
+              <div style="border-radius: 15px; overflow: hidden;" class="panel panel-primary">
+                <div class="panel-heading"><strong>{{ playerPositions[1].playerPos }}</strong></div>
+                <div cdkDropList id="pos1" (cdkDropListDropped)="drop($event,1)"
+                  style="text-align: center; padding: 0px;" class="panel-body panel-height">
+                  <app-s-kpad posNum="1" (statPost)="postStat($event)"></app-s-kpad>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+  
+      </div>
+      </div>
+
+      <div *ngIf="mobile" class="col-8 d-flex justify-content-end" style="font-size: 3vw; padding: 0px; background-color: 
         transparent; border-color: transparent;" >
         <div class="panel panel-default" style="background-color: transparent; border-color: transparent;">
           <!-- <div > -->
@@ -294,9 +251,9 @@
           <!-- </div> -->
 
             <div >
-              <div id="pos1" style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
+              <div  style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
                 <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[1].playerPos }}</div>
-                <div cdkDropList #pos1="cdkDropList" (cdkDropListDropped)="drop($event,1)"
+                <div cdkDropList id="pos1" (cdkDropListDropped)="drop($event,1)"
                   style="text-align: center; padding: 0px;" class="panel-body panel-height">
                   <app-f-mobile-kpad playerName="{{ playerPositions[1].playerPos }}" posNum="1" (statPost)="postStat($event)"></app-f-mobile-kpad>
 
@@ -304,29 +261,29 @@
               </div>
             </div>
 
-            <div  id="pos2">
+            <div  >
               <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
                 <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[2].playerPos }}</div>
-                <div cdkDropList #pos2="cdkDropList" (cdkDropListDropped)="drop($event,2)"
+                <div cdkDropList id="pos2" (cdkDropListDropped)="drop($event,2)"
                   style="text-align: center; padding: 0px;" class="panel-body panel-height">
                   <app-f-mobile-kpad playerName="{{ playerPositions[2].playerPos }}" posNum="2" (statPost)="postStat($event)"></app-f-mobile-kpad>
                 </div>
               </div>
             </div>
 
-            <div  id="pos9">
+            <div  >
               <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
                 <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[3].playerPos }}</div>
-                <div cdkDropList #pos3="cdkDropList" (cdkDropListDropped)="drop($event,3)"
+                <div cdkDropList id="pos3" (cdkDropListDropped)="drop($event,3)"
                   style="text-align: center; padding: 0px;" class="panel-body panel-height">
                   <app-f-mobile-kpad playerName="{{ playerPositions[3].playerPos }}" posNum="3" (statPost)="postStat($event)"></app-f-mobile-kpad>
                 </div>
               </div>
             </div>
             <div >
-              <div id="pos4" style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
+              <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
                 <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[4].playerPos }}</div>
-                <div cdkDropList #pos4="cdkDropList" (cdkDropListDropped)="drop($event,4)"
+                <div cdkDropList id="pos4" (cdkDropListDropped)="drop($event,4)"
                   style="text-align: center; padding: 0px;" class="panel-body panel-height">
                   <app-f-mobile-kpad playerName="{{ playerPositions[4].playerPos }}" posNum="4" (statPost)="postStat($event)"></app-f-mobile-kpad>
 
@@ -334,20 +291,20 @@
               </div>
             </div>
 
-            <div  id="pos5">
+            <div  >
               <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
                 <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[5].playerPos }}</div>
-                <div cdkDropList #pos5="cdkDropList" (cdkDropListDropped)="drop($event,5)"
+                <div cdkDropList id="pos5" (cdkDropListDropped)="drop($event,5)"
                   style="text-align: center; padding: 0px;" class="panel-body panel-height">
                   <app-f-mobile-kpad playerName="{{ playerPositions[5].playerPos }}" posNum="5" (statPost)="postStat($event)"></app-f-mobile-kpad>
                 </div>
               </div>
             </div>
 
-            <div  id="pos6">
+            <div  >
               <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="panel panel-primary">
                 <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[6].playerPos }}</div>
-                <div cdkDropList #pos6="cdkDropList" (cdkDropListDropped)="drop($event,6)"
+                <div cdkDropList id="pos6" (cdkDropListDropped)="drop($event,6)"
                   style="text-align: center; padding: 0px;" class="panel-body panel-height">
                   <app-f-mobile-kpad playerName="{{ playerPositions[6].playerPos }}" posNum="6" (statPost)="postStat($event)"></app-f-mobile-kpad>
                 </div>
@@ -357,10 +314,13 @@
 
         </div>
       </div>
+
     </div>
   </div>
 
 </div>
+
+
 
   <p-dialog header="Create Match" [(visible)]="display">
     <div>

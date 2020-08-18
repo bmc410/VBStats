@@ -73,11 +73,11 @@
 </div>
 
 <p-dialog header="Match Details" [(visible)]="matchDialogDisplay" [focusOnShow]="false" [responsive]="true"
-  showEffect="fade" [modal]="true" [style]="{ width: '70%' }">
+  showEffect="fade" [modal]="true" [style]="{ width: '90vw' }">
 
   <div class="row align-items-center">
-    <div class="col">
-      <label for="inputEmail">Home</label><br/>
+    <div class="col-sm-6">
+      <label>Home</label><br/>
       <select (change)="onChange($event)" style="height: calc(1.5em + 0.75rem + 0px); border: 1px solid #ced4da; width: 100%; border-radius: 0.25rem; color: #7b8a8b; padding: 0.375rem 0.75rem;" type="number" 
         [(ngModel)]="selectedTeamId">
         <option value='' [disabled]="true">Select home team</option>
@@ -85,12 +85,13 @@
       </select>
       <!-- <input [(ngModel)]="dialogHome" type="text" class="form-control" id="inputHome" placeholder="Home"> -->
     </div>
-    <div class="col">
-      <label for="inputEmail">Opponent</label>
+
+    <div class="col-sm-6">
+      <label >Opponent</label>
       <input [(ngModel)]="dilogOpponent" type="text" class="form-control" id="inputOpponent" placeholder="Opponent">
     </div>
-    <div class="w-100"></div>
-    <div style="margin-top: 2vw;" class="col">
+    
+    <div style="margin-top: 2vw;" class="col-sm-6">
       <mat-form-field style="width: 100%;">
         <mat-label style="font-weight: bold;">Choose a date</mat-label>
         <input [formControl]="gameDate" matInput [matDatepicker]="picker">
@@ -98,7 +99,8 @@
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </div>
-    <div class="col">
+
+    <div class="col-sm-6">
       <label for="inputEmail">Game</label><br />
       <!-- <div class="btn-group" role="group" aria-label="...">
         <button style="margin-right: 1vw;" type="button" class="btn btn-default btn-responsive">1</button>
@@ -137,6 +139,7 @@
           <mat-radio-button (click)="setGame(5)" value="5"></mat-radio-button> -->
       </div>
     </div>
+
   </div>
   <div style="margin-top: 10px;" class="row">
     <div class="col mb-2">
@@ -193,7 +196,7 @@
 </p-dialog>
 
 <p-dialog header="Player Details" [(visible)]="playerDialogDisplay" [focusOnShow]="false" [responsive]="true"
-  showEffect="fade" [modal]="true" [style]="{ width: '400px' }">
+  showEffect="fade" [modal]="true" [style]="{ width: '90vw' }">
   <div class="ui-g ui-fluid" *ngIf="player">
     <div class="ui-g-12">
       <div class="ui-g-4">
@@ -223,15 +226,15 @@
 </p-dialog>
 
 <p-dialog [baseZIndex]=9999 [autoZIndex]="false" header="Team Details" [(visible)]="teamDialogDisplay" [focusOnShow]="false"
-  showEffect="fade" [modal]="true" [style]="{ width: '50vw' }" styleClass="teamdialog">
+  showEffect="fade" [modal]="true" [style]="{ width: '90vw' }" styleClass="teamdialog">
   <div class="container">
     <div class="row align-items-center mb-3">
-      <div class="col-4">
+      <div class="col-sm-4">
         <label for="teamname">Team Name</label><br/>
         <input style="height: calc(1.5em + 0.75rem + 0px); border: 1px solid #ced4da; width: 100%; border-radius: 0.25rem; color: #7b8a8b; padding: 0.375rem 0.75rem;" 
           id="teamname" [(ngModel)]="selectedTeamName" autofocus />
       </div>
-      <div class="col-4">
+      <div class="col-sm-4">
         <label for="teamname">Club</label><br/>
         <select (change)="onTeamClubChange($event)" style="height: calc(1.5em + 0.75rem + 0px); border: 1px solid #ced4da; width: 100%; border-radius: 0.25rem; color: #7b8a8b; padding: 0.375rem 0.75rem;" type="number" 
         [(ngModel)]="selectedTeamClubId">
@@ -239,7 +242,7 @@
         <option *ngFor="let club of clubs" [ngValue]="club.objectId">{{club?.ClubName}}</option>
         </select>
       </div>
-      <div class="col-4">
+      <div class="col-sm-4">
         <label for="teamname">Club Year</label><br/>
         <select (change)="onClubYearChange($event)" style="height: calc(1.5em + 0.75rem + 0px); border: 1px solid #ced4da; width: 100%; border-radius: 0.25rem; color: #7b8a8b; padding: 0.375rem 0.75rem;" type="number" 
         [(ngModel)]="selectedTeamYear">

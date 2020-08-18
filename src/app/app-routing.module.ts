@@ -11,7 +11,7 @@ import { HybridMatchComponent } from './components/hybrid-match/hybrid-match.com
 
 const routes: Routes = [
   { path: "configure", component: ConfigureComponent },
-  { path: "match", component: HybridMatchComponent },
+  { path: "match", component: MatchComponent },
   { path: "summary", component: SummaryComponent },
   { path: "scoreboard", component: ScoreboardComponent},
   { path: "test", component: TestpanelComponent },

@@ -1,6 +1,5 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, NgZone } from "@angular/core";
 import { Car } from "src/app/models/cars";
-import { CarService } from "../../services/carservice";
 import {
   CourtPosition,
   Match,
@@ -96,7 +95,8 @@ export class ConfigureComponent implements OnInit {
   constructor(
     private matchService: MatchService,
     private router: Router,
-    private connectionService: ConnectionService
+    private connectionService: ConnectionService,
+    private _ngZone: NgZone
   ) {
     this.playerPositions = [];
   }
@@ -219,7 +219,15 @@ export class ConfigureComponent implements OnInit {
     gm.objectId = this.match.objectId;
     gm.Opponent = this.match.Opponent;
     gm.HomeTeamId = this.match.HomeTeamId;
-    this.router.navigate(["match", gm]);
+
+    this._ngZone.run(() => {
+      this.router.navigate(["match", gm]).then(result => {
+        this.matchDialogDisplay = false;
+        console.log(result)
+      });
+    });
+
+   
   }
 
   summary() {

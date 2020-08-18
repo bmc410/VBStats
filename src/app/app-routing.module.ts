@@ -8,14 +8,18 @@ import { TestpanelComponent } from './components/testpanel/testpanel.component';
 import { MobileMatchComponent } from './components/mobile-match/mobile-match.component';
 import { MobileScoreboardComponent } from './components/controls/mobile-scoreboard/mobile-scoreboard.component';
 import { HybridMatchComponent } from './components/hybrid-match/hybrid-match.component';
+import { AuthGuard } from './auth-guard';
+import { LoginComponent } from './components/login/login.component';
 
 const routes: Routes = [
-  { path: "configure", component: ConfigureComponent },
-  { path: "match", component: MatchComponent },
+  { path: "configure", component: ConfigureComponent, canActivate: [AuthGuard] },
+  { path: "match", component: MatchComponent, canActivate: [AuthGuard] },
   { path: "summary", component: SummaryComponent },
   { path: "scoreboard", component: ScoreboardComponent},
   { path: "test", component: TestpanelComponent },
-  { path: "", component: ConfigureComponent }
+  { path: 'login', component: LoginComponent },
+  { path: '**', redirectTo: 'configure', pathMatch:'full' },
+  { path: "", redirectTo:'configure', pathMatch:'full' }
 ];
 
 @NgModule({

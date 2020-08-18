@@ -11,7 +11,6 @@ import { NavComponent } from './components/nav/nav.component';
 import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
-import { CarService } from './services/carservice';
 import { HttpClientModule } from '@angular/common/http';
 import { MatchService } from './services/matchservice';
 import { DialogModule, Dialog } from 'primeng/dialog';
@@ -45,7 +44,6 @@ import {CheckboxModule} from 'primeng/checkbox';
 import {ListboxModule} from 'primeng/listbox'
 import {ToastModule} from 'primeng/toast'
 
-import { DexieService } from './services/dexie.service';
 import { SKpadComponent } from './components/controls/s-kpad/s-kpad.component';
 import { AngularFirestore, AngularFirestoreDocument, AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
@@ -68,6 +66,9 @@ import { MobileMatchComponent } from './components/mobile-match/mobile-match.com
 import { MobileScoreboardComponent } from './components/controls/mobile-scoreboard/mobile-scoreboard.component';
 import { HybridMatchComponent } from './components/hybrid-match/hybrid-match.component';
 import { AppStateService } from './services/app-state-service.service';
+import { LoginComponent } from './components/login/login.component';
+import { AuthenticationService } from './services/authentication.service';
+import { AuthGuard } from './auth-guard';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import { AppStateService } from './services/app-state-service.service';
     FMobileKpadComponent,
     MobileMatchComponent,
     MobileScoreboardComponent,
-    HybridMatchComponent
+    HybridMatchComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -130,7 +132,7 @@ import { AppStateService } from './services/app-state-service.service';
     AngularFirestoreModule.enablePersistence(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [CarService, MatchService, DexieService,AngularFirestore, MessageService, AppStateService],
+  providers: [MatchService,AngularFirestore, MessageService, AppStateService,AuthenticationService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

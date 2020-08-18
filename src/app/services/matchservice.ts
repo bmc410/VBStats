@@ -28,7 +28,6 @@ import {
 } from "@angular/fire/firestore";
 import { Guid } from "guid-typescript";
 
-import { DexieService } from "./dexie.service";
 import * as firebase from "firebase";
 import "firebase/firestore";
 import { MessageService } from 'primeng/api';
@@ -55,7 +54,6 @@ export class MatchService  {
   constructor(
     private firestore: AngularFirestore,
     private http: HttpClient,
-    private dexieService: DexieService,
     private messageService: MessageService
   ) {
     this._gameData$ = new BehaviorSubject(null);

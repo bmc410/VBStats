@@ -1,5 +1,10 @@
 //import { staticViewQueryIds } from '@angular/compiler';
 
+export class userToken {
+  username: string;
+  ttl: Date;
+}
+
 export class pbpPosition {
   posNo: number;
   playerName: string;

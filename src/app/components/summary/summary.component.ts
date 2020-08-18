@@ -1,6 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { Car } from "src/app/models/cars";
-import { CarService } from "../../services/carservice";
 import {
   CourtPosition,
   Match,

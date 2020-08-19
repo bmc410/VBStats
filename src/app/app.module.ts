@@ -69,6 +69,8 @@ import { AppStateService } from './services/app-state-service.service';
 import { LoginComponent } from './components/login/login.component';
 import { AuthenticationService } from './services/authentication.service';
 import { AuthGuard } from './auth-guard';
+import { NetworkService } from './services/network.service';
+
 
 @NgModule({
   declarations: [
@@ -132,7 +134,7 @@ import { AuthGuard } from './auth-guard';
     AngularFirestoreModule.enablePersistence(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [MatchService,AngularFirestore, MessageService, AppStateService,AuthenticationService, AuthGuard],
+  providers: [MatchService,AngularFirestore, MessageService, AppStateService,AuthenticationService, AuthGuard,NetworkService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

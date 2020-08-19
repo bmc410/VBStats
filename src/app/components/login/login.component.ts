@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { first } from 'rxjs/operators';
+import { NetworkService } from 'src/app/services/network.service';
 
 @Component({
   selector: 'app-login',
@@ -15,18 +16,24 @@ export class LoginComponent implements OnInit {
   submitted = false;
   returnUrl: string;
   error: string;
+  checked = false;
 
   constructor(
       private formBuilder: FormBuilder,
       private route: ActivatedRoute,
       private router: Router,
       private authenticationService: AuthenticationService,
+      private networkService: NetworkService,
       private _ngZone: NgZone
   ) {
       // redirect to home if already logged in
       if (this.authenticationService.currentUserValue) { 
           this.router.navigate(['/']);
       }
+  }
+
+  NetworkChange(e) {
+    this.networkService.NetworkChange(e.checked)
   }
 
   ngOnInit() {

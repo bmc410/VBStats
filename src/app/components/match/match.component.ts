@@ -22,6 +22,8 @@ import { FormGroup, FormControl, ReactiveFormsModule } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { catchError, switchMap } from 'rxjs/operators';
 import { Parse } from 'parse';
+import { NetworkService } from 'src/app/services/network.service';
+import { OfflineService } from 'src/app/services/offline.service';
 
 @Component({
   selector: "app-match",
@@ -57,15 +59,156 @@ export class MatchComponent implements OnInit {
   os = 0;
   mobile = false;
   startHidden = false;
+  offline: boolean;
   //currentGame: <Observable> GameWithId();
   //let currentGame = this.matchService.getGameByNumber(this.gameNumber, this.match.matchid);
 
   constructor(
     private matchService: MatchService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private networkService: NetworkService,
+    private offlineservice: OfflineService
   ) {
     this.playerPositions = [];
+    this.networkService.currentStatus.subscribe(result => {
+      this.offline = result
+    })
+  }
+
+  async ngOnInit() {
+
+    var _this = this;
+    if (window.screen.width <= 768) { // 768px portrait
+      this.mobile = true;
+      console.log(this.mobile)
+    }
+
+    for (let index = 0; index < 7; index++) {
+      const c = new CourtPosition();
+      c.playerPos = " Drop Player";
+      c.posNo = index;
+      this.playerPositions.push(c);
+    }
+
+    if (this.route.snapshot.params.objectId != undefined)
+      this.match = this.route.snapshot.params;
+    else {
+      this.router.navigate(['configure']);
+      return
+    }
+
+    this.game = new GameWithId()
+    this.gameScore = new GameScore();
+    this.gameNumber = this.match.gameNumber;
+    this.game.subs = 0;
+
+    
+    //#region 
+    if(this.offline == true) {
+      this.offlineservice.getPlayers().subscribe(async result => {
+        var allplayers = result
+        await this.offlineservice.getPlayersByTeamId(this.match.HomeTeamId).then(result => {
+          var teamplayers =  result
+          teamplayers.forEach(p => {
+            var player = allplayers.filter(x => x.objectId == p.playerid)[0]
+            player.jersey = teamplayers.filter(x => x.playerid == player.objectId)[0].jersey
+            this.players.push(player);
+          });
+        })
+      })
+    } else {
+      await this.matchService.getPlayers().then(async allPlayers => {
+        var json = JSON.stringify(allPlayers);
+        var tpData = JSON.parse(json);
+        await this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(async teamPlayers => {
+          var json1 = JSON.stringify(teamPlayers);
+          var tpData1 = JSON.parse(json1);
+          tpData1.forEach(p => {
+            var player = tpData.filter(x => x.objectId == p.PlayerId)[0]
+            player.jersey = tpData1.filter(x => x.PlayerId == player.objectId)[0].Jersey
+            this.players.push(player);
+          });
+  
+          this.allPlayers = this.players.slice();
+    
+          await this.matchService.getGameForMatchByNumber(this.match.objectId, this.match.gameNumber).then(async result => {
+            var json = JSON.stringify(result);
+            var game = JSON.parse(json);
+            if (game.length == 0) {
+                  let g = new GameWithId()
+                  g.gamenumber = this.gameNumber
+                  g.matchid = this.match.objectId
+                  g.OpponentScore = 0
+                  g.HomeScore = 0
+                  g.subs = 0
+                  this.matchService.createGame(g).subscribe(result => {
+                    this.matchService.getGameForMatchByNumber(this.match.objectId, this.gameNumber).then(result => {
+                      var j = JSON.stringify(result);
+                      var game = JSON.parse(j);
+                      this.game.objectId = game[0].objectId;
+                      this.game.HomeScore = 0;
+                      this.game.OpponentScore = 0;
+                      this.game.subs = 0;
+                      this.game.gamenumber = this.gameNumber;
+                    })
+                  })
+            }
+            
+            else {
+              this.game = game[0];
+              await this.matchService.getstats(this.game.objectId).then(data => {
+                var j = JSON.stringify(data);
+                var stats = JSON.parse(j);
+                stats.forEach(function (s) {
+                  var rotation = JSON.parse(s.Rotation);
+                  let stat = {
+                    statid: s.GameId,
+                    homescore: s.HomeScore,
+                    matchid: s.OpponentScore,
+                    gamenumber: _this.match.gameNumber,
+                    stattype: s.StatType,
+                    playerid: s.PlayerId,
+                    statdate: s.createdAt,
+                    //pos: Map<any,any>,
+                    id: s.objectId,
+                    opponentscore: s.OpponentScore,
+                    rotation: rotation,
+                    subs: s.Subs
+                  }
+                  _this.stats.push(stat); 
+                });
+        
+                if (this.stats && this.stats.length > 0) {
+                  this.startMatch();
+                  var r = this.stats[this.stats.length-1]
+                  this.game.HomeScore = r.homescore;
+                  this.game.OpponentScore = r.opponentscore;
+                  this.game.subs = r.subs;
+                  var pos = r.rotation
+                  for (let i = 0; i < 6; i++) {
+                    var p1 = this.allPlayers.filter(p => p.objectId == pos[i].objectId)[0]
+                    this.playerPositions[i + 1].posNo = pos[i].posNo;
+                    this.playerPositions[i + 1].player = p1;
+                    this.playerPositions[i + 1].playerPos =
+                      p1.FirstName + " - " + p1.jersey;
+                    this.players = this.players.filter(x => x.objectId != p1.objectId)
+                  }
+                }
+              });
+              this.game.gamenumber = this.match.gameNumber;
+              this.game.objectId = game[0].objectId;
+              this.game.subs = game[0].Subs;
+              }
+            })  
+          })
+      })
+  
+    }
+    //#endregion
+    
+  
+
   }
 
   matchForm = new FormGroup({
@@ -172,119 +315,7 @@ export class MatchComponent implements OnInit {
   }
 
 
-  async ngOnInit() {
-
-    var _this = this;
-    if (window.screen.width <= 768) { // 768px portrait
-      this.mobile = true;
-      console.log(this.mobile)
-    }
-
-    for (let index = 0; index < 7; index++) {
-      const c = new CourtPosition();
-      c.playerPos = " Drop Player";
-      c.posNo = index;
-      this.playerPositions.push(c);
-    }
-
-    if (this.route.snapshot.params.objectId != undefined)
-      this.match = this.route.snapshot.params;
-    else {
-      this.router.navigate(['configure']);
-      return
-    }
-
-    this.game = new GameWithId()
-    this.gameScore = new GameScore();
-    this.gameNumber = this.match.gameNumber;
-    this.game.subs = 0;
-
-    await this.matchService.getPlayers().then(async allPlayers => {
-      var json = JSON.stringify(allPlayers);
-      var tpData = JSON.parse(json);
-      await this.matchService.getPlayersByTeamId(this.match.HomeTeamId).then(async teamPlayers => {
-        var json1 = JSON.stringify(teamPlayers);
-        var tpData1 = JSON.parse(json1);
-        tpData1.forEach(p => {
-          var player = tpData.filter(x => x.objectId == p.PlayerId)[0]
-          player.jersey = tpData1.filter(x => x.PlayerId == player.objectId)[0].Jersey
-          this.players.push(player);
-        });
-
-        this.allPlayers = this.players.slice();
-  
-        await this.matchService.getGameForMatchByNumber(this.match.objectId, this.match.gameNumber).then(async result => {
-          var json = JSON.stringify(result);
-          var game = JSON.parse(json);
-          if (game.length == 0) {
-                let g = new GameWithId()
-                g.gamenumber = this.gameNumber
-                g.matchid = this.match.objectId
-                g.OpponentScore = 0
-                g.HomeScore = 0
-                g.subs = 0
-                this.matchService.createGame(g).subscribe(result => {
-                  this.matchService.getGameForMatchByNumber(this.match.objectId, this.gameNumber).then(result => {
-                    var j = JSON.stringify(result);
-                    var game = JSON.parse(j);
-                    this.game.objectId = game[0].objectId;
-                    this.game.HomeScore = 0;
-                    this.game.OpponentScore = 0;
-                    this.game.subs = 0;
-                    this.game.gamenumber = this.gameNumber;
-                  })
-                })
-          }
-          
-          else {
-            this.game = game[0];
-            await this.matchService.getstats(this.game.objectId).then(data => {
-              var j = JSON.stringify(data);
-              var stats = JSON.parse(j);
-              stats.forEach(function (s) {
-                var rotation = JSON.parse(s.Rotation);
-                let stat = {
-                  statid: s.GameId,
-                  homescore: s.HomeScore,
-                  matchid: s.OpponentScore,
-                  gamenumber: _this.match.gameNumber,
-                  stattype: s.StatType,
-                  playerid: s.PlayerId,
-                  statdate: s.createdAt,
-                  //pos: Map<any,any>,
-                  id: s.objectId,
-                  opponentscore: s.OpponentScore,
-                  rotation: rotation,
-                  subs: s.Subs
-                }
-                _this.stats.push(stat); 
-              });
-      
-              if (this.stats && this.stats.length > 0) {
-                this.startMatch();
-                var r = this.stats[this.stats.length-1]
-                this.game.HomeScore = r.homescore;
-                this.game.OpponentScore = r.opponentscore;
-                this.game.subs = r.subs;
-                var pos = r.rotation
-                for (let i = 0; i < 6; i++) {
-                  var p1 = this.allPlayers.filter(p => p.objectId == pos[i].objectId)[0]
-                  this.playerPositions[i + 1].posNo = pos[i].posNo;
-                  this.playerPositions[i + 1].player = p1;
-                  this.playerPositions[i + 1].playerPos =
-                    p1.FirstName + " - " + p1.jersey;
-                  this.players = this.players.filter(x => x.objectId != p1.objectId)
-                }
-              }
-            });
-            this.game.gamenumber = this.match.gameNumber;
-            this.game.objectId = game[0].objectId;
-            this.game.subs = game[0].Subs;
-            }
-          })  
-        })
-    })
-  }
+ 
 
   rotate() {
     let positionsFilled = true;

@@ -15,9 +15,16 @@ export class NetworkService {
     this.currentStatus = this.currentNetworkSubject.asObservable();
   }
 
-  NetworkChange(e) {
-    this.currentNetworkSubject.next(e);
-
+  getlaststatus(): Boolean {
+    var item = localStorage.getItem('lastState')
+    if (item != null && item == 'true')
+    { return true } 
+    else { return false }
+   
   }
 
+  NetworkChange(e) {
+    localStorage.setItem('lastState', JSON.stringify(e))
+    this.currentNetworkSubject.next(e);
+  }
 }

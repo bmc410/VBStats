@@ -34,19 +34,21 @@ export class AuthenticationService {
     
     var u = localStorage.getItem('token');
     if (u != 'undefined' && u != null)
-    // {
+    {
     //   const myDate = new Date();
     //   var userToken = JSON.parse(localStorage.getItem('token'))
     //   const tokenDate = new Date(userToken.ttl)
       
     //   if (tokenDate > myDate) {
         this.currentUserSubject = new BehaviorSubject<any>(u);
+        this.loggedIn = true
     //   } else {
     //     this.currentUserSubject = new BehaviorSubject<any>(null);  
     //   }
-    // } 
+    } 
     else {
       this.currentUserSubject = new BehaviorSubject<any>(null);
+      this.loggedIn = false
     }
   }
 

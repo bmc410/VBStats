@@ -1,8 +1,8 @@
 import { Injectable, DoBootstrap } from '@angular/core';
 import Dexie from 'dexie';
-import { OfflineDatabase, IPlayers, IClubs, ITeamPlayers } from '../models/dexie-models';
+import { OfflineDatabase, IPlayers, IClubs, ITeamPlayers, ITeams, IMatches } from '../models/dexie-models';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { PlayerWithId, ClubWithId } from '../models/appModels';
+import { PlayerWithId, ClubWithId, TeamWithId, MatchWithId } from '../models/appModels';
 
 @Injectable({
   providedIn: 'root'
@@ -12,26 +12,71 @@ export class OfflineService {
   public Players: BehaviorSubject<IPlayers[]> = new BehaviorSubject<IPlayers[]>([]);
   public Clubs: BehaviorSubject<IPlayers[]> = new BehaviorSubject<IClubs[]>([]);
   public TeamPlayers: BehaviorSubject<ITeamPlayers[]> = new BehaviorSubject<ITeamPlayers[]>([]);
-
-
+  public Teams: BehaviorSubject<ITeams[]> = new BehaviorSubject<ITeams[]>([]);
+  public Matches: BehaviorSubject<IMatches[]> = new BehaviorSubject<IMatches[]>([]);
 
   db: OfflineDatabase;
   constructor() { 
     this.db = new OfflineDatabase();
   }
 
+  //#region 
+  createMatch(match: any) {
+    return this.db.matches.add(match).then(()=>{
+      this.loadMatches();
+    })
 
-    //******* Clubs  */
-    loadTeamPlayers() {
-      const cIds: ClubWithId[] = []
-      this.db.clubs.toArray().then (results => {
-      results.forEach(element => {
-        const c = new ClubWithId()
-        c.objectId = element.objectId,
-        c.ClubName = element.clubname
-        cIds.push(c)
-      });
-      this.Clubs.next(cIds);
+  }
+
+  deleteAllMatches() {
+    this.db.matches.clear()
+  }
+  
+  loadMatches() {
+    this.db.matches.toArray().then (results => {
+      this.Matches.next(results);
+    })
+  }
+
+  getMatches(): Observable<any> {
+    return this.Matches.asObservable();
+  }
+  //#endregion
+
+  //#region ******* Teams  */
+  bulkAddTeams(teams: ITeams[]) {
+    this.db.teams.clear().then(result => {
+    return this.db.teams.bulkAdd(teams).then(result => {
+        this.loadTeams();
+      })
+    })
+  }
+  loadTeams() {
+    const tIds: TeamWithId[] = []
+    this.db.teams.toArray().then (results => {
+      this.Teams.next(results)
+        // results.forEach(element => {
+        // const t = new TeamWithId()
+        // t.ClubId = element.clubid,
+        // t.TeamName = element.teamname,
+        // t.Year = element.year,
+        // t.objectId = element.objectId
+        // tIds.push(t)
+      //})
+    })
+    //this.Teams.next(tIds);
+  }
+
+  getTeams(): Observable<any> {
+    return this.Teams.asObservable();
+  }
+
+  //#endregion
+
+  //#region - Team Players
+  loadTeamPlayers() {
+      this.db.teamplayers.toArray().then (results => {
+        this.TeamPlayers.next(results);
       })
   }
 
@@ -42,12 +87,13 @@ export class OfflineService {
   bulkAddTeamPlayers(teamplayers: ITeamPlayers[]) {
     this.db.teamplayers.clear().then(result => {
     return this.db.teamplayers.bulkAdd(teamplayers).then(result => {
-        //this.loadTeamPlayers();
+        this.loadTeamPlayers();
       })
     })
   }
+  //#endregion
 
-  //******* Clubs  */
+  //#region - Clubs  */
   loadClubs() {
       const cIds: ClubWithId[] = []
       this.db.clubs.toArray().then (results => {
@@ -72,11 +118,9 @@ export class OfflineService {
         })
       })
   }
+  //#endregion
 
-
-
-
-  //******* Player  */
+  //#region ******* Players  */
   bulkAddPlayers(players: IPlayers[]) {
     return this.db.players.clear().then(result => {
       this.db.players.bulkAdd(players).then(()=>{
@@ -89,6 +133,12 @@ export class OfflineService {
     return this.db.players.add(player).then(()=>{
       this.loadPlayers();
     })
+  }
+
+  getPlayersByTeamId(teamId) {
+    return this.db.teamplayers.filter(function (tp) {
+      return tp.teamid === teamId
+    }).toArray()
   }
 
   getPlayers(): Observable<any> {
@@ -122,5 +172,6 @@ export class OfflineService {
       return this.loadPlayers();
     })
   }
+  //#endregion
 
 }

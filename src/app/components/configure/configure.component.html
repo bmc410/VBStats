@@ -35,8 +35,8 @@
         </ng-template>
         <ng-template pTemplate="body" let-team>
           <tr [pSelectableRow]="team">
-            <td>{{ team.TeamName }}</td>
-            <td>{{ getClubNameById(team.ClubId) }}</td>
+            <td>{{ team?.TeamName }}</td>
+            <td>{{ getClubNameById(team?.ClubId) }}</td>
           </tr>
         </ng-template>
         <ng-template pTemplate="summary" let-rowData>

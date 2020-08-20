@@ -18,12 +18,12 @@ export class OfflineDatabase extends Dexie {
         
         this.version(1).stores({
             players: 'objectId, firstname, lastname',
-            matches: 'objectId, home, hometeamid, opponent, matchdate',
+            matches: 'objectId, Home, HomeTeamId, Opponent, MatchDate',
             games: 'objectId, gamenumber, matchid, opponent, matchdate',
             playbyplay: 'objectId, action, playerid, homescore, opponentscore, stattype, rotation, gameid',
             stats: 'objectId, subs, playerid, homescore, opponentscore, stattype, rotation, gameid',
             teamplayers: 'objectId, playerid, teamid, jersey, clubyear',
-            teams: 'objectId, teamname, year, clubid',
+            teams: 'objectId, TeamName, Year, ClubId',
             clubs: 'objectId, clubname'
         });
 
@@ -42,9 +42,9 @@ export class OfflineDatabase extends Dexie {
 
 export interface ITeams {
     objectId?: string;
-    teamname?: string;
-    year?: number;
-    clubid?: string;
+    TeamName?: string;
+    Year?: number;
+    ClubId?: string;
 }
 
 export interface ITeamPlayers {
@@ -99,10 +99,10 @@ export interface IPlayers {
 
 export interface IMatches {
     objectId?: string;
-    home?: string;
-    hometeamid?: string
-    opponent?: string;
-    matchdate?: string;
+    Home?: string;
+    HomeTeamid?: string
+    Opponent?: string;
+    MatchDate?: string;
 }
 
 

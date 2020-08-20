@@ -4,6 +4,7 @@
     <div style="min-height: 30px;  padding-left: 10px;" class="mdl-layout__header-row">
       <!-- Title -->
       <span style="font-family: Digital; font-size: 2.5vw; color: white;" class="d-sm-block title">CourtSide Communicator</span>
+      <span style="font-family: Digital; font-size: 2.5vw; color: firebrick; margin-left: 1em;" class="d-sm-block title" *ngIf="offline == true">- Offline Mode</span>
       <!-- Add spacer, to align navigation to the right -->
       <div class="mdl-layout-spacer"></div>
       <!-- Navigation. We hide it in small screens. -->

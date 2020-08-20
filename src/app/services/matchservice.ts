@@ -223,7 +223,7 @@ export class MatchService  {
   getTeams() {
     const Teams = Parse.Object.extend('Teams');
     const query = new Parse.Query(Teams);
-    return from(query.find()).pipe(map(result => result));
+    return query.find();
   }
 
   updateMatch(m: MatchWithId) {

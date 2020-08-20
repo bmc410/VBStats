@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { NetworkService } from 'src/app/services/network.service';
 
 @Component({
   selector: 'app-nav',
@@ -13,12 +14,22 @@ export class NavComponent implements OnInit {
   homescore = 0;
   opponentscore = 0;
   currentUser: any;
+  offline: boolean;
+
   constructor( private router: Router,
+    private networkService: NetworkService,
     private authenticationService: AuthenticationService) { 
-      this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+      
     }
 
   ngOnInit() {
+    let _this = this
+    this.networkService.currentStatus.subscribe(result => {
+      _this.offline = result
+    })
+    this.authenticationService.currentUser.subscribe(x => {
+        _this.currentUser = x
+    })
   }
 
   logout() {

@@ -27,9 +27,10 @@ export class LoginComponent implements OnInit {
       private _ngZone: NgZone
   ) {
       // redirect to home if already logged in
-      if (this.authenticationService.currentUserValue) { 
-          this.router.navigate(['/']);
-      }
+      this.authenticationService.logout();
+    //   if (this.authenticationService.currentUserValue) { 
+    //       this.router.navigate(['']);
+    //   }
   }
 
   NetworkChange(e) {
@@ -39,9 +40,17 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
       this.loginForm = this.formBuilder.group({
           username: ['', Validators.required],
-          password: ['', Validators.required]
+          password: ['', Validators.required],
+          isChecked: false
       });
 
+      this.networkService.currentStatus.subscribe(result => {
+        this.checked = result
+        this.loginForm.patchValue({
+            isChecked: result
+          });
+      })
+      
       // get return url from route parameters or default to '/'
       this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }

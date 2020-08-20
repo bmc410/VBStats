@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from './services/authentication.service';
 import { NetworkService } from './services/network.service';
 import { OfflineService } from './services/offline.service';
-import { IPlayers, IClubs, ITeamPlayers } from './models/dexie-models';
+import { IPlayers, IClubs, ITeamPlayers, ITeams } from './models/dexie-models';
 import { Guid } from "guid-typescript";
 import { MatchService } from './services/matchservice';
 import { Club } from './models/appModels';
@@ -36,18 +36,26 @@ export class AppComponent {
     private offlineService: OfflineService,
     private matchService: MatchService
   ) {
+
+    var status = this.networkService.getlaststatus();
+    if(status == true) {
+      this.networkService.NetworkChange(status)
+    }
     this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
     this.networkService.currentStatus.subscribe(x => this.offline = x);
     this.networkService.currentStatus.subscribe(result => {
       if (result == true) {
+        //this.offlineService.deleteAllMatches()
+        this.offlineService.loadMatches()
         this.getOnlineClubs()
         this.getTeamPlayers()
+        this.getTeams()
         this.deletePlayers().then(result => {
           this.getOnlinePlayers()
         })
         
       } else {
-        this.deletePlayers()
+        //this.deletePlayers()
       }
       this.offline = result
     })
@@ -56,7 +64,24 @@ export class AppComponent {
     })
   }
 
-  
+  async getTeams() {
+    const teams: ITeams[] = []
+    await this.matchService.getTeams().then(async results => {
+      var j = JSON.stringify(results);
+      var onlineT = JSON.parse(j);
+      onlineT.forEach(element => {
+        const t: ITeams = {}
+        t.objectId = element.objectId,
+        t.ClubId = element.ClubId,
+        t.TeamName = element.TeamName,
+        t.Year = element.Year
+        teams.push(t)
+      });
+      await this.offlineService.bulkAddTeams(teams)
+      //this.addPlayer()
+    })
+  }
+
   async getOnlineClubs() {
     const clubs: IClubs[] = []
     await this.matchService.getClubs().then(async results => {
@@ -85,13 +110,13 @@ export class AppComponent {
         tp.playerid = element.PlayerId,
         tp.jersey = element.Jersey,
         tp.clubyear = element.ClubYear
+        teamplayers.push(tp)
       });
-      await this.offlineService.bulkAddTeamPlayers(onlineTP)
+      await this.offlineService.bulkAddTeamPlayers(teamplayers)
       //this.addPlayer()
     })
   }
   
-
   async getOnlinePlayers() {
     const players: IPlayers[] = []
     await this.matchService.getPlayers().then(async results => {

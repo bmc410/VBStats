@@ -17,9 +17,11 @@
     <div style="opacity: .8;" *ngIf="error" class="alert alert-danger">{{error}}</div>
     <div class="form-group">
         <button [disabled]="loading" type="submit" class="btn btn-primary btn-block btn-large">Let me in.</button>
-        <mat-slide-toggle (change)="NetworkChange($event)" style="margin: 10px; color: darkred; font: 1.5em sans-serif; width: 100%;" >
-        Use offline
-    </mat-slide-toggle>
+    </div>
+    <div class="d-flex justify-content-center">
+        <mat-slide-toggle formControlName="isChecked" (change)="NetworkChange($event)" style="margin: 0 auto; color: firebrick; font: 1.5em sans-serif" >
+            Use offline
+        </mat-slide-toggle>
     </div>
 
     

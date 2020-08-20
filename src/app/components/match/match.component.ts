@@ -1,5 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-import { Car } from "src/app/models/cars";
 import {
   CourtPosition,
   Match,
@@ -30,7 +29,6 @@ import { Parse } from 'parse';
   styleUrls: ["./match.component.css"]
 })
 export class MatchComponent implements OnInit {
-  availableCars: Car[];
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
   players: PlayerWithId[] = [];
@@ -391,17 +389,6 @@ export class MatchComponent implements OnInit {
       event.previousIndex,
       event.currentIndex
     );
-  }
-
-  findIndex(player: PlayerWithId) {
-    let index = -1;
-    for (let i = 0; i < this.availableCars.length; i++) {
-      if (player.objectId === this.availableCars[i].vin) {
-        index = i;
-        break;
-      }
-    }
-    return index;
   }
 
   createMatch() {

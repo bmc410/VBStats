@@ -1,5 +1,4 @@
 import { Component, OnInit, NgZone } from "@angular/core";
-import { Car } from "src/app/models/cars";
 import {
   CourtPosition,
   Match,
@@ -21,6 +20,8 @@ import { Router } from "@angular/router";
 import { ConnectionService } from "ng-connection-service";
 import {FormControl} from '@angular/forms';
 import { Parse } from 'parse';
+import { NetworkService } from 'src/app/services/network.service';
+import { OfflineService } from 'src/app/services/offline.service';
 
 @Component({
   selector: "app-configure",
@@ -28,7 +29,6 @@ import { Parse } from 'parse';
   styleUrls: ["./configure.component.css"]
 })
 export class ConfigureComponent implements OnInit {
-  availableCars: Car[];
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
   players: PlayerWithId[] = [];
@@ -91,14 +91,20 @@ export class ConfigureComponent implements OnInit {
   gameDate = new FormControl(new Date());
   teamYears: Number[] = [];
   selectedTeamYear: Number;
+  offline: any;
 
   constructor(
     private matchService: MatchService,
     private router: Router,
     private connectionService: ConnectionService,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    private networkService: NetworkService,
+    private offlineservice: OfflineService
   ) {
     this.playerPositions = [];
+    this.networkService.currentStatus.subscribe(result => {
+      this.offline = result
+    })
   }
 
   showDialog() {
@@ -283,6 +289,7 @@ export class ConfigureComponent implements OnInit {
 
   async ngOnInit() {
 
+    var _this = this
     let year = new Date().getFullYear();
     this.teamYears.push(year);
     for (let index = 1; index < 5; index++) {
@@ -295,59 +302,85 @@ export class ConfigureComponent implements OnInit {
       this.teams = JSON.parse(json);
     });
 
-    this.matchService.getClubs().subscribe(data => {
-      var json = JSON.stringify(data);
-      this.clubs = JSON.parse(json);
-    });
-
-   /*  Parse.serverURL = 'https://parseapi.back4app.com'; // This is your Server URL
-    Parse.initialize(
-      '6jtb78oSAiGeNv2mcJTN0h039TxkJh4HDrWBz7RT', // This is your Application ID
-      'bRolkvWkFSewPWnlqQOaaRTpgT16ILr6r7PnU6AY', // This is your Javascript key
-      'dHvEstEM97ue9pBcTcW8ofNyqS2ERqT7kg4CnYhX' // This is your Master key (never use it in the frontend)
-    );
-    const Matches = Parse.Object.extend('Matches');
-    const query = new Parse.Query(Matches);
-    var ma;
-    return query.find().then((results) => {
-      var json = JSON.stringify(results);
-      //ma = JSON.parse(json);
-      //console.log('Matches found', obj);
-      this.matches = JSON.parse(json);
-    }); */
-
+    if (this.offline == true) {
+      await this.offlineservice.getClubs().subscribe(results => {
+        this.clubs = results;
+      });
+    } else {
+      this.matchService.getClubs().subscribe(data => {
+        var json = JSON.stringify(data);
+        this.clubs = JSON.parse(json);
+      });
+    }
 
     await this.matchService.getMatches().then(result => {
       var json = JSON.stringify(result);
       this.matches = JSON.parse(json);
     });
  
-    await this.matchService.getPlayers().then(data => {
-      var json = JSON.stringify(data);
-      var d = JSON.parse(json);
-      this.selectedPlayers = d
+    if (this.offline == true) {
+      await this.offlineservice.getPlayers().subscribe(results => {
+        results.forEach(element => {
+          const p: PlayerWithId = {}
+          p.FirstName = element.FirstName,
+          p.LastName = element.LastName,
+          p.objectId = element.objectId,
+          p.islibero = false,
+          p.fullName = element.FirstName + ' ' + element.LastName
+          _this.players.push(p);
+        })
 
-      this.selectedPlayers = this.selectedPlayers.sort((t1, t2) => {
-        const name1 = t1.LastName.toLowerCase();
-        const name2 = t2.LastName.toLowerCase();
-        if (name1 > name2) { return 1; }
-        if (name1 < name2) { return -1; }
-        return 0;
+          _this.selectedPlayers = _this.players.slice()  
+          _this.selectedPlayers = _this.selectedPlayers.sort((t1, t2) => {
+            const name1 = t1.LastName.toLowerCase();
+            const name2 = t2.LastName.toLowerCase();
+            if (name1 > name2) { return 1; }
+            if (name1 < name2) { return -1; }
+            return 0;
+          });
+
+          this.players = this.selectedPlayers;
+          this.availablePlayers = this.selectedPlayers;
+          // this.players = data.map(e => {
+          //   return {
+          //     id: e.payload.doc.id,
+          //     ...e.payload.doc.data() as {}
+          //   } as PlayerWithId;
+          // })
+          for (let index = 0; index < this.players.length; index++) {
+            const element = this.players[index];
+            this.players[index].fullName = this.players[index].FirstName + " " + this.players[index].LastName
+          }
+      })
+    }
+    else {
+      await this.matchService.getPlayers().then(data => {
+        var json = JSON.stringify(data);
+        var d = JSON.parse(json);
+        this.selectedPlayers = d
+  
+        this.selectedPlayers = this.selectedPlayers.sort((t1, t2) => {
+          const name1 = t1.LastName.toLowerCase();
+          const name2 = t2.LastName.toLowerCase();
+          if (name1 > name2) { return 1; }
+          if (name1 < name2) { return -1; }
+          return 0;
+        });
+  
+        this.players = this.selectedPlayers;
+        this.availablePlayers = this.selectedPlayers;
+        // this.players = data.map(e => {
+        //   return {
+        //     id: e.payload.doc.id,
+        //     ...e.payload.doc.data() as {}
+        //   } as PlayerWithId;
+        // })
+        for (let index = 0; index < this.players.length; index++) {
+          const element = this.players[index];
+          this.players[index].fullName = this.players[index].FirstName + " " + this.players[index].LastName
+        }
       });
-
-      this.players = this.selectedPlayers;
-      this.availablePlayers = this.selectedPlayers;
-      // this.players = data.map(e => {
-      //   return {
-      //     id: e.payload.doc.id,
-      //     ...e.payload.doc.data() as {}
-      //   } as PlayerWithId;
-      // })
-      for (let index = 0; index < this.players.length; index++) {
-        const element = this.players[index];
-        this.players[index].fullName = this.players[index].FirstName + " " + this.players[index].LastName
-      }
-    });
+    }
   }
 
   SavePlayer() {

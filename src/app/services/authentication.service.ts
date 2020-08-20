@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Parse } from 'parse';
 import { userToken } from '../models/appModels';
+import { NetworkService } from './network.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,13 @@ export class AuthenticationService {
   public currentUser: Observable<any>;
   token: userToken = null;
   loggedIn: boolean = false;
+  offline: boolean = false;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+    private networkService: NetworkService) {
+    this.networkService.currentStatus.subscribe(result => {
+      this.offline = result
+    })
     this.getCurrentUser();
     this.currentUser = this.currentUserSubject.asObservable();
     this.initParse()
@@ -60,6 +66,16 @@ export class AuthenticationService {
 
 
   login(username, password) {
+    if (this.offline == true) {
+      var promise = new Promise((resolve, reject) => {
+      
+      });
+      this.loggedIn = true;
+      localStorage.setItem('token', JSON.stringify(username));
+      this.currentUserSubject.next(username);
+      return Promise.resolve(username)
+      //return username
+    }
     const Users = Parse.Object.extend('Users');
     const query = new Parse.Query(Users);
     query.equalTo("Username", username);

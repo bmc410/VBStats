@@ -26,6 +26,7 @@ import {ToolbarModule} from 'primeng/toolbar';
 import { RouterModule, Routes } from '@angular/router';
 import { Parse } from "parse";
 
+
 // import {MatDatepickerModule} from '@angular/material/datepicker';
 // import {MatNativeDateModule} from '@angular/material/core';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -70,6 +71,7 @@ import { LoginComponent } from './components/login/login.component';
 import { AuthenticationService } from './services/authentication.service';
 import { AuthGuard } from './auth-guard';
 import { NetworkService } from './services/network.service';
+import { OfflineService } from './services/offline.service';
 
 
 @NgModule({
@@ -134,7 +136,7 @@ import { NetworkService } from './services/network.service';
     AngularFirestoreModule.enablePersistence(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
-  providers: [MatchService,AngularFirestore, MessageService, AppStateService,AuthenticationService, AuthGuard,NetworkService],
+  providers: [MatchService, OfflineService, AngularFirestore, MessageService, AppStateService,AuthenticationService, AuthGuard,NetworkService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

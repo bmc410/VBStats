@@ -33,6 +33,7 @@ import "firebase/firestore";
 import { MessageService } from 'primeng/api';
 import { Action } from 'rxjs/internal/scheduler/Action';
 import { Parse } from 'parse';
+import { OfflineService } from './offline.service';
 //import { url } from 'inspector';
 
 
@@ -101,7 +102,7 @@ export class MatchService  {
   getClubs() {
     const Clubs = Parse.Object.extend('Clubs');
     const query = new Parse.Query(Clubs);
-    return from(query.find()).pipe(map(result => result));
+    return query.find();
   }
 
   getMatchById(id: string) {

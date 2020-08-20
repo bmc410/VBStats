@@ -1,8 +1,8 @@
 import { Injectable, DoBootstrap } from '@angular/core';
 import Dexie from 'dexie';
-import { OfflineDatabase, IPlayers, IClubs, ITeamPlayers, ITeams, IMatches } from '../models/dexie-models';
+import { OfflineDatabase, IPlayers, IClubs, ITeamPlayers, ITeams, IMatches, IGames, IStats } from '../models/dexie-models';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
-import { PlayerWithId, ClubWithId, TeamWithId, MatchWithId } from '../models/appModels';
+import { PlayerWithId, ClubWithId, TeamWithId, MatchWithId, GameWithId } from '../models/appModels';
 
 @Injectable({
   providedIn: 'root'
@@ -14,13 +14,41 @@ export class OfflineService {
   public TeamPlayers: BehaviorSubject<ITeamPlayers[]> = new BehaviorSubject<ITeamPlayers[]>([]);
   public Teams: BehaviorSubject<ITeams[]> = new BehaviorSubject<ITeams[]>([]);
   public Matches: BehaviorSubject<IMatches[]> = new BehaviorSubject<IMatches[]>([]);
+  public Games: BehaviorSubject<IGames[]> = new BehaviorSubject<IGames[]>([]);
+  public Stats: BehaviorSubject<IStats[]> = new BehaviorSubject<IStats[]>([]);
+  
 
   db: OfflineDatabase;
   constructor() { 
     this.db = new OfflineDatabase();
   }
 
-  //#region 
+  //#region ******* Stats  */
+
+  //#endregion
+
+  //#region ******* Games  */
+  getGameForMatchByNumber(matchId: string, gameNumber: number) {
+    return this.db.games.filter(function (g) {
+      return g.GameNumber === gameNumber 
+        && g.MatchId === matchId 
+    }).toArray()
+  }
+
+  createGame(g: IGames) {
+    return this.db.games.add(g).then(()=>{
+      this.loadGames();
+    })
+  }
+  loadGames() {
+    this.db.games.toArray().then (results => {
+      this.Games.next(results);
+    })
+  }
+
+  //#endregion
+
+  //#region ******* Matches  */
   createMatch(match: any) {
     return this.db.matches.add(match).then(()=>{
       this.loadMatches();

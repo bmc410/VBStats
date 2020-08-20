@@ -24,6 +24,8 @@ import { catchError, switchMap } from 'rxjs/operators';
 import { Parse } from 'parse';
 import { NetworkService } from 'src/app/services/network.service';
 import { OfflineService } from 'src/app/services/offline.service';
+import { IGames } from 'src/app/models/dexie-models';
+import { Guid } from 'guid-typescript';
 
 @Component({
   selector: "app-match",
@@ -60,6 +62,7 @@ export class MatchComponent implements OnInit {
   mobile = false;
   startHidden = false;
   offline: boolean;
+  c: IGames
   //currentGame: <Observable> GameWithId();
   //let currentGame = this.matchService.getGameByNumber(this.gameNumber, this.match.matchid);
 
@@ -108,13 +111,91 @@ export class MatchComponent implements OnInit {
     if(this.offline == true) {
       this.offlineservice.getPlayers().subscribe(async result => {
         var allplayers = result
-        await this.offlineservice.getPlayersByTeamId(this.match.HomeTeamId).then(result => {
+        await this.offlineservice.getPlayersByTeamId(this.match.HomeTeamId).then(async result => {
           var teamplayers =  result
           teamplayers.forEach(p => {
             var player = allplayers.filter(x => x.objectId == p.playerid)[0]
             player.jersey = teamplayers.filter(x => x.playerid == player.objectId)[0].jersey
             this.players.push(player);
           });
+          this.allPlayers = this.players.slice();
+          
+          await this.offlineservice.getGameForMatchByNumber(this.match.objectId, this.match.gameNumber)
+            .then(async game => {
+              console.log(game)
+              if (game.length == 0) {
+                const g = {} as IGames
+                g.GameNumber = this.gameNumber
+                g.MatchId = this.match.objectId
+                g.OpponentScore = 0
+                g.HomeScore = 0
+                g.Subs = 0
+                g.objectId = Guid.create().toString()
+                this.offlineservice.createGame(g).then(result => {
+                  this.offlineservice.getGameForMatchByNumber(this.match.objectId, this.gameNumber).then(result => {
+                    this.game.objectId = result[0].objectId
+                    this.game.HomeScore = 0;
+                    this.game.OpponentScore = 0;
+                    this.game.subs = 0;
+                    this.game.gamenumber = this.gameNumber;
+                  })
+                })
+              }
+              else {
+                this.game = new GameWithId()
+                this.game.HomeScore = game[0].HomeScore
+                this.game.objectId = game[0].objectId
+                this.game.matchid = game[0].MatchId
+                this.game.OpponentScore = game[0].OpponentScore
+                this.game.subs = game[0].Subs
+                
+                await this.matchService.getstats(this.game.objectId).then(data => {
+                  var j = JSON.stringify(data);
+                  var stats = JSON.parse(j);
+                  stats.forEach(function (s) {
+                    var rotation = JSON.parse(s.Rotation);
+                    let stat = {
+                      statid: s.GameId,
+                      homescore: s.HomeScore,
+                      matchid: s.OpponentScore,
+                      gamenumber: _this.match.gameNumber,
+                      stattype: s.StatType,
+                      playerid: s.PlayerId,
+                      statdate: s.createdAt,
+                      //pos: Map<any,any>,
+                      id: s.objectId,
+                      opponentscore: s.OpponentScore,
+                      rotation: rotation,
+                      subs: s.Subs
+                    }
+                    _this.stats.push(stat); 
+                  });
+          
+                  if (this.stats && this.stats.length > 0) {
+                    this.startMatch();
+                    var r = this.stats[this.stats.length-1]
+                    this.game.HomeScore = r.homescore;
+                    this.game.OpponentScore = r.opponentscore;
+                    this.game.subs = r.subs;
+                    var pos = r.rotation
+                    for (let i = 0; i < 6; i++) {
+                      var p1 = this.allPlayers.filter(p => p.objectId == pos[i].objectId)[0]
+                      this.playerPositions[i + 1].posNo = pos[i].posNo;
+                      this.playerPositions[i + 1].player = p1;
+                      this.playerPositions[i + 1].playerPos =
+                        p1.FirstName + " - " + p1.jersey;
+                      this.players = this.players.filter(x => x.objectId != p1.objectId)
+                    }
+                  }
+                });
+                this.game.gamenumber = this.match.gameNumber;
+                this.game.objectId = game[0].objectId;
+                this.game.subs = game[0].Subs;
+
+
+                
+              }
+            })
         })
       })
     } else {

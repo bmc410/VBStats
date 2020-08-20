@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from './services/authentication.service';
 import { NetworkService } from './services/network.service';
 import { OfflineService } from './services/offline.service';
-import { IPlayers, IClubs } from './models/dexie-models';
+import { IPlayers, IClubs, ITeamPlayers } from './models/dexie-models';
 import { Guid } from "guid-typescript";
 import { MatchService } from './services/matchservice';
 import { Club } from './models/appModels';
@@ -41,6 +41,7 @@ export class AppComponent {
     this.networkService.currentStatus.subscribe(result => {
       if (result == true) {
         this.getOnlineClubs()
+        this.getTeamPlayers()
         this.deletePlayers().then(result => {
           this.getOnlinePlayers()
         })
@@ -55,6 +56,7 @@ export class AppComponent {
     })
   }
 
+  
   async getOnlineClubs() {
     const clubs: IClubs[] = []
     await this.matchService.getClubs().then(async results => {
@@ -67,6 +69,24 @@ export class AppComponent {
         clubs.push(club)
       });
       await this.offlineService.bulkAddClubs(clubs)
+      //this.addPlayer()
+    })
+  }
+
+  async getTeamPlayers() {
+    const teamplayers: ITeamPlayers[] = []
+    await this.matchService.getAllTeamPlayers().then(async results => {
+      var j = JSON.stringify(results);
+      var onlineTP = JSON.parse(j);
+      onlineTP.forEach(element => {
+        const tp: ITeamPlayers = {}
+        tp.objectId = element.objectId,
+        tp.teamid = element.TeamId,
+        tp.playerid = element.PlayerId,
+        tp.jersey = element.Jersey,
+        tp.clubyear = element.ClubYear
+      });
+      await this.offlineService.bulkAddTeamPlayers(onlineTP)
       //this.addPlayer()
     })
   }

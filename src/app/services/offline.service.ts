@@ -1,6 +1,6 @@
 import { Injectable, DoBootstrap } from '@angular/core';
 import Dexie from 'dexie';
-import { OfflineDatabase, IPlayers, IClubs } from '../models/dexie-models';
+import { OfflineDatabase, IPlayers, IClubs, ITeamPlayers } from '../models/dexie-models';
 import { Subject, Observable, BehaviorSubject } from 'rxjs';
 import { PlayerWithId, ClubWithId } from '../models/appModels';
 
@@ -11,12 +11,40 @@ export class OfflineService {
   //private subPlayers = new BehaviorSubject<IPlayers[]>();
   public Players: BehaviorSubject<IPlayers[]> = new BehaviorSubject<IPlayers[]>([]);
   public Clubs: BehaviorSubject<IPlayers[]> = new BehaviorSubject<IClubs[]>([]);
+  public TeamPlayers: BehaviorSubject<ITeamPlayers[]> = new BehaviorSubject<ITeamPlayers[]>([]);
 
 
 
   db: OfflineDatabase;
   constructor() { 
     this.db = new OfflineDatabase();
+  }
+
+
+    //******* Clubs  */
+    loadTeamPlayers() {
+      const cIds: ClubWithId[] = []
+      this.db.clubs.toArray().then (results => {
+      results.forEach(element => {
+        const c = new ClubWithId()
+        c.objectId = element.objectId,
+        c.ClubName = element.clubname
+        cIds.push(c)
+      });
+      this.Clubs.next(cIds);
+      })
+  }
+
+  getTeamPlayers(): Observable<any> {
+    return this.TeamPlayers.asObservable();
+  }
+
+  bulkAddTeamPlayers(teamplayers: ITeamPlayers[]) {
+    this.db.teamplayers.clear().then(result => {
+    return this.db.teamplayers.bulkAdd(teamplayers).then(result => {
+        //this.loadTeamPlayers();
+      })
+    })
   }
 
   //******* Clubs  */
@@ -38,8 +66,10 @@ export class OfflineService {
   }
 
   bulkAddClubs(clubs: IClubs[]) {
-    return this.db.clubs.bulkAdd(clubs).then(result => {
-        this.loadClubs();
+    this.db.clubs.clear().then(result => {
+      return this.db.clubs.bulkAdd(clubs).then(result => {
+          this.loadClubs();
+        })
       })
   }
 
@@ -48,8 +78,10 @@ export class OfflineService {
 
   //******* Player  */
   bulkAddPlayers(players: IPlayers[]) {
-    return this.db.players.bulkAdd(players).then(()=>{
-      this.loadPlayers();
+    return this.db.players.clear().then(result => {
+      this.db.players.bulkAdd(players).then(()=>{
+        this.loadPlayers();
+      })
     })
   }
 

@@ -170,6 +170,12 @@ export class MatchService  {
     
   }
 
+  getAllTeamPlayers(){
+    const Teams = Parse.Object.extend('TeamPlayers')
+    const query = new Parse.Query(Teams);
+    return query.find();
+  }
+
   getPlayersById(teamId: string){
     const Teams = Parse.Object.extend('Players')
     const query = new Parse.Query(Teams);

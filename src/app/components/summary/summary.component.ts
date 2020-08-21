@@ -17,6 +17,8 @@ import { CalendarModule } from "primeng/calendar";
 import { MenuItem } from "primeng/api/menuitem";
 import { Router, ActivatedRoute } from "@angular/router";
 import { MatTableDataSource } from '@angular/material/table';
+import { NetworkService } from 'src/app/services/network.service';
+import { OfflineService } from 'src/app/services/offline.service';
 interface Food {
   value: string;
   viewValue: string;
@@ -52,15 +54,21 @@ export class SummaryComponent implements OnInit {
   games: number[] = [1, 2, 3, 4, 5];
   game = 1;
   displayedColumns: string[] = ['home', 'opponent'];
-
+  offline: any;
 
   playerRotation: any[] = [];
 
   selectedgame = 1;
   constructor(
     public route: ActivatedRoute,
-    private matchService: MatchService
-  ) {}
+    private matchService: MatchService,
+    private networkService: NetworkService,
+    private offlineservice: OfflineService
+  ) {
+    this.networkService.currentStatus.subscribe(result => {
+      this.offline = result
+    })
+  }
 
   matches: any[] = [];
 
@@ -70,116 +78,54 @@ export class SummaryComponent implements OnInit {
       this.selectedgame = this.match.gameNumber;
     }
 
-    this.matchService.getPlayers().subscribe(result => {
-      var json = JSON.stringify(result);
-      this.allPlayers = JSON.parse(json)
-      this.matchService.getMatchById(this.match.objectId).then(result => {
+    if (this.offline == false) {
+      this.matchService.getPlayers().then(result => {
         var json = JSON.stringify(result);
-        var g = JSON.parse(json);
-        this.matchService.getPlayersByTeamId(g[0].HomeTeamId).then(result => {
+        this.allPlayers = JSON.parse(json)
+        this.matchService.getMatchById(this.match.objectId).then(result => {
           var json = JSON.stringify(result);
           var g = JSON.parse(json);
-          g.forEach(p => {
-            this.players.push(this.allPlayers.filter(x => x.objectId == p.PlayerId)[0])
-          });
-          this.matchService.getstats(this.match.gameId).then(result => {
+          this.matchService.getPlayersByTeamId(g[0].HomeTeamId).then(result => {
             var json = JSON.stringify(result);
-            this.stats = JSON.parse(json);
-            this.matchService.getPlayByPlay(this.match.gameId).then(result => {
+            var g = JSON.parse(json);
+            g.forEach(p => {
+              this.players.push(this.allPlayers.filter(x => x.objectId == p.PlayerId)[0])
+            });
+            this.matchService.getstats(this.match.gameId).then(result => {
               var json = JSON.stringify(result);
-              this.playbyplay= JSON.parse(json);
+              this.stats = JSON.parse(json);
+              this.matchService.getPlayByPlay(this.match.gameId).then(result => {
+                var json = JSON.stringify(result);
+                this.playbyplay= JSON.parse(json);
+              })
+              this.setupStatView();
+              this.showData();
             })
-            this.setupStatView();
-            this.showData();
           })
         })
       })
-    })
-
-   
-
-   
-
-    
-
-    // this.matchService.getGames().subscribe(data => {
-    //   this.gamesPlayed = data.map(e => {
-    //     return {
-    //       id: e.payload.doc.id,
-    //       ...(e.payload.doc.data() as {})
-    //     } as GameWithId;
-    //   });
-    //   this.selectedGame = this.gamesPlayed.find(
-    //     game =>
-    //       game.gamenumber === this.match.gameNumber &&
-    //       game.matchid === this.match.id
-    //   );
-
-    //   if (!this.selectedGame)
-    //     return
-
-    //   this.matchService.getstats(this.selectedGame).subscribe(data => {
-    //     this.allstats = data.map(e => {
-    //       return {
-    //         id: e.payload.doc.id,
-    //         ...(e.payload.doc.data() as {})
-    //       } as any;
-    //     });
-    //     this.stats = this.allstats.filter(x => x.matchid == this.match.id);
-    //     this.stats = this.stats.filter(x => x.gamenumber == this.selectedgame);
-
-    //     this.matchService.getPlayers().subscribe(data => {
-    //       this.players = data.map(e => {
-    //         return {
-    //           id: e.payload.doc.id,
-    //           ...(e.payload.doc.data() as {})
-    //         } as PlayerWithId;
-    //       });
-    //       this.setupStatView();
-    //       this.showData()
-    //       this.teamtotals.push(this.teamtotal)
-    //       this.showRotationalData();
-
-
-
-    //       this.matchService.getPlayByPlay(this.selectedGame).subscribe(data => {
-    //         this.playbyplay = data.map(e => {
-    //           return {
-    //             id: e.payload.doc.id,
-    //             ...(e.payload.doc.data() as {})
-    //           } as any;
-    //         });
-    //         console.log(this.playbyplay)
-    //       })
-
-    //       var statIndex = 0;
-    //       for (let index = 0; index < this.stats.length; index++) {
-    //         var pArray = [];
-    //         for (let rotationIndex = 1; rotationIndex < 7; rotationIndex++) {
-    //           pArray.push(this.stats[index].rotation[rotationIndex]);
-    //         }
-    //         if (statIndex == 0) {
-    //           this.playerRotation.push(pArray);
-    //         } else {
-    //           var found = false;
-    //           this.playerRotation.forEach(element => {
-    //             if (element[0] === pArray[0] && element[1] === pArray[1]
-    //               && element[2] === pArray[2] && element[3] === pArray[3]
-    //               && element[4] === pArray[4] && element[5] === pArray[5]
-    //               && element[6] === pArray[6]) {
-    //                 found = true
-    //               }
-    //           });
-    //           if(!found) {
-    //             this.playerRotation.push(pArray);
-    //           }
-    //         }
-    //         statIndex += 1;
-    //       }
-    //       console.log(this.playerRotation);
-    //     });
-    //   });
-    // });
+    }
+    else {
+      this.offlineservice.getPlayers().subscribe(result => {
+        this.allPlayers = result
+        this.offlineservice.getMatchById(this.match.objectId).then(result => {
+          var g = result
+          this.offlineservice.getPlayersByTeamId(g[0].HomeTeamId).then(result => {
+            result.forEach(p => {
+              this.players.push(this.allPlayers.filter(x => x.objectId == p.playerid)[0])
+            });
+            this.offlineservice.getstats(this.match.gameId).then(result => {
+              this.stats = result
+              this.offlineservice.getPlayByPlayById(this.match.gameId).then(result => {
+                this.playbyplay= result
+                this.setupStatView();
+                this.showData();
+              })
+            })
+          })
+        })
+      })
+    }
   }
 
   compare(arr1, arr2) {

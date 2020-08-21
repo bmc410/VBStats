@@ -20,8 +20,8 @@ export class OfflineDatabase extends Dexie {
             players: 'objectId, FirstName, LastName',
             matches: 'objectId, Home, HomeTeamId, Opponent, MatchDate',
             games: 'objectId, GameNumber, MatchId, HomeScore, OpponentScore, MatchDate, Subs',
-            playbyplay: 'objectId, Action, PlayerId, HomeScore, OpponentScore, StatType, Rotation, GameId',
-            stats: 'objectId, Subs, PlayerId, HomeScore, OpponentScore, StatType, Rotation, GameId,StatDate',
+            playbyplay: '++id, objectId, Action, PlayerId, HomeScore, OpponentScore, StatType, Rotation, GameId',
+            stats: 'objectId, Subs, PlayerId, HomeScore, OpponentScore, StatType, Rotation, GameId, StatDate',
             teamplayers: 'objectId, PlayerId, TeamId, Jersey, ClubYear',
             teams: 'objectId, TeamName, Year, ClubId',
             clubs: 'objectId, ClubName'
@@ -66,6 +66,7 @@ export interface IStats {
 }
 
 export interface IPlayByPlay {
+    id?: number;
     objectId?: string;
     Action?: string;
     PlayerId?: string;
@@ -73,7 +74,7 @@ export interface IPlayByPlay {
     OpponentScore?: number;
     StatType?: string;
     Rotation?: string;
-    GameId?: string;
+    gameid?: string;
 }
 
 export interface IGames {
@@ -99,7 +100,7 @@ export interface IPlayers {
 export interface IMatches {
     objectId?: string;
     Home?: string;
-    HomeTeamid?: string
+    HomeTeamId?: string
     Opponent?: string;
     MatchDate?: string;
 }

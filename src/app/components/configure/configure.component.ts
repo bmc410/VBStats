@@ -361,17 +361,31 @@ export class ConfigureComponent implements OnInit {
 
     this.matchDialogDisplay = false;
     let gm = new gameMatch();
-    this.matchService.getGameId(this.game, this.match.objectId).then(result => {
-      var json = JSON.stringify(result);
-      var g = JSON.parse(json);
-      gm.gameNumber = this.game;
-      gm.Home = this.match.Home;
-      gm.MatchDate = this.match.MatchDate;
-      gm.objectId = this.match.objectId;
-      gm.Opponent = this.match.Opponent;
-      gm.gameId = g[0].objectId
-      this.router.navigate(["summary", gm]);
-    })
+    if(this.offline == false) {
+      this.matchService.getGameId(this.game, this.match.objectId).then(result => {
+        var json = JSON.stringify(result);
+        var g = JSON.parse(json);
+        gm.gameNumber = this.game;
+        gm.Home = this.match.Home;
+        gm.MatchDate = this.match.MatchDate;
+        gm.objectId = this.match.objectId;
+        gm.Opponent = this.match.Opponent;
+        gm.gameId = g[0].objectId
+        this.router.navigate(["summary", gm]);
+      })
+    } else {
+      this.offlineservice.getGameId(this.game, this.match.objectId).then(result => {
+        var json = JSON.stringify(result);
+        var g = JSON.parse(json);
+        gm.gameNumber = this.game;
+        gm.Home = this.match.Home;
+        gm.MatchDate = this.match.MatchDate;
+        gm.objectId = this.match.objectId;
+        gm.Opponent = this.match.Opponent;
+        gm.gameId = g[0].objectId
+        this.router.navigate(["summary", gm]);
+      })
+    }
   }
 
   cloneMatch(m: Match): Match {
@@ -550,7 +564,9 @@ export class ConfigureComponent implements OnInit {
     match.Home = this.selectedTeamName
     if(this.offline == true) {
       await this.offlineservice.createMatch(match).then( result => {
-        
+        this.offlineservice.getMatches().subscribe(result => {
+          this.matches = result;
+        });
       })
     }
     else {

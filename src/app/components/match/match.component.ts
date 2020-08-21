@@ -103,7 +103,7 @@ export class MatchComponent implements OnInit {
 
     this.game = new GameWithId()
     this.gameScore = new GameScore();
-    this.gameNumber = this.match.gameNumber;
+    this.gameNumber = Number(this.match.gameNumber);
     this.game.subs = 0;
 
     
@@ -120,7 +120,7 @@ export class MatchComponent implements OnInit {
           });
           this.allPlayers = this.players.slice();
           
-          await this.offlineservice.getGameForMatchByNumber(this.match.objectId, this.match.gameNumber)
+          await this.offlineservice.getGameId(this.gameNumber,this.match.objectId)
             .then(async game => {
               console.log(game)
               if (game.length == 0) {
@@ -132,7 +132,7 @@ export class MatchComponent implements OnInit {
                 g.Subs = 0
                 g.objectId = Guid.create().toString()
                 this.offlineservice.createGame(g).then(result => {
-                  this.offlineservice.getGameForMatchByNumber(this.match.objectId, this.gameNumber).then(result => {
+                  this.offlineservice.getGameId(this.gameNumber,this.match.objectId).then(result => {
                     this.game.objectId = result[0].objectId
                     this.game.HomeScore = 0;
                     this.game.OpponentScore = 0;

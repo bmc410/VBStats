@@ -29,9 +29,22 @@ export class OfflineService {
 
 //#region ******* Play By Play  */
 
-getPBP() {
-  this.PlayByPlay.asObservable()
+clearPBPTable() {
+  this.db.playbyplay.clear().then(result => {
+    this.loadPBP()
+  })
 }
+
+getPlayByPlayById(gId: string) {
+  return this.db.playbyplay.filter(function (tp) {
+    return tp.gameid === gId
+  }).toArray()
+}
+
+getPlayByPlay(): Observable<any> {
+  return this.PlayByPlay.asObservable()
+}
+
 
 loadPBP() {
   this.db.playbyplay.toArray().then (results => {
@@ -40,7 +53,6 @@ loadPBP() {
 }
 
 addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[], action: string = "" ) {
-  var action = ""
   var rotations: pbpPosition[] = [];
   let pos = cp;
   if (stat === "start") {
@@ -97,7 +109,8 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
    playerid: objId,
    stattype: stat,
    rotation: jR,
-   gameid: g.objectId 
+   gameid: g.objectId,
+   objectId: Guid.create().toString(),
   } as IPlayByPlay
   
   this.db.playbyplay.add(pbp).then(result => {
@@ -222,7 +235,7 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
   //#endregion
 
   //#region ******* Games  */
-  
+
   updateGame(g: GameWithId) {
     return this.db.games.update(g.objectId, 
       {HomeScore: g.HomeScore, OpponentScore: g.OpponentScore, Subs: g.subs}
@@ -231,9 +244,9 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
     })
   }
 
-  getGameForMatchByNumber(matchId: string, gameNumber: number) {
+  getGameId(gn: Number, matchId: string) {
     return this.db.games.filter(function (g) {
-      return g.GameNumber === gameNumber 
+      return g.GameNumber === gn 
         && g.MatchId === matchId 
     }).toArray()
   }
@@ -248,15 +261,23 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
       this.Games.next(results);
     })
   }
+  getGames(): Observable<any> {
+    return this.Games.asObservable();
+  }
 
   //#endregion
 
   //#region ******* Matches  */
+  getMatchById(id: string) {
+   return this.db.matches.filter(function (tp) {
+      return tp.objectId === id
+    }).toArray()
+  }
+  
   createMatch(match: any) {
     return this.db.matches.add(match).then(()=>{
       this.loadMatches();
     })
-
   }
 
   deleteAllMatches() {

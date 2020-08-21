@@ -46,10 +46,13 @@ export class AppComponent {
     this.networkService.currentStatus.subscribe(result => {
       if (result == true) {
         //this.offlineService.deleteAllMatches()
+        //this.offlineService.clearPBPTable()
+        this.getPlayByPlay()
         this.offlineService.loadMatches()
         this.getOnlineClubs()
         this.getTeamPlayers()
         this.getTeams()
+        this.getGames()
         this.deletePlayers().then(result => {
           this.getOnlinePlayers()
         })
@@ -61,6 +64,20 @@ export class AppComponent {
     })
     this.offlineService.getPlayers().subscribe(result => {
       this.players = result
+    })
+  }
+
+  async getPlayByPlay() {
+    this.offlineService.loadPBP()
+    this.offlineService.getPlayByPlay().subscribe(result => {
+      console.log(result)
+    })
+  }
+
+  async getGames() {
+    this.offlineService.loadGames()
+    this.offlineService.getGames().subscribe(result => {
+      console.log(result)
     })
   }
 

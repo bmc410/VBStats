@@ -176,8 +176,8 @@ export interface statEntry {
   pos?: Map<any,any>,
   id?: string,
   opponentscore?: number,
-  rotation: {1: string, 2: string, 3: string, 4: string, 5: string, 6: string},
-  subs: number
+  rotation?: {1: string, 2: string, 3: string, 4: string, 5: string, 6: string},
+  subs?: number
 }
 
 

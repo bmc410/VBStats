@@ -194,7 +194,6 @@ export class MatchService  {
     }))
   }
 
-
   getGamesForMatch(matchId: string) {
     const Games = Parse.Object.extend('Games');
     const query = new Parse.Query(Games);

@@ -17,14 +17,14 @@ export class OfflineDatabase extends Dexie {
         var db = this;
         
         this.version(1).stores({
-            players: 'objectId, firstname, lastname',
+            players: 'objectId, FirstName, LastName',
             matches: 'objectId, Home, HomeTeamId, Opponent, MatchDate',
             games: 'objectId, GameNumber, MatchId, HomeScore, OpponentScore, MatchDate, Subs',
-            playbyplay: 'objectId, action, playerid, homescore, opponentscore, stattype, rotation, gameid',
-            stats: 'objectId, Subs, PlayerId, HomeScore, OpponentScore, StatType, Rotation, GameId',
-            teamplayers: 'objectId, playerid, teamid, jersey, clubyear',
+            playbyplay: 'objectId, Action, PlayerId, HomeScore, OpponentScore, StatType, Rotation, GameId',
+            stats: 'objectId, Subs, PlayerId, HomeScore, OpponentScore, StatType, Rotation, GameId,StatDate',
+            teamplayers: 'objectId, PlayerId, TeamId, Jersey, ClubYear',
             teams: 'objectId, TeamName, Year, ClubId',
-            clubs: 'objectId, clubname'
+            clubs: 'objectId, ClubName'
         });
 
         this.players = this.table("players");
@@ -35,8 +35,6 @@ export class OfflineDatabase extends Dexie {
         this.teamplayers = this.table("teamplayers");
         this.teams = this.table("teams");
         this.clubs = this.table('clubs');
-        
-        
     }
 }
 
@@ -57,24 +55,25 @@ export interface ITeamPlayers {
 
 export interface IStats {
     objectId?: string;
-    Subs?: string;
+    Subs?: number;
     PlayerId?: string;
     HomeScore?: number;
     OpponentScore?: number;
     StatType?: string;
     Rotation?: string;
     GameId?: string;
+    StatDate?: Date
 }
 
 export interface IPlayByPlay {
     objectId?: string;
-    action?: string;
-    playerid?: string;
-    homescore?: number;
-    opponentscore?: number;
-    stattype?: string;
-    rotation?: string;
-    gameid?: string;
+    Action?: string;
+    PlayerId?: string;
+    HomeScore?: number;
+    OpponentScore?: number;
+    StatType?: string;
+    Rotation?: string;
+    GameId?: string;
 }
 
 export interface IGames {

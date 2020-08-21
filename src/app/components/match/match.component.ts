@@ -148,27 +148,21 @@ export class MatchComponent implements OnInit {
                 this.game.matchid = game[0].MatchId
                 this.game.OpponentScore = game[0].OpponentScore
                 this.game.subs = game[0].Subs
-                
-                await this.matchService.getstats(this.game.objectId).then(data => {
-                  var j = JSON.stringify(data);
-                  var stats = JSON.parse(j);
+
+                await this.offlineservice.getstats(this.game.objectId).then(stats => {
                   stats.forEach(function (s) {
                     var rotation = JSON.parse(s.Rotation);
-                    let stat = {
-                      statid: s.GameId,
-                      homescore: s.HomeScore,
-                      matchid: s.OpponentScore,
-                      gamenumber: _this.match.gameNumber,
-                      stattype: s.StatType,
-                      playerid: s.PlayerId,
-                      statdate: s.createdAt,
-                      //pos: Map<any,any>,
-                      id: s.objectId,
-                      opponentscore: s.OpponentScore,
-                      rotation: rotation,
-                      subs: s.Subs
-                    }
-                    _this.stats.push(stat); 
+                    const st = {} as statEntry;
+                      //statid: s.GameId,
+                      st.PlayerId = s.PlayerId
+                      st.homescore = s.HomeScore
+                      st.opponentscore = s.OpponentScore
+                      st.gamenumber = _this.match.gameNumber
+                      st.StatType = s.StatType
+                      st.id = s.objectId
+                      st.rotation = rotation
+                      st.subs = s.Subs
+                    _this.stats.push(st); 
                   });
           
                   if (this.stats && this.stats.length > 0) {
@@ -395,9 +389,6 @@ export class MatchComponent implements OnInit {
 
   }
 
-
- 
-
   rotate() {
     let positionsFilled = true;
     for (let index = 1; index < 7; index++) {
@@ -453,12 +444,21 @@ export class MatchComponent implements OnInit {
     }
 
 
-    this.matchService.updateGame(this.game)
     const myClonedArray = []; 
-    this.playerPositions.forEach(val => myClonedArray.push(Object.assign({}, val)));
-    this.matchService.addPlayByPlay(this.game,myClonedArray,stat,
-      players, "")
 
+    if(this.offline == false) {
+      this.matchService.updateGame(this.game)
+      this.playerPositions.forEach(val => myClonedArray.push(Object.assign({}, val)));
+      this.matchService.addPlayByPlay(this.game,myClonedArray,stat,
+        players, "")
+    }
+    else {
+      this.offlineservice.updateGame(this.game).then(result => {
+        this.playerPositions.forEach(val => myClonedArray.push(Object.assign({}, val)));
+        this.offlineservice.addPlayByPlay(this.game,myClonedArray,stat,
+          players, "")
+      })
+    }
   }
 
   postStat(s: StatNib) {
@@ -488,7 +488,13 @@ export class MatchComponent implements OnInit {
       this.updateGame("opponent", "a", stat, affectedPlayer)
       //this.matchService.updateGame(this.game)
     }
-    this.matchService.incrementStat(s, this.game);
+
+    if(this.offline == false) {
+      this.matchService.incrementStat(s, this.game);
+    } else {
+      this.offlineservice.incrementStat(s, this.game);
+    }
+    
 
     //this.game.homescore = this.homescore;
     //this.game.opponentscore = this.opponentscore;
@@ -512,8 +518,13 @@ export class MatchComponent implements OnInit {
     this.startHidden = true;
     const cp  = Object.assign([], this.playerPositions);
     if (this.stats.length == 0) {
-       this.matchService.addPlayByPlay(this.game,cp,"start",
-      null)
+      if(this.offline == false) {
+        this.matchService.addPlayByPlay(this.game,cp,"start",
+        null)
+      } else {
+        this.offlineservice.addPlayByPlay(this.game,cp,"start",
+        null)
+      }
     }
 
     //this.createFakeStats();
@@ -530,50 +541,50 @@ export class MatchComponent implements OnInit {
   //   //this.matchService.updateGame(this.g)
   // }
 
-  createStat(): Stat {
-    var randStat = this.fakestats[
-      Math.floor(Math.random() * this.fakestats.length)
-    ];
-    var randomPlayer = this.players[
-      Math.floor(Math.random() * this.players.length)
-    ];
-    var randomPos = this.fakePos[
-      Math.floor(Math.random() * this.fakePos.length)
-    ];
-    let s = new Stat();
-    s.gamenumber = this.gameNumber;
-    s.matchid = this.match.objectId;
-    s.opponentScore = this.opponentscore;
-    s.homeScore = this.homescore;
-    s.player = randomPlayer;
-    s.pos = randomPos;
-    //s.stattime = new Date();
-    s.stattype = randStat;
-    return s;
-  }
+  // createStat(): Stat {
+  //   var randStat = this.fakestats[
+  //     Math.floor(Math.random() * this.fakestats.length)
+  //   ];
+  //   var randomPlayer = this.players[
+  //     Math.floor(Math.random() * this.players.length)
+  //   ];
+  //   var randomPos = this.fakePos[
+  //     Math.floor(Math.random() * this.fakePos.length)
+  //   ];
+  //   let s = new Stat();
+  //   s.gamenumber = this.gameNumber;
+  //   s.matchid = this.match.objectId;
+  //   s.opponentScore = this.opponentscore;
+  //   s.homeScore = this.homescore;
+  //   s.player = randomPlayer;
+  //   s.pos = randomPos;
+  //   //s.stattime = new Date();
+  //   s.stattype = randStat;
+  //   return s;
+  // }
 
-  createFakeStats() {
-    var s: Stat;
-    s = this.createStat();
-    this.incrementStat(s.pos,s.player,s.stattype);
-    while (this.opponentscore < 25 && this.homescore < 25) {
-      s = this.createStat();
-      this.incrementStat(s.pos,s.player,s.stattype);
-      console.log("Home: " + this.hs + " Opponent: " + this.os);
-    }
-  }
+  // createFakeStats() {
+  //   var s: Stat;
+  //   s = this.createStat();
+  //   this.incrementStat(s.pos,s.player,s.stattype);
+  //   while (this.opponentscore < 25 && this.homescore < 25) {
+  //     s = this.createStat();
+  //     this.incrementStat(s.pos,s.player,s.stattype);
+  //     console.log("Home: " + this.hs + " Opponent: " + this.os);
+  //   }
+  // }
 
-  private fakePos = [1,2,3,4,5,6]
-  private fakestats = [
-  'k',
-  'he',
-  'b',
-  'b',
-  'be',
-  'a',
-  'd',
-  'bhe',
-  'sre',
-  'se']
+  // private fakePos = [1,2,3,4,5,6]
+  // private fakestats = [
+  // 'k',
+  // 'he',
+  // 'b',
+  // 'b',
+  // 'be',
+  // 'a',
+  // 'd',
+  // 'bhe',
+  // 'sre',
+  // 'se']
 
 }

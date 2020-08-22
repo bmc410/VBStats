@@ -49,6 +49,8 @@ export class MatchService  {
   dbGames: Observable<any>;
   dbTeams: Observable<any>;
   match: Match[] = [];
+  public Matches: BehaviorSubject<MatchWithId[]> = new BehaviorSubject<MatchWithId[]>([]);
+  
 
   //mappedPos = new Array();
 
@@ -94,6 +96,19 @@ export class MatchService  {
     const query = new Parse.Query(Matches);
     return query.find();
   }
+
+  loadMatches() {
+    const Matches = Parse.Object.extend('Matches');
+    const query = new Parse.Query(Matches);
+    return query.find().then(result => {
+      this.Matches.next(result);
+    })
+  }
+
+  getMatchesAsync() {
+    return this.Matches.asObservable()
+  }
+
   getMatchById(id: string) {
     const Matches = Parse.Object.extend('Matches');
     const query = new Parse.Query(Matches);

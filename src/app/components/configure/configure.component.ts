@@ -159,7 +159,8 @@ export class ConfigureComponent implements OnInit {
       });
     }
     else {
-      await this.matchService.getMatches().then(result => {
+      this.matchService.loadMatches();
+      await this.matchService.getMatchesAsync().subscribe(result => {
         var json = JSON.stringify(result);
         this.matches = JSON.parse(json);
       });
@@ -605,6 +606,7 @@ export class ConfigureComponent implements OnInit {
         } as MatchWithId;
         //First create the matrch and get the objectId 
         this.matchService.createMatch(newMatch).subscribe(result => {
+          this.matchService.loadMatches()
           var json = JSON.stringify(result);
           var data = JSON.parse(json);
           let matchId = data.objectId

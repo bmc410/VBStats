@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
   returnUrl: string;
   error: string;
   checked = false;
+  switchtitle = "Use Offline"
 
   constructor(
       private formBuilder: FormBuilder,
@@ -35,6 +36,7 @@ export class LoginComponent implements OnInit {
 
   NetworkChange(e) {
     this.networkService.NetworkChange(e.checked)
+    
   }
 
   ngOnInit() {
@@ -46,6 +48,11 @@ export class LoginComponent implements OnInit {
 
       this.networkService.currentStatus.subscribe(result => {
         this.checked = result
+        if(result == true) {
+            this.switchtitle = "Offline Mode"
+        } else {
+            this.switchtitle = "Use Offline"
+        }
         this.loginForm.patchValue({
             isChecked: result
           });

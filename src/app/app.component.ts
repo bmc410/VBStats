@@ -8,6 +8,7 @@ import { Guid } from "guid-typescript";
 import { MatchService } from './services/matchservice';
 import { Club } from './models/appModels';
 //import { NetworkService } from './services/network.service';
+import { ConnectionService } from 'ng-connection-service';
 
 @Component({
   selector: 'app-root',
@@ -28,14 +29,28 @@ export class AppComponent {
     firstname: 'Kadi',
     lastname: 'McCoy'
   };
+  isConnected = true;
+  status = 'ONLINE';
 
   constructor(
     private router: Router,
     private authenticationService: AuthenticationService,
     private networkService: NetworkService,
     private offlineService: OfflineService,
-    private matchService: MatchService
+    private matchService: MatchService,
+    private connectionService: ConnectionService
   ) {
+
+    this.networkService.HasInternet().subscribe(isConnected => {
+      this.isConnected = isConnected;
+      console.log(isConnected)
+      if (this.isConnected) {
+        this.status = "ONLINE";
+      }
+      else {
+        this.status = "OFFLINE";
+      }
+    })
 
     var status = this.networkService.getlaststatus();
     if(status == true) {
@@ -43,25 +58,25 @@ export class AppComponent {
     }
     this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
     this.networkService.currentStatus.subscribe(x => this.offline = x);
-    this.networkService.currentStatus.subscribe(result => {
-      if (result == true) {
-        //this.offlineService.deleteAllMatches()
-        //this.offlineService.clearPBPTable()
-        this.getPlayByPlay()
-        this.offlineService.loadMatches()
-        this.getOnlineClubs()
-        this.getTeamPlayers()
-        this.getTeams()
-        this.getGames()
-        this.deletePlayers().then(result => {
-          this.getOnlinePlayers()
-        })
+    // this.networkService.currentStatus.subscribe(result => {
+    //   // if (result == true) {
+    //   //   //this.offlineService.deleteAllMatches()
+    //   //   //this.offlineService.clearPBPTable()
+    //   //   this.getPlayByPlay()
+    //   //   this.offlineService.loadMatches()
+    //   //   this.getOnlineClubs()
+    //   //   this.getTeamPlayers()
+    //   //   this.getTeams()
+    //   //   this.getGames()
+    //   //   this.deletePlayers().then(result => {
+    //   //     this.getOnlinePlayers()
+    //   //   })
         
-      } else {
-        //this.deletePlayers()
-      }
-      this.offline = result
-    })
+    //   // } else {
+    //   //   //this.deletePlayers()
+    //   // }
+    //   this.offline = result
+    // })
     this.offlineService.getPlayers().subscribe(result => {
       this.players = result
     })

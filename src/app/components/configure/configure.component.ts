@@ -28,7 +28,8 @@ import { OfflineService } from 'src/app/services/offline.service';
 import { Guid } from 'guid-typescript';
 import { formatDate } from '@angular/common';
 import { stat } from 'fs';
-import { IPlayByPlay } from 'src/app/models/dexie-models';
+import { IPlayByPlay, IClubs, ITeamPlayers, ITeams, IPlayers } from 'src/app/models/dexie-models';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: "app-configure",
@@ -106,12 +107,21 @@ export class ConfigureComponent implements OnInit {
     private connectionService: ConnectionService,
     private _ngZone: NgZone,
     private networkService: NetworkService,
-    private offlineservice: OfflineService
+    private offlineservice: OfflineService,
+    private messageService: MessageService
   ) {
     this.playerPositions = [];
     this.networkService.currentStatus.subscribe(result => {
       this.offline = result
     })
+    this.offlineservice.loadPlayers()
+    this.offlineservice.loadTeams()
+    this.offlineservice.loadClubs()
+    this.offlineservice.loadTeamPlayers()
+    this.offlineservice.loadMatches()
+    this.offlineservice.loadGames()
+    this.offlineservice.loadStats()
+    this.offlineservice.loadPBP()
   }
 
 
@@ -169,7 +179,10 @@ export class ConfigureComponent implements OnInit {
  
     //#region  Offline check for --- players ---
     if (this.offline == true) {
+      console.log("app is offline")
       await this.offlineservice.getPlayers().subscribe(results => {
+        console.log("players")
+        console.log(results)
         results.forEach(element => {
           const p: PlayerWithId = {}
           p.FirstName = element.FirstName,
@@ -204,6 +217,7 @@ export class ConfigureComponent implements OnInit {
       })
     }
     else {
+      console.log("app is online")
       await this.matchService.getPlayers().then(data => {
         var json = JSON.stringify(data);
         var d = JSON.parse(json);
@@ -661,6 +675,7 @@ export class ConfigureComponent implements OnInit {
                       const cp = new CourtPosition();
                       this.matchService.syncPlayByPlay(newGame,rotation,play.stattype, play.playerid, play.action )
                     });
+                    this.messageService.add({severity:'success', summary:'Upload Successfull', detail:'The data from this device has been successfully uploaded'});
                   })
                 })
               })
@@ -672,6 +687,109 @@ export class ConfigureComponent implements OnInit {
   }
 
 
+  //#endregion
+
+  //#region Download Teams
+  async DownloadData() {
+    this.getPlayByPlay()
+    this.offlineservice.loadMatches()
+    this.getOnlineClubs()
+    this.getTeamPlayersAsync()
+    this.getTeams()
+    this.getGames()
+    this.deletePlayers().then(result => {
+      this.getOnlinePlayers()
+    })
+    this.messageService.add({severity:'success', summary:'Download Successfull', detail:'This device is ready for offline usage'});
+  }
+
+  async getOnlinePlayers() {
+    const players: IPlayers[] = []
+    await this.matchService.getPlayers().then(async results => {
+      var j = JSON.stringify(results);
+      var onlinePlayers = JSON.parse(j);
+      onlinePlayers.forEach(element => {
+        const player: IPlayers = {}
+        player.objectId = element.objectId,
+          player.firstname = element.FirstName,
+          player.lastname = element.LastName
+        players.push(player)
+      });
+      await this.offlineservice.bulkAddPlayers(players)
+    })
+  }
+
+  async deletePlayers() {
+    await this.offlineservice.bulkdeletePlayers().then(result => {
+      return result;
+    })
+  }
+  async getGames() {
+    this.offlineservice.loadGames()
+    this.offlineservice.getGames().subscribe(result => {
+      console.log(result)
+    })
+  }
+
+  async getTeams() {
+    const teams: ITeams[] = []
+    await this.matchService.getTeams().then(async results => {
+      var j = JSON.stringify(results);
+      var onlineT = JSON.parse(j);
+      onlineT.forEach(element => {
+        const t: ITeams = {}
+        t.objectId = element.objectId,
+        t.ClubId = element.ClubId,
+        t.TeamName = element.TeamName,
+        t.Year = element.Year
+        teams.push(t)
+      });
+      await this.offlineservice.bulkAddTeams(teams)
+      //this.addPlayer()
+    })
+  }
+
+  async getTeamPlayersAsync() {
+    const teamplayers: ITeamPlayers[] = []
+    await this.matchService.getAllTeamPlayers().then(async results => {
+      var j = JSON.stringify(results);
+      var onlineTP = JSON.parse(j);
+      onlineTP.forEach(element => {
+        const tp: ITeamPlayers = {}
+        tp.objectId = element.objectId,
+        tp.teamid = element.TeamId,
+        tp.playerid = element.PlayerId,
+        tp.jersey = element.Jersey,
+        tp.clubyear = element.ClubYear
+        teamplayers.push(tp)
+      });
+      await this.offlineservice.bulkAddTeamPlayers(teamplayers)
+      //this.addPlayer()
+    })
+  }
+
+  async getPlayByPlay() {
+    this.offlineservice.loadPBP()
+    this.offlineservice.getPlayByPlay().subscribe(result => {
+      //console.log(result)
+    })
+  }
+  async getOnlineClubs() {
+    const clubs: IClubs[] = []
+    await this.matchService.getClubs().then(async results => {
+      var j = JSON.stringify(results);
+      var onlineClubs = JSON.parse(j);
+      onlineClubs.forEach(element => {
+        const club: IClubs = {}
+        club.clubname = element.ClubName,
+        club.objectId = element.objectId
+        clubs.push(club)
+      });
+      await this.offlineservice.bulkAddClubs(clubs)
+      //this.addPlayer()
+    })
+  }
+ 
   //#endregion
 
 }

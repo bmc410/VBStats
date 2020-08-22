@@ -155,7 +155,8 @@
               <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true"></p-checkbox>
             </div>
             <div style="font-size: 2vw;" class="col-6 btn-responsive">
-              <img *cdkDragPreview style="width: 50px;" src='../../../assets/icons/girl-volleyball-player-hitting.png'>
+              <span *cdkDragPreview class="glyphicon glyphicon-move"></span>
+              <!-- <img *cdkDragPreview style="width: 50px;" src='../../../assets/icons/girl-volleyball-player-hitting.png'> -->
               {{ player.FirstName }}
             </div>
             <div class="col-1 d-flex justify-content-end">

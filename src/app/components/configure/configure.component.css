@@ -17,6 +17,12 @@ body {
   margin-left: 5px;
 }
 
+@font-face {
+  font-family: 'Digital';
+  src: url('../../../assets/fonts/digital-7.ttf')  format('truetype');
+  font-weight: bold;
+  }
+
 .btn-circle {
   width: 30px;
   height: 30px;

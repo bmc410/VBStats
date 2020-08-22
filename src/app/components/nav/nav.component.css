@@ -24,6 +24,11 @@
     padding-bottom: 10px;
   }
 }
+@font-face {
+  font-family: 'Digital';
+  src: url('../../../assets/fonts/digital-7.ttf')  format('truetype');
+  font-weight: bold;
+  }
 
 .title {
   font-size: calc(14px + (25 - 14) * ((100vw - 300px) / (1600 - 300)));

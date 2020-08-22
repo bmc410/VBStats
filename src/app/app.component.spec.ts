@@ -20,16 +20,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have as title 'DragAndDrop'`, () => {
+  it(`should have as title 'VBStats'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.debugElement.componentInstance;
-    expect(app.title).toEqual('DragAndDrop');
+    expect(app.title).toEqual('VBStats');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.debugElement.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain('DragAndDrop app is running!');
+    expect(compiled.querySelector('.content span').textContent).toContain('VBStats app is running!');
   });
 });

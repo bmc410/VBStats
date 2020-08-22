@@ -70,14 +70,12 @@
       </p-table>
     </p-tabPanel>
 
-    <p-tabPanel *ngIf="offline!=true" header="Sync Offline Data">
+    <p-tabPanel *ngIf="offline!=true" header="Sync">
       <button  type="button" pButton 
       (click)="SyncOfflineData()" label="Sync"></button>
     </p-tabPanel>
   </p-tabView>
 </div>
-
-
 
 
 <p-dialog header="Match Details" [(visible)]="matchDialogDisplay" [focusOnShow]="false" [responsive]="true"

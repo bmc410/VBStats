@@ -18,14 +18,14 @@
             <div class="sublabel">Subs</div>
             <div class="stepper-input stepper__input">
               <button class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
-                <img src="assets/minus.svg" />
+                <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
               </button>
               <div class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
                 aria-relevant="all">
                 {{this.game.subs}}
               </div>
               <button class="toggle-more up" (click)="updateGame('subs', 'a', '', null)">
-                <img src="assets/plus.svg" />
+                <span style="vertical-align: middle;" class="glyphicon glyphicon-plus glyph"></span>
               </button>
             </div>
           </div>
@@ -39,14 +39,14 @@
               <div class="sublabel">Game#</div>
               <div class="stepper-input stepper__input">
                 <button class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
-                  <img src="assets/minus.svg" />
+                  <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
                 </button>
                 <div class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
                   aria-relevant="all">
                   {{game?.gamenumber}}
                 </div>
                 <button class="toggle-more up" (click)="updateGame('subs', 'a', '', null)">
-                  <img src="assets/plus.svg" />
+                  <span style="vertical-align: middle;" class="glyphicon glyphicon-plus glyph"></span>
                 </button>
               </div>
           </div>

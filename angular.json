@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "DragAndDrop": {
+    "VBStats": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/DragAndDrop",
+            "outputPath": "dist/VBStats",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -74,18 +74,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "DragAndDrop:build"
+            "browserTarget": "VBStats:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "DragAndDrop:build:production"
+              "browserTarget": "VBStats:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "DragAndDrop:build"
+            "browserTarget": "VBStats:build"
           }
         },
         "test": {
@@ -124,16 +124,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "DragAndDrop:serve"
+            "devServerTarget": "VBStats:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "DragAndDrop:serve:production"
+              "devServerTarget": "VBStats:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "DragAndDrop"
+  "defaultProject": "VBStats"
 }

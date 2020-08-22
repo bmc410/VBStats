@@ -578,7 +578,7 @@ export class ConfigureComponent implements OnInit {
     }
     else {
       this.matchService.saveMatch(match).subscribe(data => {
-        this.matchService.getMatches().subscribe(result => {
+        this.matchService.getMatches().then(result => {
           var json = JSON.stringify(result);
           this.matches = JSON.parse(json);
         });

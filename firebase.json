@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/DragAndDrop",
+    "public": "dist/VBStats",
     "ignore": [
       "firebase.json",
       "**/.*",

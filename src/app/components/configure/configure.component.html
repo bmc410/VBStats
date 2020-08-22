@@ -70,7 +70,7 @@
       </p-table>
     </p-tabPanel>
 
-    <p-tabPanel header="Sync Offline Data">
+    <p-tabPanel *ngIf="offline!=true" header="Sync Offline Data">
       <button  type="button" pButton 
       (click)="SyncOfflineData()" label="Sync"></button>
     </p-tabPanel>

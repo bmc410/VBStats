@@ -297,6 +297,23 @@ export class MatchService  {
     //return this.createPBPInFirestore(pbpObj);
 
   }
+
+  syncPlayByPlay(g: GameWithId, rotation:string, stat: string, pId: string, action: string = "" ) {
+   
+    const PlayByPlay = Parse.Object.extend('PlayByPlay');
+    const myNewObject = new PlayByPlay();
+
+    myNewObject.set('action', action);
+    myNewObject.set('homescore', g.HomeScore);
+    myNewObject.set('opponentscore', g.OpponentScore);
+    myNewObject.set('playerId', pId);
+    myNewObject.set('stattype', stat);
+    myNewObject.set('rotation', rotation);
+    myNewObject.set('gameId', g.objectId);
+
+    myNewObject.save();
+  }
+
   //#endregion
 
   //#region ******* Stats  */

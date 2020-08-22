@@ -61,7 +61,9 @@ export class PointPlay {
 export class Stat {
   statid?: number;
   matchid?: string;
+  gameId?: string
   gamenumber?: number;
+  playerid?: string;
   stattype?: string;
   pos?: number;
   player?: PlayerWithId;
@@ -69,6 +71,8 @@ export class Stat {
   positions?: CourtPosition[];
   homeScore?: number;
   opponentScore?: number;
+  subs?: number;
+  rotation: string;
 }
 
 export class Match {

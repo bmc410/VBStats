@@ -9,7 +9,10 @@ import {
   TeamWithId,
   Team,
   TeamPlayerWithID,
-  ClubWithId
+  ClubWithId,
+  GameWithId,
+  Stat,
+  pbpPosition
 } from "src/app/models/appModels";
 import { MatchService } from "src/app/services/matchservice";
 import { DialogModule } from "primeng/dialog";
@@ -24,6 +27,8 @@ import { NetworkService } from 'src/app/services/network.service';
 import { OfflineService } from 'src/app/services/offline.service';
 import { Guid } from 'guid-typescript';
 import { formatDate } from '@angular/common';
+import { stat } from 'fs';
+import { IPlayByPlay } from 'src/app/models/dexie-models';
 
 @Component({
   selector: "app-configure",
@@ -230,6 +235,17 @@ export class ConfigureComponent implements OnInit {
   }
 
 
+  //#region Dialogs
+  AddMatch() {
+    this.dialogHome = ""
+    this.dilogOpponent = ""
+    this.gameDate.setValue(new Date)
+    this.dialogMatchId = ""
+    this.matchDialogDisplay = true;
+    this.selectedTeamId = "";
+    //this.matchService.createMatch("Fusion", "Ballyhoo", new Date());
+    //this.getMatches();
+  }
   showDialog() {
     this.display = true;
   }
@@ -240,7 +256,6 @@ export class ConfigureComponent implements OnInit {
     //this.matchService.addPlayers();
     //this.getPlayers()
   }
-
   showAddTeamDialog() {
     //this.newPlayer = false;
     //this.player = new PlayerWithId("","","",false,)
@@ -248,15 +263,40 @@ export class ConfigureComponent implements OnInit {
     //this.matchService.addPlayers();
     //this.getPlayers()
   }
-
-
   onPlayerSelect(event) {
     this.newPlayer = false;
     this.player = this.clonePlayer(event.data);
     this.player.objectId = event.data.objectId;
     this.playerDialogDisplay = true;
   }
+  async onTeamSelect(event) {
+    this.newTeam = false;
+    this.team = this.cloneTeam(event.data);
+    this.selectedTeamName = this.team.TeamName;
+    this.selectedTeamId = this.team.objectId;
+    this.selectedTeamClubId = this.team.ClubId
+    this.selectedTeamYear = this.team.Year;
+    await this.matchService.getPlayers().then(data => {
+      var json = JSON.stringify(data);
+      var d = JSON.parse(json);
+      this.selectedPlayers = d
+      this.getTeamPlayers()
+      this.teamDialogDisplay = true;
+    })
+  }
+  showDialogToAdd() {
 
+    //this.matchService.addPlayers();
+    //this.getPlayers()
+    //this.displayDialog = true;
+  }
+  AddPlayerToTeam() {
+       this.playersDialogListDisplay = true
+  }
+  //#endregion
+
+  
+  //#region Operations
   async getTeamPlayers() {
     this.teamPlayers = []
     this.teamPlayerIDs = []
@@ -292,32 +332,7 @@ export class ConfigureComponent implements OnInit {
     })
   }
 
-  async onTeamSelect(event) {
-    this.newTeam = false;
-    this.team = this.cloneTeam(event.data);
-    this.selectedTeamName = this.team.TeamName;
-    this.selectedTeamId = this.team.objectId;
-    this.selectedTeamClubId = this.team.ClubId
-    this.selectedTeamYear = this.team.Year;
-    await this.matchService.getPlayers().then(data => {
-      var json = JSON.stringify(data);
-      var d = JSON.parse(json);
-      this.selectedPlayers = d
-      this.getTeamPlayers()
-      this.teamDialogDisplay = true;
-    })
-  }
-
-  showDialogToAdd() {
-
-    //this.matchService.addPlayers();
-    //this.getPlayers()
-    //this.displayDialog = true;
-  }
-
-  AddPlayerToTeam() {
-       this.playersDialogListDisplay = true
-  }
+ 
 
   AddPlayer() {
     this.matchService.addPlayersToTeam(this.pickedPlayers, this.team.objectId).subscribe(result => {
@@ -509,16 +524,7 @@ export class ConfigureComponent implements OnInit {
     this.selectedTeamYear = Number(split[1].trim());
   }
 
-  AddMatch() {
-    this.dialogHome = ""
-    this.dilogOpponent = ""
-    this.gameDate.setValue(new Date)
-    this.dialogMatchId = ""
-    this.matchDialogDisplay = true;
-    this.selectedTeamId = "";
-    //this.matchService.createMatch("Fusion", "Ballyhoo", new Date());
-    //this.getMatches();
-  }
+ 
 
   DeleteMatch() {
     const Match = Parse.Object.extend('Matches');
@@ -583,5 +589,87 @@ export class ConfigureComponent implements OnInit {
   onTeamPlayerSelection(e) {
       console.log(e);
   }
+  //#endregion
+
+  //#region Data Sync
+
+  async SyncOfflineData() {
+    await this.offlineservice.getMatchesForSync().then(matches => {
+      matches.forEach(match => {
+        const offlineMatchId = match.objectId
+        const newMatch = {
+          Home: match.Home,
+          HomeTeamId: match.HomeTeamId,
+          Opponent: match.Opponent,
+          MatchDate: match.MatchDate
+        } as MatchWithId;
+        //First create the matrch and get the objectId 
+        this.matchService.createMatch(newMatch).subscribe(result => {
+          var json = JSON.stringify(result);
+          var data = JSON.parse(json);
+          let matchId = data.objectId
+          //Now create the games
+          this.offlineservice.getGamesForSync(offlineMatchId).then(games => {
+            games.forEach(game => {
+              const offlineGameId = game.objectId
+              const newGame = {
+                gamenumber: game.GameNumber,
+                matchid: matchId,
+                HomeScore: game.HomeScore,
+                OpponentScore: game.OpponentScore,
+                subs: game.Subs
+              } as GameWithId
+              this.matchService.createGame(newGame).subscribe(result => {
+                var json = JSON.stringify(result);
+                var data = JSON.parse(json);
+                let gameid = data.objectId
+                newGame.objectId = data.objectId
+                var rotation = ""
+                //For each game create stats and play-by-play
+                this.offlineservice.getstats(offlineGameId).then(stats => {
+                  stats.forEach(stat => {
+                    
+                    const data = JSON.parse(stat.Rotation)
+
+                    // var rotations: pbpPosition[] = [];
+                    // for (let index = 1; index < 7; index++) {
+                    //   let p = new pbpPosition();
+                    //   p.playerName = stat.positions[index].player.FirstName;
+                    //   p.posNo = index;
+                    //   p.objectId = stat.positions[index].player.objectId
+                    //   rotations.push(p);
+                    // }
+
+                    let statObj = {
+                      //statorder: await this.getMaxStatId(),
+                      gameId : newGame.objectId,
+                      homeScore : stat.HomeScore,
+                      opponentScore : stat.OpponentScore,
+                      playerid : stat.PlayerId,
+                      stattype : stat.StatType,
+                      subs : stat.Subs,
+                      rotation: data,
+                    };
+                    
+                    this.matchService.createStat(statObj, newGame)
+                  });
+                  this.offlineservice.getPlayByPlayById(offlineGameId).then(plays => {
+                    plays.forEach(play => {
+                      
+                      const cp = new CourtPosition();
+                      this.matchService.syncPlayByPlay(newGame,rotation,play.stattype, play.playerid, play.action )
+                    });
+                  })
+                })
+              })
+            });
+          })
+        })
+      });
+    })
+  }
+
+
+  //#endregion
 
 }

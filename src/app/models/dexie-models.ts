@@ -68,11 +68,11 @@ export interface IStats {
 export interface IPlayByPlay {
     id?: number;
     objectId?: string;
-    Action?: string;
-    PlayerId?: string;
+    action?: string;
+    playerid?: string;
     HomeScore?: number;
     OpponentScore?: number;
-    StatType?: string;
+    stattype?: string;
     Rotation?: string;
     gameid?: string;
 }

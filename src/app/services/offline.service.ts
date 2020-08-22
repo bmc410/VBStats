@@ -36,7 +36,7 @@ clearPBPTable() {
 }
 
 getPlayByPlayById(gId: string) {
-  return this.db.playbyplay.filter(function (tp) {
+  return this.db.playbyplay.orderBy(":id").filter(function (tp) {
     return tp.gameid === gId
   }).toArray()
 }
@@ -226,6 +226,12 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
     //return this.firestore.collection("stats").snapshotChanges();
   }
 
+  getofflinestats(id: string) {
+    return JSON.stringify(this.db.stats.filter(function (tp) {
+      return tp.GameId === id
+    }).toArray())
+  }
+
   loadStats() {
     this.db.stats.toArray().then (results => {
       this.Stats.next(results);
@@ -265,6 +271,12 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
     return this.Games.asObservable();
   }
 
+  getGamesForSync(matchid) {
+    return this.db.games.filter(function (tp) {
+      return tp.MatchId === matchid
+    }).toArray()
+  }
+
   //#endregion
 
   //#region ******* Matches  */
@@ -290,9 +302,14 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
     })
   }
 
-  getMatches(): Observable<any> {
+  getMatchesForSync() {
+    return this.db.matches.toArray()
+  }
+
+  getMatches(): Observable<IMatches[]> {
     return this.Matches.asObservable();
   }
+
   //#endregion
 
   //#region ******* Teams  */

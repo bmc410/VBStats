@@ -69,8 +69,16 @@
         </ng-template>
       </p-table>
     </p-tabPanel>
+
+    <p-tabPanel header="Sync Offline Data">
+      <button  type="button" pButton 
+      (click)="SyncOfflineData()" label="Sync"></button>
+    </p-tabPanel>
   </p-tabView>
 </div>
+
+
+
 
 <p-dialog header="Match Details" [(visible)]="matchDialogDisplay" [focusOnShow]="false" [responsive]="true"
   showEffect="fade" [modal]="true" [style]="{ width: '90vw' }">
@@ -159,7 +167,6 @@
 
 
 </p-dialog>
-
 
 <p-dialog header="Add Team" [(visible)]="addTeamDialogDisplay" [focusOnShow]="false" [responsive]="true"
   showEffect="fade" [modal]="true" [style]="{ width: '400px' }">

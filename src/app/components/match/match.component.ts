@@ -149,6 +149,8 @@ export class MatchComponent implements OnInit {
                 this.game.OpponentScore = game[0].OpponentScore
                 this.game.subs = game[0].Subs
 
+                var o = this.offlineservice.getofflinestats(this.game.objectId)
+
                 await this.offlineservice.getstats(this.game.objectId).then(stats => {
                   stats.forEach(function (s) {
                     var rotation = JSON.parse(s.Rotation);

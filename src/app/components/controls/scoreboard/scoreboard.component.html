@@ -1,31 +1,49 @@
 <link href="https://fonts.googleapis.com/css?family=Rubik" rel="stylesheet">
 <div class="row d-flex justify-content-center">
     <div style="margin-right: 10px;">
-      <div class="btn align-items-center" id="team1">
+      <div style="width: 6rem;" class="card">
+        <div style="color: white; padding-top: 0px; padding-bottom: 0px; background-color: #144A99;" 
+          class="card-header d-flex justify-content-center">
+          Home
+        </div>
+        <div style="font-size: 3vw;" class="card-body d-flex justify-content-center">
+          {{homescore}}
+        </div>
+      </div>
+      <!-- <div class="card" id="team1">
         <span class="team1Name">Home</span>
         <div style="font-size: 2vw;">{{homescore}}</div>
-      </div>
+      </div> -->
       <div style="margin-top: 5px;" class="stepper-input stepper__input align-items-center">
-        <button style="width: 3vw; height: 3vw;  margin-right: 5px;"  (click)="updateGame('home', 's', 'te', null)" class="up" id="homeminus">
-          <span style="vertical-align: middle;" class="glyphicon glyphicon-plus glyph"></span>
+        <button style="width: 3vw; height: 3vw;  margin-right: 5px;"  (click)="updateGame('home', 'a', 'te', null)" class="up" id="homeminus">
+          <fa-icon [icon]="faPlus"></fa-icon>
         </button>
-        <button style="width: 3vw; height: 3vw; margin-left: 5px;" (click)="updateGame('home', 'a', 'tp', null)" class="down" id="homeplus">
-          <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
+        <button style="width: 3vw; height: 3vw; margin-left: 5px;" (click)="updateGame('home', 's', 'tp', null)" class="down" id="homeplus">
+          <fa-icon [icon]="faMinus"></fa-icon>
         </button>
       </div>  
     </div>
 
     <div  class="">
-      <div class="btn align-items-center" id="team2">
+      <div style="width: 6rem;" class="card">
+        <div style="color: white; padding-top: 0px; padding-bottom: 0px; background-color: #46A78F" 
+          class="card-header d-flex justify-content-center">
+          Away
+        </div>
+        <div style="font-size: 3vw;" class="card-body d-flex justify-content-center">
+          {{opponentscore}}
+        </div>
+      </div>
+      <!-- <div class="card" id="team2">
         <span class="team2Name">Away</span>
         <div style="font-size: 2vw;">{{opponentscore}}</div>
-      </div>
+      </div> -->
       <div style="margin-top: 5px;" class="stepper-input stepper__input align-items-center">
-        <button style="width: 3vw; height: 3vw; margin-right: 5px;" class="up" (click)="updateGame('opponent', 's', 'tp', null)"  id="awayminus">
-            <span style="vertical-align: middle;" class="glyphicon glyphicon-plus glyph"></span>
+        <button style="width: 3vw; height: 3vw; margin-right: 5px;" class="up" (click)="updateGame('opponent', 'a', 'tp', null)"  id="awayminus">
+          <fa-icon [icon]="faPlus"></fa-icon>
           </button>
-          <button (click)="updateGame('opponent', 'a', 'te', null)" style="width: 3vw; height: 3vw;  margin-left: 5px;" class="down" id="awayplus">
-            <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
+          <button (click)="updateGame('opponent', 's', 'te', null)" style="width: 3vw; height: 3vw;  margin-left: 5px;" class="down" id="awayplus">
+            <fa-icon [icon]="faMinus"></fa-icon>
           </button>
       </div>
     </div>

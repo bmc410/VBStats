@@ -100,7 +100,7 @@ export class ConfigureComponent implements OnInit {
   teamYears: Number[] = [];
   selectedTeamYear: Number;
   offline: any;
-
+  click : boolean = true;
   constructor(
     private matchService: MatchService,
     private router: Router,
@@ -599,6 +599,7 @@ export class ConfigureComponent implements OnInit {
       });
     }
     this.matchDialogDisplay = false;
+    this.click = false
   }
 
   onTeamPlayerSelection(e) {

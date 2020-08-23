@@ -26,6 +26,9 @@ import { NetworkService } from 'src/app/services/network.service';
 import { OfflineService } from 'src/app/services/offline.service';
 import { IGames } from 'src/app/models/dexie-models';
 import { Guid } from 'guid-typescript';
+import { faMinus, faPlus, faArrowsAlt, faPlay, faExchangeAlt } from '@fortawesome/free-solid-svg-icons';
+
+
 
 @Component({
   selector: "app-match",
@@ -33,6 +36,12 @@ import { Guid } from 'guid-typescript';
   styleUrls: ["./match.component.css"]
 })
 export class MatchComponent implements OnInit {
+  faMinus = faMinus;
+  faPlus = faPlus;
+  faArrowsAlt = faArrowsAlt;
+  faPlay=faPlay;
+  faExchangeAlt=faExchangeAlt;
+
   playerPositions: CourtPosition[];
   draggedplayer: PlayerWithId;
   players: PlayerWithId[] = [];

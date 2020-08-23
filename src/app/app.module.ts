@@ -72,6 +72,8 @@ import { AuthenticationService } from './services/authentication.service';
 import { AuthGuard } from './auth-guard';
 import { NetworkService } from './services/network.service';
 import { OfflineService } from './services/offline.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { IncDecButtonComponent } from './components/controls/inc-dec-button/inc-dec-button.component';
 
 
 @NgModule({
@@ -95,7 +97,8 @@ import { OfflineService } from './services/offline.service';
     MobileMatchComponent,
     MobileScoreboardComponent,
     HybridMatchComponent,
-    LoginComponent
+    LoginComponent,
+    IncDecButtonComponent
   ],
   imports: [
     BrowserModule,
@@ -132,6 +135,7 @@ import { OfflineService } from './services/offline.service';
     //MatToolbarModule,
     //MatRadioModule,
     MaterialModule,
+    FontAwesomeModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule.enablePersistence(),
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })

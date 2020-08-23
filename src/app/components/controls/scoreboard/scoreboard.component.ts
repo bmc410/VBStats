@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { faCoffee, faPlus, faMinus} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-scoreboard',
@@ -6,7 +7,8 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./scoreboard.component.css']
 })
 export class ScoreboardComponent implements OnInit {
-
+  faPlus = faPlus;
+  faMinus=faMinus;
   @Input() homescore: number;
   @Input() opponentscore: number;
   @Output() scorepost = new EventEmitter();

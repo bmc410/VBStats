@@ -63,6 +63,7 @@ export class MatchComponent implements OnInit {
   startHidden = false;
   offline: boolean;
   c: IGames
+  zoom = false
   //currentGame: <Observable> GameWithId();
   //let currentGame = this.matchService.getGameByNumber(this.gameNumber, this.match.matchid);
 
@@ -513,6 +514,10 @@ export class MatchComponent implements OnInit {
 
   createMatch() {
     this.display = false;
+  }
+
+  ShowKeypad() {
+    this.zoom = true
   }
 
   startMatch() {

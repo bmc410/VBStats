@@ -1,44 +1,17 @@
-<div style="z-index: 0; " class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-  <header  *ngIf="offline==true" style="background-color: red; min-height: 30px; opacity: .5;" class="mdl-layout__header">
-    <div style="min-height: 30px;  padding-left: 10px;" class="mdl-layout__header-row">
-      <!-- Title -->
-      <span style="font-family: Digital; font-size: 2.5vw; color: white;" class="d-sm-block title">CourtSide Communicator</span>
-      <!-- Add spacer, to align navigation to the right -->
-      <div class="mdl-layout-spacer"></div>
-      <!-- Navigation. We hide it in small screens. -->
-      <nav *ngIf="currentUser" class="mdl-navigation">
-        <a style="font-family: Digital; font-size: 2.5vw;" routerLink="configure" class="mdl-navigation__link title" href="">Home</a>
-        <a style="font-family: Digital; font-size: 2.5vw;" class="mdl-navigation__link title" href="" (click)="logout()">Logout</a>
-      </nav>
-    </div>
-  </header>
-  <header *ngIf="offline!=true" style="background-color: transparent; min-height: 30px; " class="mdl-layout__header">
-    <div style="min-height: 30px;  padding-left: 10px;" class="mdl-layout__header-row">
-      <!-- Title -->
-      <span style="font-family: Digital; font-size: 2.5vw; color: white;" class="d-sm-block title">CourtSide Communicator</span>
-      <!-- Add spacer, to align navigation to the right -->
-      <div class="mdl-layout-spacer"></div>
-      <!-- Navigation. We hide it in small screens. -->
-      <nav *ngIf="currentUser" class="mdl-navigation">
-        <a style="font-family: Digital; font-size: 2.5vw;" routerLink="configure" class="mdl-navigation__link title" href="">Home</a>
-        <a style="font-family: Digital; font-size: 2.5vw;" class="mdl-navigation__link title" href="" (click)="logout()">Logout</a>
-      </nav>
-    </div>
-  </header>
-  
-  <main class="mdl-layout__content">
-    <div class="page-content"><router-outlet></router-outlet>
-    </div>
-  </main>
-
-  <footer style="height: 3vw;" class="page-footer font-small white">
-
-    <!-- Copyright -->
-    <div style="color: white; font-family: Digital "class="text-center">© 2020 Copyright:
-      <span style="color: white; text-decoration: none;" href=#> KBVB - Version 2.29</span>
-    </div>
-    <!-- Copyright -->
-
-  </footer>
-</div>
-
+<nav class="navbar navbar-fixed-top navbar-dark">
+  <span style="font-family: Digital; font-size: 2em; color: white;" class="d-sm-block title">CourtSide Communicator</span>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsingNavbar">
+      <span class="navbar-toggler-icon"></span>
+  </button>
+  <div *ngIf="currentUser" style="text-align: right;" class="navbar-collapse collapse" id="collapsingNavbar">
+      <ul style="font-family: Digital; font-size: 2em; color: white;" class="navbar-nav">
+          <li class="nav-item">
+            <a data-toggle="collapse" data-target=".navbar-collapse.show" style="font-family: Digital; font-size: 1em; color:white" routerLink="configure" class="mdl-navigation__link title" href="">Home</a>
+          </li>
+          <li class="nav-item">
+            <a data-toggle="collapse" data-target=".navbar-collapse.show" style="font-family: Digital; font-size: 1em;  color:white" class="mdl-navigation__link title" href="" (click)="logout()">Logout</a>
+          </li>
+          
+      </ul>
+  </div>
+</nav>

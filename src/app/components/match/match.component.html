@@ -8,49 +8,74 @@
         class="row  d-flex justify-content-center">
 
         <!-- Scoreboard -->
-        <div style="margin: 1vw" class="col-4 align-self-center  d-flex justify-content-start" >
+        <div style="margin: 1vw" class="col-3 align-self-center  d-flex justify-content-start" >
           <app-scoreboard homescore="{{game?.HomeScore}}" opponentscore="{{game?.OpponentScore}}" (scorepost)="postScore($event)"></app-scoreboard>
         </div>
 
-        <div class="col-1 align-self-center  d-flex justify-content-center">
+        <div class="col-2 align-self-center  d-flex justify-content-center">
           <!-- Subs Section -->
-          <div style="text-align: center; margin-left: 20px; display: inline;">
+          <div style="text-align: center;  display: inline;">
             <div class="sublabel">Subs</div>
-            <div class="stepper-input stepper__input">
-              <button class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
-                <fa-icon [icon]="faMinus"></fa-icon>
-              </button>
-              <div class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
+              <div style="display: flex; align-items: center;" >
+              <app-inc-dec-button
+                (signpost)="postSign($event)"
+                team='subs'
+                action='s'
+                stat=''
+                sign="-" 
+                player=''
+                width='3em'
+                height='3em'>
+              </app-inc-dec-button>
+              <div style="color:white; width: 3rem;  font-size: 3em;" class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
                 aria-relevant="all">
                 {{this.game.subs}}
               </div>
-              <button class="toggle-more up" (click)="updateGame('subs', 'a', '', null)">
-                <fa-icon [icon]="faPlus"></fa-icon>
-                <!-- <span [icon]="faCoffee" style="vertical-align: middle;" class="fas fa-plus"></span> -->
-              </button>
+              <app-inc-dec-button
+                (signpost)="postSign($event)"
+                team='subs'
+                action='a'
+                stat=''
+                sign="+" 
+                player=''
+                width='3em'
+                height='3em'>
+              </app-inc-dec-button>
             </div>
           </div>
         </div>
-        <div class="col-1 align-self-center  d-flex justify-content-center">
-          &nbsp;
-        </div>
-        <div  class="col-1 align-self-center  d-flex justify-content-center">
+       
+        <div  class="col-2 align-self-center  d-flex justify-content-center">
           <!-- Game Section -->
           <div style="text-align: center; margin-left: 5vw; display: inline;">
               <div class="sublabel">Game#</div>
-              <div class="stepper-input stepper__input">
-                <button class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
-                  <fa-icon [icon]="faMinus"></fa-icon>
-                </button>
-                <div class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
+              <div style="display: flex; align-items: center;" >
+                <app-inc-dec-button
+                  (signpost)="postSign($event)"
+                  team='subs'
+                  action='s'
+                  stat=''
+                  sign="-" 
+                  player=''
+                  width='3em'
+                  height='3em'>
+                </app-inc-dec-button>
+                <div style="color:white; width: 3rem;  font-size: 3em;" class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
                   aria-relevant="all">
                   {{game?.gamenumber}}
                 </div>
-                <button class="toggle-more up" (click)="updateGame('subs', 'a', '', null)">
-                  <fa-icon [icon]="faPlus"></fa-icon>
-                </button>
+                <app-inc-dec-button
+                  (signpost)="postSign($event)"
+                  team='subs'
+                  action='a'
+                  stat=''
+                  sign="+" 
+                  player=''
+                  width='3em'
+                  height='3em'>
+                </app-inc-dec-button>
               </div>
-          </div>
+            </div>
        </div>
 
         <!-- Rotate and Start Buttons -->
@@ -72,7 +97,9 @@
 
         </div>
 
-  </div>
+  
+  
+      </div>
 
   <!-- Mobile Scoreboard -->
   <div *ngIf="mobile"
@@ -80,7 +107,7 @@
     class="container col-12 align-items-center">
 
     <!-- Scoreboard -->
-    <div class="row d-flex justify-content-center">
+    <div style="margin-bottom: 1vh;" class="row d-flex justify-content-center">
       <app-mobile-scoreboard homescore="{{game?.HomeScore}}" opponentscore="{{game?.OpponentScore}}" (scorepost)="postScore($event)" style="margin: 1vw; width: 100%;"></app-mobile-scoreboard>
     </div>
 
@@ -88,32 +115,74 @@
     <div class="row d-flex justify-content-center">
          <div style="text-align: center;">
       <div style="color: white;" class="sublabel">Subs</div>
-      <div class="stepper-input stepper__input">
-        <button style="width: 7vw; height: 7vw;" class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
-          <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
-        </button>
-        <div style="width: 7vw; height: 7vw; font-size: 5vw;" class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
+      <div style="display: flex; align-items: center;" >
+        <app-inc-dec-button
+          (signpost)="postSign($event)"
+          team=''
+          action='s'
+          stat=''
+          sign="-" 
+          player=''
+          width='2em'
+          fontsize='1em'
+          height='2em'>
+        </app-inc-dec-button>
+
+         <div style="color:white; width: 1em;  font-size: 3vh;" class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
           aria-relevant="all">
           {{this.game.subs}}
         </div>
-        <button style="width: 7vw; height: 7vw;" class="toggle-more up" (click)="updateGame('subs', 'a', '', null)">
-          <fa-icon [icon]="faPlus"></fa-icon>
-        </button>
+
+        <app-inc-dec-button
+          (signpost)="postSign($event)"
+          team=''
+          action='a'
+          stat=''
+          sign="+" 
+          player=''
+          width='2em'
+          fontsize='1em'
+          height='2em'>
+        </app-inc-dec-button>
+
+ 
       </div>
       </div>
       <div style="text-align: center; margin-left: 5vw;">
         <div style="color: white;" class="sublabel">Game#</div>
-        <div class="stepper-input stepper__input">
-          <button style="width: 7vw; height: 7vw;" class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
+        <div style="display: flex; align-items: center;" >
+          <app-inc-dec-button
+            (signpost)="postGame($event)"
+            team=''
+            action='s'
+            stat=''
+            sign="-" 
+            player=''
+            width='2em'
+            fontsize='1em'
+            height='2em'>
+          </app-inc-dec-button>
+          <!-- <button style="width: 7vw; height: 7vw;" class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
             <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
-          </button>
-          <div style="width: 7vw; height: 7vw; font-size: 5vw;" class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
+          </button> -->
+
+          <div style="color:white; width: 7vw;  font-size: 3vh;" class="stepper-input-field" name="range-value" aria-atomic="true" aria-live="polite"
             aria-relevant="all">
             {{game?.gamenumber}}
           </div>
-          <button style="width: 7vw; height: 7vw;" class="toggle-more up" (click)="updateGame('subs', 'a', '', null)">
-            <fa-icon [icon]="faPlus"></fa-icon>
-          </button>
+
+       
+          <app-inc-dec-button
+            (signpost)="postGame($event)"
+            team=''
+            action='a'
+            stat=''
+            sign="+" 
+            player=''
+            width='2em'
+            fontsize='1em'
+            height='2em'>
+          </app-inc-dec-button>
         </div>
       </div>
     </div>

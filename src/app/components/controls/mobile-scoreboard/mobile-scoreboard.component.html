@@ -27,23 +27,34 @@
                   {{homescore}}
                 </div>
             </div>
-            <div style="display: inline-block;" class="stepper-input stepper__input">
+                <app-inc-dec-button
+                (signpost)="postSign($event)"
+                team='home'
+                action='s'
+                stat='tp'
+                sign="+" 
+                player=''
+                height='7vh'>
+            </app-inc-dec-button>
+
+            <!-- <div style="display: inline-block;" class="stepper-input stepper__input">
                 <button style="border: 3px solid; background-color: transparent;  width: 7vw; height: 7vh; vertical-align: middle; padding: 0px;"
                     (click)="updateGame('home', 'a', 'te', null)" id="homeminus">
                     <fa-icon style="font-size: 3vh;" [icon]="faPlus"></fa-icon>
                 </button>
-            </div>
+            </div> -->
         </div>
         <div class="col justify-content-center" style="display: flex; align-items: center;">
 
-            <div style="display: inline-block;" class="stepper-input stepper__input">
-                <button style=" border: 3px solid; width: 7vw; height: 7vh; background-color: transparent;  vertical-align: middle; padding: 0px"
-                    (click)="updateGame('opponent', 's', 'tp', null)" class=" " id="homeminus">
-                    <fa-icon style="font-size: 3vh;" [icon]="faMinus"></fa-icon>
-                </button>
-            </div>
-
-        
+            <app-inc-dec-button
+                (signpost)="postSign($event)"
+                team='opponent'
+                action='s'
+                stat='tp'
+                sign="-" 
+                player=''
+                height='7vh'>
+            </app-inc-dec-button>
             
             <div style="margin-left: 5px; margin-right: 5px; min-height: 7vh;" class="card">
                 <div style="padding-left: 5px; padding-right: 5px; color: white; padding-top: 0px; padding-bottom: 0px; background-color: #144A99;" 
@@ -54,13 +65,16 @@
                   {{opponentscore}}
                 </div>
             </div>
-            <div style="display: inline-block;" class="stepper-input stepper__input">
-                <button style="border: 3px solid; background-color: transparent;  width: 7vw; height: 7vh; vertical-align: middle; padding: 0px;"
-                    (click)="updateGame('opponent', 'a', 'te', null)" id="homeminus">
-                    <fa-icon style="font-size: 3vh;" [icon]="faPlus"></fa-icon>
-                </button>
-            </div>
 
+            <app-inc-dec-button
+                (signpost)="postSign($event)"
+                team='opponent'
+                action='s'
+                stat='tp'
+                sign="+" 
+                player=''
+                height='7vh'>
+            </app-inc-dec-button>
         
         </div>
     </div>

@@ -18,6 +18,11 @@ export class ScoreboardComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  postSign(e) {
+    this.updateGame(e.team, e.action, e.stat, e.player)
+    console.log(e)
+  }
+
 
   updateGame(team: string, action: any, stat: string, player: any) {
     let gameScore = {

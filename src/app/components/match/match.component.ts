@@ -479,6 +479,19 @@ export class MatchComponent implements OnInit {
     console.log(p);
   }
 
+  postSign(e) {
+    this.updateGame(e.team, e.action, e.stat, e.player)
+    //console.log(e)
+  }
+
+  postGame(e) {
+    if (e.action === "a")
+      this.game.gamenumber = this.game.gamenumber + 1
+    else
+      this.game.gamenumber = this.game.gamenumber - 1
+  }
+
+
   incrementStat(pos: number, player: PlayerWithId, stat: string) {
     var affectedPlayer: PlayerWithId[] = [];
     const s = new Stat();

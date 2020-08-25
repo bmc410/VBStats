@@ -1,5 +1,5 @@
 <!-- Desktop and Tablet View -->
-<div style="font-size: 16px;  margin-top: 15px;">
+<div style="font-size: 16px;  margin-top: 15px; margin-left: 10px; margin-right: 10px;">
 
   <!-- Desktop Scoreboard -->
   <div *ngIf="!mobile"
@@ -85,8 +85,8 @@
     </div>
 
     <!-- Subs and Games NumberSection -->
-    <div class="row ">
-      <div class="col-3 " >
+    <div class="row " style="margin-bottom: 10px;">
+      <div class="col-4 " >
         <div style="color: white; text-align:center" class="sublabel align-self-center">Subs</div>
         <div class="align-self-center justify-content-center" style="display: flex; align-items: center; text-align:center">
           <app-inc-dec-button (signpost)="postSign($event)" team='' action='s' stat='' sign="-" player='' width='2em'
@@ -105,7 +105,7 @@
 
         </div>
       </div>
-      <div class="col-3" >
+      <div class="col-4" >
         <div style="color: white;  text-align:center" class="sublabel">Game#</div>
         <div class="align-self-center justify-content-center" style="display: flex; align-items: center; text-align:center">
           <app-inc-dec-button (signpost)="postGame($event)" team='' action='s' stat='' sign="-" player='' width='2em'
@@ -126,7 +126,7 @@
           </app-inc-dec-button>
         </div>
       </div>
-      <div class="col-6 d-flex justify-content-end align-items-end" style="text-align: right;">
+      <div class="col-4 d-flex justify-content-end align-items-end" style="text-align: right; padding-right: 5px;">
         <button [hidden]="startHidden" style="border-radius: 10px; background-color: #059B87; color: white;"
           type="button" (click)="startMatch()" class="btn btn-responsive">
           <span class="">Start<br /></span>
@@ -140,18 +140,7 @@
         </button>
       </div>
     </div>
-
-    <!-- Rotate and Start Buttons -->
-    <div style="padding-top: 15px; margin-bottom: 5px;" class="row d-flex justify-content-center">
-
-
-
-
-      <!-- </div> -->
-      <!-- <div class="col-sm"> -->
-
-
-    </div>
+   
   </div>
 
 
@@ -281,12 +270,14 @@
 
           <div>
             <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
-              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[1].playerPos }}
+              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                <span>{{ playerPositions[1].playerPos }}</span>
+                <span style="float: right; margin-right: 1em">Pos 1</span>
               </div>
               <div cdkDropList id="pos1" (cdkDropListDropped)="drop($event,1)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
-                <app-f-mobile-kpad playerName="{{ playerPositions[1].playerPos }}" posNum="1"
-                  (statPost)="postStat($event)"></app-f-mobile-kpad>
+                <app-s-mobile-kpad playerName="{{ playerPositions[1].playerPos }}" posNum="1"
+                  (statPost)="postStat($event)"></app-s-mobile-kpad>
 
               </div>
             </div>
@@ -294,7 +285,9 @@
 
           <div>
             <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
-              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[2].playerPos }}
+              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                <span>{{ playerPositions[2].playerPos }}</span>
+                <span style="float: right; margin-right: 1em">Pos 2</span>
               </div>
               <div cdkDropList id="pos2" (cdkDropListDropped)="drop($event,2)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
@@ -306,7 +299,9 @@
 
           <div>
             <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
-              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[3].playerPos }}
+              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;"> 
+                <span>{{ playerPositions[3].playerPos }}</span>
+                <span style="float: right; margin-right: 1em">Pos 3</span>
               </div>
               <div cdkDropList id="pos3" (cdkDropListDropped)="drop($event,3)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
@@ -318,7 +313,9 @@
 
           <div>
             <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
-              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[4].playerPos }}
+              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                <span>{{ playerPositions[4].playerPos }}</span>
+                <span style="float: right; margin-right: 1em">Pos 4</span>
               </div>
               <div cdkDropList id="pos4" (cdkDropListDropped)="drop($event,4)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
@@ -331,24 +328,28 @@
 
           <div>
             <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
-              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[5].playerPos }}
+              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                <span>{{ playerPositions[5].playerPos }}</span>
+                <span style="float: right; margin-right: 1em">Pos 5</span>
               </div>
               <div cdkDropList id="pos5" (cdkDropListDropped)="drop($event,5)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
-                <app-f-mobile-kpad playerName="{{ playerPositions[5].playerPos }}" posNum="5"
-                  (statPost)="postStat($event)"></app-f-mobile-kpad>
+                <app-r-mobile-kpad playerName="{{ playerPositions[5].playerPos }}" posNum="5"
+                  (statPost)="postStat($event)"></app-r-mobile-kpad>
               </div>
             </div>
           </div>
 
           <div>
             <div style="border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
-              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">{{ playerPositions[6].playerPos }}
+              <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                <span>{{ playerPositions[6].playerPos }}</span>
+                <span style="float: right; margin-right: 1em">Pos 6</span>
               </div>
               <div cdkDropList id="pos6" (cdkDropListDropped)="drop($event,6)" style="text-align: center; padding: 0px;"
                 class="panel-body panel-height">
-                <app-f-mobile-kpad playerName="{{ playerPositions[6].playerPos }}" posNum="6"
-                  (statPost)="postStat($event)"></app-f-mobile-kpad>
+                <app-r-mobile-kpad playerName="{{ playerPositions[6].playerPos }}" posNum="6"
+                  (statPost)="postStat($event)"></app-r-mobile-kpad>
               </div>
             </div>
           </div>

@@ -1,0 +1,45 @@
+.table th, .table td {
+    border-top: none !important;
+  }
+  
+  @media (max-width: 768px) {
+    .btn-responsive {
+      padding:2px 4px;
+      font-size:80%;
+      line-height: 1;
+      border-radius:3px;
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 992px) {
+    .btn-responsive {
+      padding:4px 9px;
+      font-size:90%;
+      line-height: 1.2;
+    }
+  }
+  
+  .btn-light {
+    background-color: #E8BB0B;
+    border: 0px;
+  }
+  
+  .btn-danger {
+    background-color: #144A99;
+    border-color: #144A99;
+  }
+  
+  .btn-success {
+    background-color: #079479;
+    border-color: #079479;
+  }
+  
+  .btn {
+    font-weight: bold;
+    height: 30px;
+  }
+
+  table#fkpad td {
+    padding: 2px;
+    vertical-align: middle;
+  }

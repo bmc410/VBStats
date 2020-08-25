@@ -793,4 +793,10 @@ export class ConfigureComponent implements OnInit {
  
   //#endregion
 
+  //#region Reset Database
+  resetDatabase() {
+    
+  }
+  //#endregion
+
 }

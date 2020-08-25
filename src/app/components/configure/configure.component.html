@@ -1,4 +1,4 @@
-<div style="margin-top: 15px;" class="container">
+<div style="margin: 15px;" class="">
   <p-tabView>
     <p-tabPanel header="Matches">
       <p-table [value]="matches" selectionMode="single" [(selection)]="selectedMatch"
@@ -91,6 +91,13 @@
             <td class="col-1">
               <button  type="button" class="btn btn-info btn-block"  
               (click)="SyncOfflineData()">Upload</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="col-11">Clear all match, game and statistical data</td>
+            <td class="col-1">
+              <button  type="button" class="btn btn-info btn-block"  
+              (click)="resetDatabase()">Reset</button>
             </td>
           </tr>
         </tbody>

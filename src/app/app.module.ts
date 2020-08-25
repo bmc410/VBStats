@@ -74,6 +74,8 @@ import { NetworkService } from './services/network.service';
 import { OfflineService } from './services/offline.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IncDecButtonComponent } from './components/controls/inc-dec-button/inc-dec-button.component';
+import { RMobileKpadComponent } from './components/controls/r-mobile-kpad/r-mobile-kpad.component';
+import { SMobileKpadComponent } from './components/controls/s-mobile-kpad/s-mobile-kpad.component';
 
 
 @NgModule({
@@ -98,7 +100,9 @@ import { IncDecButtonComponent } from './components/controls/inc-dec-button/inc-
     MobileScoreboardComponent,
     HybridMatchComponent,
     LoginComponent,
-    IncDecButtonComponent
+    IncDecButtonComponent,
+    RMobileKpadComponent,
+    SMobileKpadComponent
   ],
   imports: [
     BrowserModule,

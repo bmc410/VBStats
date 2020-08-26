@@ -225,3 +225,7 @@
   margin-bottom: 1vw;
   color: #FFF;
 }
+
+:host{
+  height: 100%;
+}

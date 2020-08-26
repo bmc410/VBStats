@@ -11,6 +11,7 @@ export class IncDecButtonComponent implements OnInit {
   faMinus=faMinus;
   icon: IconDefinition
 
+
   @Input() fontsize: string;
   @Input() sign: string;
   @Input() height: string;

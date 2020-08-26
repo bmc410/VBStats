@@ -30,6 +30,8 @@ import { formatDate } from '@angular/common';
 import { stat } from 'fs';
 import { IPlayByPlay, IClubs, ITeamPlayers, ITeams, IPlayers } from 'src/app/models/dexie-models';
 import { MessageService } from 'primeng/api';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: "app-configure",
@@ -63,6 +65,7 @@ export class ConfigureComponent implements OnInit {
   teamName = "";
   teamClubId = "";
   selectedTeamClubId = "";
+  faCheck=faCheck
 
   levels:Array<Object> = [
     {num: 0, name: "AA"},
@@ -542,18 +545,21 @@ export class ConfigureComponent implements OnInit {
  
 
   DeleteMatch() {
-    const Match = Parse.Object.extend('Matches');
-    const query = new Parse.Query(Match);
-    // here you put the objectId that you want to delete
-    query.get(this.match.objectId).then((object) => {
-      object.destroy().then((response) => {
-        this.matchService.getMatches().subscribe(result => {
-          var json = JSON.stringify(result);
-          this.matches = JSON.parse(json);
-          this.matchDialogDisplay = false;
-        });  
-      });
-    });
+    this.matchService.deleteMatch(this.match.objectId).then(result => {
+      console.log(result)
+    })
+    // const Match = Parse.Object.extend('Matches');
+    // const query = new Parse.Query(Match);
+    // // here you put the objectId that you want to delete
+    // query.get(this.match.objectId).then((object) => {
+    //   object.destroy().then(async (response) => {
+    //     await this.matchService.getMatches().then(result => {
+    //       var json = JSON.stringify(result);
+    //       this.matches = JSON.parse(json);
+    //       this.matchDialogDisplay = false;
+    //     });  
+    //   });
+    // });
   }
 
   onRowSelect(event) {
@@ -574,13 +580,15 @@ export class ConfigureComponent implements OnInit {
   async SaveMatch() {
     let match = new MatchWithId()
     match.HomeTeamId = this.selectedTeamId
+    //match.Home = this.ma
     let formattedDt = formatDate(this.gameDate.value, 'MM/dd/yyyy', 'en_US')
     match.MatchDate = formattedDt
     match.objectId = this.dialogMatchId
-    if(match.objectId == 'undefined' || match.objectId == null || match.objectId == "")
-    {
-      match.objectId = Guid.create().toString()
-    }
+    match.Home = this.match.Home
+    // if(match.objectId == 'undefined' || match.objectId == null || match.objectId == "")
+    // {
+    //   match.objectId = Guid.create().toString()
+    // }
     match.Opponent = this.dilogOpponent
     match.Home = this.selectedTeamName
     if(this.offline == true) {
@@ -591,7 +599,7 @@ export class ConfigureComponent implements OnInit {
       })
     }
     else {
-      this.matchService.saveMatch(match).subscribe(data => {
+      this.matchService.saveMatch(match).then(data => {
         this.matchService.getMatches().then(result => {
           var json = JSON.stringify(result);
           this.matches = JSON.parse(json);
@@ -795,7 +803,15 @@ export class ConfigureComponent implements OnInit {
 
   //#region Reset Database
   resetDatabase() {
-    
+    this.offlineservice.clearPBPTable()
+    this.offlineservice.clearStatsTable()
+    this.offlineservice.clearGamesTable()
+    this.offlineservice.clearMatchesTable()
+    this.offlineservice.clearTeamsTable()
+    this.offlineservice.clearTeamPlayersTable()
+    this.offlineservice.clearClubsTable()
+    this.offlineservice.clearPlayersTable()
+    this.messageService.add({severity:'success', summary:'Reset Successfull', detail:'The data from this device has been cleared'});
   }
   //#endregion
 

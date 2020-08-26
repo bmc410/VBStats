@@ -2,22 +2,6 @@
   border-top: none !important;
 }
 
-@media (max-width: 768px) {
-  .btn-responsive {
-    padding:2px 4px;
-    font-size:80%;
-    line-height: 1;
-    border-radius:3px;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 992px) {
-  .btn-responsive {
-    padding:4px 9px;
-    font-size:90%;
-    line-height: 1.2;
-  }
-}
 
 .btn-danger {
   background-color: #144A99;
@@ -30,4 +14,11 @@
 
 .btn-light {
   background-color: #E8BB0B;
+}
+
+table {
+  height: 100%;
+}
+button {
+  height: 100%;
 }

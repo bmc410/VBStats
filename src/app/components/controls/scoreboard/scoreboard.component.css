@@ -138,3 +138,6 @@
   flex-grow: 1;
 }
 
+:host{
+  width: 100%;
+}

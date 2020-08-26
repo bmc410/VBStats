@@ -10,10 +10,11 @@ import { MobileScoreboardComponent } from './components/controls/mobile-scoreboa
 import { HybridMatchComponent } from './components/hybrid-match/hybrid-match.component';
 import { AuthGuard } from './auth-guard';
 import { LoginComponent } from './components/login/login.component';
+import { ResponsiveMatchComponent } from './components/responsive-match/responsive-match.component';
 
 const routes: Routes = [
   { path: "configure", component: ConfigureComponent, canActivate: [AuthGuard] },
-  { path: "match", component: MatchComponent, canActivate: [AuthGuard] },
+  { path: "match", component: ResponsiveMatchComponent, canActivate: [AuthGuard] },
   { path: "summary", component: SummaryComponent },
   { path: "scoreboard", component: ScoreboardComponent},
   { path: "test", component: TestpanelComponent },

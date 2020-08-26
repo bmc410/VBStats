@@ -27,7 +27,7 @@ export class OfflineService {
     this.db = new OfflineDatabase();
   }
 
-//#region ******* Play By Play  */
+  //#region ******* Play By Play  */
 
 clearPBPTable() {
   this.db.playbyplay.clear().then(result => {
@@ -121,6 +121,13 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
 //#endregion
 
   //#region ******* Stats  */
+  clearStatsTable() {
+    this.db.stats.clear().then(result => {
+      this.loadStats()
+    })
+  }
+  
+
   getActionFromStat(stat:string) {
     var action = ""
     switch (stat) {
@@ -242,6 +249,12 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
 
   //#region ******* Games  */
 
+  clearGamesTable() {
+    this.db.games.clear().then(result => {
+      this.loadGames()
+    })
+  }
+
   updateGame(g: GameWithId) {
     return this.db.games.update(g.objectId, 
       {HomeScore: g.HomeScore, OpponentScore: g.OpponentScore, Subs: g.subs}
@@ -292,6 +305,12 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
     })
   }
 
+  clearMatchesTable() {
+    this.db.matches.clear().then(result => {
+      this.loadMatches()
+    })
+  }
+
   deleteAllMatches() {
     this.db.matches.clear()
   }
@@ -313,6 +332,12 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
   //#endregion
 
   //#region ******* Teams  */
+  clearTeamsTable() {
+    this.db.teams.clear().then(result => {
+      this.loadTeams()
+    })
+  }
+
   bulkAddTeams(teams: ITeams[]) {
     this.db.teams.clear().then(result => {
     return this.db.teams.bulkAdd(teams).then(result => {
@@ -343,6 +368,12 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
   //#endregion
 
   //#region - Team Players
+  clearTeamPlayersTable() {
+    this.db.teamplayers.clear().then(result => {
+      this.loadTeamPlayers()
+    })
+  }
+
   loadTeamPlayers() {
       this.db.teamplayers.toArray().then (results => {
         this.TeamPlayers.next(results);
@@ -363,6 +394,12 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
   //#endregion
 
   //#region - Clubs  */
+  clearClubsTable() {
+    this.db.clubs.clear().then(result => {
+      this.loadClubs()
+    })
+  }
+
   loadClubs() {
       const cIds: ClubWithId[] = []
       this.db.clubs.toArray().then (results => {
@@ -390,6 +427,12 @@ addPlayByPlay(g: GameWithId, cp: CourtPosition[], stat: string, p: PlayerWithId[
   //#endregion
 
   //#region ******* Players  */
+  clearPlayersTable() {
+    this.db.players.clear().then(result => {
+      this.loadPlayers()
+    })
+  }
+
   bulkAddPlayers(players: IPlayers[]) {
     return this.db.players.clear().then(result => {
       this.db.players.bulkAdd(players).then(()=>{

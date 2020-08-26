@@ -1,0 +1,18 @@
+#outer {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+  }
+   
+  #inner_fixed {
+    border: 1px solid white;
+  }
+   
+  #inner_remaining {
+    /* background-color: #DDDDDD; */
+    flex-grow : 1;
+    margin: 1em;
+  }
+  :host{
+    height: 100%;
+  }

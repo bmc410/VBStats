@@ -76,6 +76,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { IncDecButtonComponent } from './components/controls/inc-dec-button/inc-dec-button.component';
 import { RMobileKpadComponent } from './components/controls/r-mobile-kpad/r-mobile-kpad.component';
 import { SMobileKpadComponent } from './components/controls/s-mobile-kpad/s-mobile-kpad.component';
+import { ResponsiveMatchComponent } from './components/responsive-match/responsive-match.component';
 
 
 @NgModule({
@@ -102,7 +103,8 @@ import { SMobileKpadComponent } from './components/controls/s-mobile-kpad/s-mobi
     LoginComponent,
     IncDecButtonComponent,
     RMobileKpadComponent,
-    SMobileKpadComponent
+    SMobileKpadComponent,
+    ResponsiveMatchComponent
   ],
   imports: [
     BrowserModule,

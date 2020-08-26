@@ -1,12 +1,18 @@
-<app-nav></app-nav>
-<router-outlet></router-outlet>
-<footer style="height: 3vw;" class="page-footer font-small white">
-
+<div class="wrapper">
+  <header class="page-header">
+    <app-nav></app-nav>
+  </header>
+  <main class="page-main">
+    <router-outlet></router-outlet>
+  </main>
+  <footer class="page-footer d-flex justify-content-center">
     <!-- Copyright -->
-    <div style="color: white; font-family: Digital "class="text-center">© 2020 Copyright:
+    <div style="color: white; font-family: Digital " class="text-center">© 2020 Copyright:
       <span style="color: white; text-decoration: none;" href=#> KBVB - Version 2.29</span>
     </div>
     <!-- Copyright -->
 
   </footer>
+</div>
+
 <p-toast [baseZIndex]="1000"></p-toast>

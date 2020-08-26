@@ -94,7 +94,7 @@
             </td>
           </tr>
           <tr>
-            <td class="col-11">Clear all match, game and statistical data</td>
+            <td class="col-11">Clear all match, game and statistical data on this device</td>
             <td class="col-1">
               <button  type="button" class="btn btn-info btn-block"  
               (click)="resetDatabase()">Reset</button>
@@ -139,7 +139,7 @@
     </div>
 
     <div class="col-sm-6">
-      <label for="inputEmail">Game</label><br />
+      <label for="inputEmail">Game - {{game}}</label><br />
       <!-- <div class="btn-group" role="group" aria-label="...">
         <button style="margin-right: 1vw;" type="button" class="btn btn-default btn-responsive">1</button>
         <button style="margin-right: 1vw;" type="button" class="btn btn-default btn-responsive">2</button>
@@ -148,25 +148,30 @@
         <button type="button" class="btn btn-default btn-responsive">5</button>
 
       </div> -->
-      <div class="d-flex no-wrap">
-        <button (click)="setGame(1)" style="margin-right: .7vw; outline: none; border: 0px; background-color: transparent;" color="">
-          <span style="color: green;" *ngIf="game==1" class="glyphicon glyphicon-ok"></span>
+      <div class=" d-flex no-wrap">
+        <button class="col-2" (click)="setGame(1)" style="outline: none; border: 0px; background-color: transparent;" color="">
+          <fa-icon *ngIf="game==1" [icon]="faCheck"></fa-icon>
+          <!-- <span style="color: green;" *ngIf="game==1" class="glyphicon glyphicon-ok"></span> -->
           <span *ngIf="game!=1">1</span>
         </button>
-        <button (click)="setGame(2)" style="margin-right: .7vw; outline: none; border: 0px; background-color: transparent;" color="">
-          <span style="color: green;" *ngIf="game==2" class="glyphicon glyphicon-ok"></span>
+        <button class="col-2" (click)="setGame(2)" style="outline: none; border: 0px; background-color: transparent;" color="">
+          <fa-icon *ngIf="game==2" [icon]="faCheck"></fa-icon>
+          <!-- <span style="color: green;" *ngIf="game==2" class="glyphicon glyphicon-ok"></span> -->
           <span *ngIf="game!=2">2</span>
         </button>
-        <button (click)="setGame(3)" style="margin-right: .7vw; outline: none; border: 0px; background-color: transparent;" color="">
-          <span style="color: green;" *ngIf="game==3" class="glyphicon glyphicon-ok"></span>
+        <button class="col-2" (click)="setGame(3)" style="outline: none; border: 0px; background-color: transparent;" color="">
+          <fa-icon *ngIf="game==3" [icon]="faCheck"></fa-icon>
+          <!-- <span style="color: green;" *ngIf="game==3" class="glyphicon glyphicon-ok"></span> -->
           <span *ngIf="game!=3">3</span>
         </button>
-        <button (click)="setGame(4)" style="margin-right: .7vw; outline: none; border: 0px; background-color: transparent;" color="">
-          <span style="color: green;" *ngIf="game==4" class="glyphicon glyphicon-ok"></span>
+        <button class="col-2" (click)="setGame(4)" style="outline: none; border: 0px; background-color: transparent;" color="">
+          <fa-icon *ngIf="game==4" [icon]="faCheck"></fa-icon>
+          <!-- <span style="color: green;" *ngIf="game==4" class="glyphicon glyphicon-ok"></span> -->
           <span *ngIf="game!=4">4</span>
         </button>
-        <button (click)="setGame(5)" color="" style="outline: none; border: 0px; background-color: transparent;">
-          <span style="color: green;" *ngIf="game==5" class="glyphicon glyphicon-ok"></span>
+        <button class="col-2" (click)="setGame(5)" color="" style="border: 0px; background-color: transparent;">
+          <fa-icon *ngIf="game==5" [icon]="faCheck"></fa-icon>
+          <!-- <span style="color: green;" *ngIf="game==5" class="glyphicon glyphicon-ok"></span> -->
           <span *ngIf="game!=5">5</span>
         </button>
 

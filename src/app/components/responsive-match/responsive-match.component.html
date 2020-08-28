@@ -1,6 +1,9 @@
 <div class="d-flex align-items: center; justify-content: center; container-fluid" id="outer">
-    <div id="inner_fixed">
+    
+  <div id="inner_fixed">
         <div class="d-flex justify-content-center">
+
+            <!-- Mobile View -->
             <div style="width:90%; margin: 1em" *ngIf="mobile">
 
                 <!-- Scoreboard -->
@@ -58,23 +61,20 @@
                         <button [hidden]="startHidden"
                             style="border-radius: 10px; background-color: #059B87; color: white;" type="button"
                             (click)="startMatch()" class="btn btn-responsive ">
-                            <!-- <span class="">Start<br /></span> -->
-                            <fa-icon style="font-size: 2em;" [icon]="faPlay"></fa-icon>
-                            <!-- <span style="font-size: 1em;" class="glyphicon glyphicon-play 
-                " aria-hidden="true"></span>-->
+                            <fa-icon style="font-size: 1em;" [icon]="faPlay"></fa-icon>
+                         
                         </button>
                         <button
                             style=" margin-left: 15px; border-radius: 10px; background-color: #144A99; color: white;"
                             (click)="rotate()" type="button" class="btn btn-responsive">
-                            <!-- <span class="">Rotate<br /></span> -->
-                            <fa-icon style="font-size: 2em;" [icon]="faExchangeAlt"></fa-icon>
-                            <!-- <span style="font-size: 1em;" class="glyphicon glyphicon-retweet" aria-hidden="true"></span> -->
+                            <fa-icon style="font-size: 1em;" [icon]="faExchangeAlt"></fa-icon>
                         </button>
                     </div>
                 </div>
 
             </div>
 
+            <!-- Desktop View -->
             <div class="row" style="width:90%; margin: 1em" *ngIf="!mobile">
                 <!-- Scoreboard -->
                 <div style="margin: 1vw" class="col-sm align-self-center  d-flex justify-content-start">
@@ -148,12 +148,13 @@
         </div>
     </div>
 
-    <div id="inner_remaining">
+    <div id="inner_remaining" class="d-flex align-items-center">
         <!-- Game Play Area -->
-        <div style="padding: 0px; height: 100%; ">
+        <div style="padding: 0px; height: 100%; max-height: 100%;  ">
             <div class="d-flex flex-grow-1" style="height: 100%;">
+                <!-- left column -->
                 <div cdkDropList #todoList="cdkDropList" style="background-color: #144A99; color: #fff; border-radius: 10px;
-        border: 1px #fff solid; opacity: .8; padding-left: 2px; padding-right: 0px;" [cdkDropListData]="players"
+        border: 1px #fff solid; opacity: .8; " [cdkDropListData]="players"
                     [cdkDropListConnectedTo]="['pos4', 'pos3', 'pos2', 'pos1', 'pos6', 'pos5']" class="player-list col-3"
                     (cdkDropListDropped)="drop($event,0)">
                     <div *ngFor="let player of players" cdkDrag>
@@ -180,17 +181,18 @@
                   
                 </div>
 
-                <div *ngIf="mobile" class="col d-flex justify-content-end" style="margin-left: 5px; font-size: 3vw; padding: 0px; background-color: 
-                transparent; border-color: transparent; overflow: hidden;">
+                <!-- right column for mobile -->
+                <div *ngIf="mobile" class="d-flex justify-content-end" style="font-size: 3vw; padding: 0px; background-color: 
+                transparent; border-color: transparent; ">
                     <div class=""
-                        style="width: 100%; display: flex; flex-flow: column; flex-grow: 1; background-color: transparent; border-color: transparent; width:100%">
+                        style="width: 100%; display: flex; flex-flow: column; flex-grow: 1; background-color: transparent; border-color: transparent">
                         <!-- <div > -->
                         <!-- <div class="container"> -->
 
                         <!-- </div> -->
 
                         <div style="width: 100%; flex-grow: 1;">
-                            <div style="height: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
+                            <div style="height: 100%; border-radius: 5px;  margin-bottom: 2vw;" class="card">
                                 <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
                                     <span>{{ playerPositions[1].playerPos }}</span>
                                     <span style="float: right; margin-right: 1em">Pos 1</span>
@@ -205,7 +207,7 @@
                         </div>
 
                         <div style="width: 100%; flex-grow: 1;">
-                            <div style="height: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
+                            <div style="height: 100%; border-radius: 5px;  margin-bottom: 2vw;" class="card">
                                 <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
                                     <span>{{ playerPositions[2].playerPos }}</span>
                                     <span style="float: right; margin-right: 1em">Pos 2</span>
@@ -219,7 +221,7 @@
                         </div>
 
                         <div style="width: 100%; flex-grow: 1;">
-                            <div style="height: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
+                            <div style="height: 100%; border-radius: 5px;  margin-bottom: 2vw;" class="card">
                                 <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
                                     <span>{{ playerPositions[3].playerPos }}</span>
                                     <span style="float: right; margin-right: 1em">Pos 3</span>
@@ -233,7 +235,7 @@
                         </div>
 
                         <div style="width: 100%; flex-grow: 1;">
-                            <div style="height: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
+                            <div style="height: 100%; border-radius: 5px;  margin-bottom: 2vw;" class="card">
                                 <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
                                     <span>{{ playerPositions[4].playerPos }}</span>
                                     <span style="float: right; margin-right: 1em">Pos 4</span>
@@ -279,6 +281,7 @@
                     </div>
                 </div>
 
+                <!-- right column for desktop -->
                 <div *ngIf="!mobile"
                 style="font-size: 2vw; background-color: transparent; border-color: transparent;"
                 class="col-10">
@@ -364,11 +367,6 @@
 
             </div>
         </div>
-
-
-
-
-
     </div>
 
 

@@ -11,10 +11,11 @@ import { HybridMatchComponent } from './components/hybrid-match/hybrid-match.com
 import { AuthGuard } from './auth-guard';
 import { LoginComponent } from './components/login/login.component';
 import { ResponsiveMatchComponent } from './components/responsive-match/responsive-match.component';
+import { ResponsiveComponent } from './components/responsive/responsive.component';
 
 const routes: Routes = [
   { path: "configure", component: ConfigureComponent, canActivate: [AuthGuard] },
-  { path: "match", component: ResponsiveMatchComponent, canActivate: [AuthGuard] },
+  { path: "match", component: ResponsiveComponent, canActivate: [AuthGuard] },
   { path: "summary", component: SummaryComponent },
   { path: "scoreboard", component: ScoreboardComponent},
   { path: "test", component: TestpanelComponent },

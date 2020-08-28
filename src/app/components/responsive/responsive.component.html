@@ -1,0 +1,356 @@
+<div id="inner_fixed">
+    <div class="d-flex justify-content-center">
+
+        <!-- Mobile View -->
+        <div style="width:90%; margin: 1em" *ngIf="mobile">
+
+            <!-- Scoreboard -->
+            <div style="margin-bottom: 1em" class="row d-flex justify-content-center ">
+                <app-mobile-scoreboard style="width: 100%;" homescore="{{game?.HomeScore}}" opponentscore="{{game?.OpponentScore}}"
+                    (scorepost)="postScore($event)"></app-mobile-scoreboard>
+            </div>
+
+            <!-- Subs and Games NumberSection -->
+            <div class="d-flex justify-content-between">
+                <div >
+                    <div style="color: white; text-align:center" class="sublabel align-self-center">Subs</div>
+                    <div class="align-self-center justify-content-center"
+                        style="display: flex; align-items: center; text-align:center">
+                        <app-inc-dec-button (signpost)="postSign($event)" team='' action='s' stat='' sign="-"
+                            player='' width='2em' fontsize='1em' height='2em'>
+                        </app-inc-dec-button>
+
+                        <div class="align-self-center justify-content-center"
+                            style="color:white; width: 1em;  font-size: 2em;" class="stepper-input-field"
+                            name="range-value" aria-atomic="true" aria-live="polite" aria-relevant="all">
+                            {{this.game.subs}}
+                        </div>
+
+                        <app-inc-dec-button (signpost)="postSign($event)" team='' action='a' stat='' sign="+"
+                            player='' width='2em' fontsize='1em' height='2em'>
+                        </app-inc-dec-button>
+
+
+                    </div>
+                </div>
+                <div >
+                    <div style="color: white;  text-align:center" class="sublabel">Game#</div>
+                    <div class="align-self-center justify-content-center"
+                        style="display: flex; align-items: center; text-align:center">
+                        <app-inc-dec-button (signpost)="postGame($event)" team='' action='s' stat='' sign="-"
+                            player='' width='2em' fontsize='1em' height='2em'>
+                        </app-inc-dec-button>
+                        <!-- <button style="width: 7vw; height: 7vw;" class="toggle-less down" (click)="updateGame('subs', 's', '', null)">
+        <span style="vertical-align: middle;" class="glyphicon glyphicon-minus glyph"></span>
+      </button> -->
+
+                        <div style="color:white; width: 1em;  font-size: 2em;" class="stepper-input-field"
+                            name="range-value" aria-atomic="true" aria-live="polite" aria-relevant="all">
+                            {{game?.gamenumber}}
+                        </div>
+
+
+                        <app-inc-dec-button (signpost)="postGame($event)" team='' action='a' stat='' sign="+"
+                            player='' width='2em' fontsize='1em' height='2em'>
+                        </app-inc-dec-button>
+                    </div>
+                </div>
+                <div  class="">
+                    <button [hidden]="startHidden"
+                        style=" height: 100%; float:right;  margin-left: 5px; border-radius: 10px; background-color: #059B87; color: white;" type="button"
+                        (click)="startMatch()" class="btn ">
+                        <fa-icon style="font-size: 1em;" [icon]="faPlay"></fa-icon>
+                     
+                    </button>
+                    <button
+                        style=" height: 100%; float:right; border-radius: 10px; background-color: #144A99; color: white;"
+                        (click)="rotate()" type="button" class="btn">
+                        <fa-icon style="font-size: 1em;" [icon]="faExchangeAlt"></fa-icon>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Desktop View -->
+        <div class="row" style="width:90%; margin: 1em" *ngIf="!mobile">
+            <!-- Scoreboard -->
+            <div style="margin: 1vw" class="col-sm align-self-center  d-flex justify-content-start">
+                <app-scoreboard homescore="{{game?.HomeScore}}" opponentscore="{{game?.OpponentScore}}"
+                (scorepost)="postScore($event)"></app-scoreboard>
+            </div>
+
+              <!-- Subs Section -->
+                <div class="col-sm align-self-center  d-flex justify-content-center">
+
+                    <div style="text-align: center;  width: 100%;">
+                    <div style="font-size: 3em; color: white;" class="sublabel">Subs</div>
+                    <div class="d-flex justify-content-around" style="display: flex; align-items: center;">
+                        <app-inc-dec-button (signpost)="postSign($event)" fontsize="3em" team='subs' action='s' stat='' sign="-" player=''
+                        width='5em' height='5em'>
+                        </app-inc-dec-button>
+                        <div style="color:white; font-size: 5em;" class="stepper-input-field" name="range-value"
+                        aria-atomic="true" aria-live="polite" aria-relevant="all">
+                        {{this.game.subs}}
+                        </div>
+                        <app-inc-dec-button (signpost)="postSign($event)" fontsize="3em" team='subs' action='a' stat='' sign="+" player=''
+                        width='5em' height='5em'>
+                        </app-inc-dec-button>
+                    </div>
+                    </div>
+                </div>
+            
+                <!-- Game Section -->
+                <div class="col-sm align-self-center  d-flex justify-content-center">
+
+                    <div style="text-align: center;  width: 100%;">
+                    <div style="font-size: 3em; color: white;"  class="sublabel">Game#</div>
+                    <div class="d-flex justify-content-around" style="display: flex; align-items: center;">
+                        <app-inc-dec-button (signpost)="postSign($event)" fontsize="3em" team='subs' action='s' stat='' sign="-" player=''
+                        width='5em' height='5em'>
+                        </app-inc-dec-button>
+                        <div style="color:white; width: 1em;  font-size: 5em;" class="stepper-input-field" name="range-value"
+                        aria-atomic="true" aria-live="polite" aria-relevant="all">
+                        {{game?.gamenumber}}
+                        </div>
+                        <app-inc-dec-button (signpost)="postSign($event)" fontsize="3em" team='subs' action='a' stat='' sign="+" player=''
+                        width='5em' height='5em'>
+                        </app-inc-dec-button>
+                    </div>
+                    </div>
+                </div>
+            
+                <!-- Rotate and Start Buttons -->
+                <div style="float:right" class="col-sm align-self-center  d-flex justify-content-end">
+                    <!-- <div class="col-sm">  -->
+                    <button [hidden]="startHidden" style="width:6em; border-radius: 10px;background-color: #059B87; color: white;" type="button"
+                    (click)="startMatch()" class="float-right btn btn-responsive">
+                    <div class="hidden-sm hidden-xs">Start</div>
+                    <fa-icon style="font-size: 3em;" [icon]="faPlay"></fa-icon>
+                    </button> <!-- </div> -->
+                    <span style="width: 1vw;">&nbsp;</span>
+                    <button style="width:6em; border-radius: 10px; background-color: #144A99; color: white;" (click)="rotate()" type="button"
+                    class="float-right btn btn-responsive">
+                    <div class="hidden-sm hidden-xs">Rotate</div>
+                    <fa-icon style="font-size: 3em;" [icon]="faExchangeAlt"></fa-icon>
+                    </button>
+                    <!-- </div> -->
+                    <!-- <div class="col-sm"> -->
+            
+                </div>
+        </div>
+    </div>
+</div>
+
+
+<div style="margin-top: 10px;" id="inner_remaining" class="align-items-center">
+    <!-- Game Play Area -->
+    <div style="padding: 0px; height: 100%; max-height: 100%; ">
+        <div class="d-flex flex-grow-1" style="height: 100%;">
+            <div cdkDropList #todoList="cdkDropList" style="overflow: scroll; background-color: #144A99; color: #fff; border-radius: 10px;
+    border: 1px #fff solid; opacity: .8;  padding-left: 0px; padding-right: 0px;" [cdkDropListData]="players"
+                [cdkDropListConnectedTo]="['pos4', 'pos3', 'pos2', 'pos1', 'pos6', 'pos5']" class="player-list col-3"
+                (cdkDropListDropped)="drop($event,0)">
+                <div *ngFor="let player of players" cdkDrag style="margin-top: 1em;">
+                    <div style="padding-bottom: .5em;" class="d-flex flex-nowrap">
+                        <div style="text-align: left; width: 25%; margin-left:2px"  class="d-flex ">
+                            <p-checkbox [disabled]="liberoDisabled" [(ngModel)]="player.islibero" binary="true">
+                            </p-checkbox>
+                        </div>
+                        <div style="font-size: 1em; width: 60%; margin-left: 2px;" class="d-flex align-self-center justify-content-start btn-responsive">
+                            <span *cdkDragPreview>
+                                <fa-icon [icon]="faArrowsAlt"></fa-icon>
+                            </span>
+                            {{ player.FirstName }}
+                        </div>
+                        <div class="d-flex justify-content-end" style="width: 25%; margin-right: 5px;">
+                            <span style="cursor: pointer;">
+                                <fa-icon [icon]="faArrowsAlt"></fa-icon>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+              
+            </div>
+
+
+             <!-- right column for desktop -->
+            <div *ngIf="!mobile" style="width: 100%; margin-left: 5px;"
+            >
+            <div class="" style="height: 100%; width: 100%; display: flex; background-color: transparent; border-color: transparent;">
+    
+              <div style="width: 100%; display: flex; flex-direction: column; height: 100%;">
+                <div style="flex-grow: 1; width: 100%;" class="row flex-nowrap">
+                  <div class="col col-sm">
+                    <div style="height: 100%; border-radius: 15px; background-color: white;" class="card">
+                      <div style="border-radius: 15px; background-color: #144A99; color: white;" class="card-header">
+                        <strong>{{ playerPositions[4].playerPos }}</strong></div>
+                      <div class="card-body" cdkDropList id="pos4" (cdkDropListDropped)="drop($event,4)"
+                        style="height: 100%; text-align: center; padding: 0px;" >
+                        <app-f-kpad style="height: 100%;"  posNum="4" (statPost)="postStat($event)"></app-f-kpad>
+    
+                      </div>
+                    </div>
+                  </div>
+    
+                  <div class="col col-sm">
+                    <div style="height: 100%; border-radius: 15px; background-color: white;" class="card">
+                      <div style="border-radius: 15px; background-color: #144A99; color: white;" class="card-header">
+                        <strong>{{ playerPositions[3].playerPos }}</strong></div>
+                      <div cdkDropList id="pos3" (cdkDropListDropped)="drop($event,3)"
+                        style="height: 100%; text-align: center; padding: 0px;" >
+                        <app-f-kpad style="height: 100%;" posNum="3" (statPost)="postStat($event)"></app-f-kpad>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <div class="col col-sm">
+                    <div style="height: 100%; border-radius: 15px; background-color: white;" class="card">
+                      <div style="border-radius: 15px; background-color: #144A99; color: white;" class="card-header">
+                        <strong>{{ playerPositions[2].playerPos }}</strong></div>
+                      <div cdkDropList id="pos2" (cdkDropListDropped)="drop($event,2)"
+                        style="height: 100%; text-align: center; padding: 0px;" >
+                        <app-f-kpad style="height: 100%;" posNum="2" (statPost)="postStat($event)"></app-f-kpad>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    
+                <div style="flex-grow: 1; width: 100%" class="row flex-nowrap">
+                  <div class="col col-sm">
+                    <div style="height: 100%; border-radius: 15px; background-color: white;" class="card">
+                      <div style="border-radius: 15px; background-color: #144A99; color: white;" class="card-header">
+                        <strong>{{ playerPositions[5].playerPos }}</strong></div>
+                      <div cdkDropList id="pos5" (cdkDropListDropped)="drop($event,5)"
+                        style="height: 100%; text-align: center; padding: 0px;" >
+                        <app-r-kpad style="height: 100%;" posNum="5" (statPost)="postStat($event)"></app-r-kpad>
+    
+                      </div>
+                    </div>
+                  </div>
+    
+                  <div class="col col-sm">
+                    <div style="height: 100%; border-radius: 15px; background-color: white;" class="card">
+                      <div style=" border-radius: 15px; background-color: #144A99; color: white;" class="card-header">
+                        <strong>{{ playerPositions[6].playerPos }}</strong></div>
+                      <div cdkDropList id="pos6" (cdkDropListDropped)="drop($event,6)"
+                        style="height: 100%; text-align: center; padding: 0px;" >
+                        <app-r-kpad style="height: 100%;" posNum="6" (statPost)="postStat($event)"></app-r-kpad>
+                      </div>
+                    </div>
+                  </div>
+    
+                  <div class="col col-sm">
+                    <div style="height: 100%; border-radius: 15px; background-color: white;" class="card">
+                      <div style="border-radius: 15px; background-color: #144A99; color: white;" class="card-header">
+                        <strong>{{ playerPositions[1].playerPos }}</strong></div>
+                      <div cdkDropList id="pos1" (cdkDropListDropped)="drop($event,1)"
+                        style="height: 100%; text-align: center; padding: 0px;" >
+                        <app-s-kpad style="height: 100%;" posNum="1" (statPost)="postStat($event)"></app-s-kpad>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+    
+            </div>
+            </div>
+
+            <!-- right column for mobile -->
+            <div *ngIf="mobile" class=" d-flex justify-content-end" style=" font-size: 3vw; padding: 0px; background-color: 
+            transparent; border-color: transparent; width: 100%; ">
+                <div class=""
+                    style="width: 100%; display: flex; flex-flow: column; flex-grow: 1; background-color: transparent; border-color: transparent; width:100%">
+     
+
+                    <div style="width: 100%; height: 100%; flex-grow: 1;">
+                        <div style="height: 100%; border-radius: 5px;  overflow: hidden; margin-bottom: 2vw;" class="card">
+                            <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                                <span>{{ playerPositions[1].playerPos }}</span>
+                                <span style="float: right; margin-right: 1em">Pos 1</span>
+                            </div>
+                            <div cdkDropList id="pos1" (cdkDropListDropped)="drop($event,1)"
+                                style="text-align: center; padding: 0px; height: 100%;" class="panel-body panel-height">
+                                <app-f-mobile-kpad playerName="{{ playerPositions[1].playerPos }}" posNum="1"
+                                    (statPost)="postStat($event)"></app-f-mobile-kpad>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="width: 100%; height: 100%; flex-grow: 1;">
+                        <div style="height: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
+                            <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                                <span>{{ playerPositions[2].playerPos }}</span>
+                                <span style="float: right; margin-right: 1em">Pos 2</span>
+                            </div>
+                            <div cdkDropList id="pos2" (cdkDropListDropped)="drop($event,2)"
+                                style="text-align: center; padding: 0px; height: 100%;" class="panel-body panel-height">
+                                <app-f-mobile-kpad playerName="{{ playerPositions[2].playerPos }}" posNum="2"
+                                    (statPost)="postStat($event)"></app-f-mobile-kpad>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="width: 100%; height: 100%; flex-grow: 1;">
+                        <div style="height: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
+                            <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                                <span>{{ playerPositions[3].playerPos }}</span>
+                                <span style="float: right; margin-right: 1em">Pos 3</span>
+                            </div>
+                            <div cdkDropList id="pos3" (cdkDropListDropped)="drop($event,3)"
+                                style="text-align: center; padding: 0px; height: 100%;" class="panel-body panel-height">
+                                <app-f-mobile-kpad playerName="{{ playerPositions[3].playerPos }}" posNum="3"
+                                    (statPost)="postStat($event)"></app-f-mobile-kpad>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="width: 100%; height: 100%; flex-grow: 1;">
+                        <div style="height: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
+                            <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                                <span>{{ playerPositions[4].playerPos }}</span>
+                                <span style="float: right; margin-right: 1em">Pos 4</span>
+                            </div>
+                            <div cdkDropList id="pos4" (cdkDropListDropped)="drop($event,4)"
+                                style="text-align: center; padding: 0px; height: 100%;" class="panel-body panel-height">
+                                <app-f-mobile-kpad playerName="{{ playerPositions[4].playerPos }}" posNum="4"
+                                    (statPost)="postStat($event)"></app-f-mobile-kpad>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="width: 100%; height: 100%; flex-grow: 1;">
+                        <div style="height: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
+                            <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                                <span>{{ playerPositions[5].playerPos }}</span>
+                                <span style="float: right; margin-right: 1em">Pos 5</span>
+                            </div>
+                            <div cdkDropList id="pos5" (cdkDropListDropped)="drop($event,5)"
+                                style="text-align: center; padding: 0px; height: 100%;" class="panel-body panel-height">
+                                <app-r-mobile-kpad playerName="{{ playerPositions[5].playerPos }}" posNum="5"
+                                    (statPost)="postStat($event)"></app-r-mobile-kpad>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="width: 100%; height: 100%; flex-grow: 1;">
+                        <div style="height: 100%; border-radius: 5px; overflow: hidden; margin-bottom: 2vw;" class="card">
+                            <div class="btn-primary" style="padding-left: 10px; font-size: 3vw;">
+                                <span>{{ playerPositions[6].playerPos }}</span>
+                                <span style="float: right; margin-right: 1em">Pos 6</span>
+                            </div>
+                            <div cdkDropList id="pos6" (cdkDropListDropped)="drop($event,6)"
+                                style="text-align: center; padding: 0px; height: 100%;" class="panel-body panel-height">
+                                <app-r-mobile-kpad playerName="{{ playerPositions[6].playerPos }}" posNum="6"
+                                    (statPost)="postStat($event)"></app-r-mobile-kpad>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

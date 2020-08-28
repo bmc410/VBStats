@@ -77,7 +77,9 @@ import { IncDecButtonComponent } from './components/controls/inc-dec-button/inc-
 import { RMobileKpadComponent } from './components/controls/r-mobile-kpad/r-mobile-kpad.component';
 import { SMobileKpadComponent } from './components/controls/s-mobile-kpad/s-mobile-kpad.component';
 import { ResponsiveMatchComponent } from './components/responsive-match/responsive-match.component';
-
+import { ResponsiveComponent } from './components/responsive/responsive.component';
+import { SMobileDivKpadComponent } from './components/controls/s-mobile-div-kpad/s-mobile-div-kpad.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -104,7 +106,9 @@ import { ResponsiveMatchComponent } from './components/responsive-match/responsi
     IncDecButtonComponent,
     RMobileKpadComponent,
     SMobileKpadComponent,
-    ResponsiveMatchComponent
+    ResponsiveMatchComponent,
+    ResponsiveComponent,
+    SMobileDivKpadComponent
   ],
   imports: [
     BrowserModule,
@@ -141,6 +145,7 @@ import { ResponsiveMatchComponent } from './components/responsive-match/responsi
     //MatToolbarModule,
     //MatRadioModule,
     MaterialModule,
+    FlexLayoutModule,
     FontAwesomeModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule.enablePersistence(),
